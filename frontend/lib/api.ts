@@ -1,0 +1,115 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, init);
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    const message = Array.isArray(body.message) ? body.message.join(', ') : body.message;
+    throw new Error(message || `Error ${response.status}`);
+  }
+  return response.json();
+}
+
+export interface OsmSearch {
+  province: string;
+  canton: string;
+  category: string;
+}
+
+export interface OsmPlace {
+  id: string;
+  osmType: 'node' | 'way' | 'relation';
+  osmId: string;
+  province: string;
+  canton: string;
+  category: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address?: string;
+  phone?: string;
+  website?: string;
+  sourceUpdatedAt?: string;
+  syncedAt: string;
+}
+
+export interface TseDistrict {
+  id: string;
+  electoralCode: string;
+  province: string;
+  canton: string;
+  district: string;
+  electors: number;
+  pollingStations: number;
+  sourceFile: string;
+  sourceDate?: string;
+  importedAt: string;
+}
+
+export interface TseProvinceSummary {
+  province: string;
+  electors: number;
+  pollingStations: number;
+  districts: number;
+}
+
+const queryString = (params: Record<string, string | number | undefined>) =>
+  new URLSearchParams(
+    Object.entries(params)
+      .filter((entry): entry is [string, string | number] => entry[1] !== undefined && entry[1] !== '')
+      .map(([key, value]) => [key, String(value)]),
+  ).toString();
+
+export const api = {
+  osm: {
+    sync: (body: OsmSearch) =>
+      request<{
+        guardados: number;
+        encontrados: number;
+        cache: boolean;
+        fetchedAt: string;
+        sourceUpdatedAt?: string;
+        center: { latitude: number; longitude: number };
+      }>('/osm/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    }),
+    places: (params: OsmSearch & { q?: string }) =>
+      request<{
+        data: OsmPlace[];
+        total: number;
+        province: string;
+        canton?: string;
+        center: { latitude: number; longitude: number };
+      }>(`/osm/places?${queryString({
+        province: params.province,
+        canton: params.canton,
+        category: params.category,
+        q: params.q,
+      })}`),
+    locations: () =>
+      request<Array<{ province: string; cantons: string[] }>>('/osm/locations'),
+  },
+  tse: {
+    importZip: (file: File, sourceDate?: string) => {
+      const form = new FormData();
+      form.append('file', file);
+      return request<{
+        importedDistricts: number;
+        processedElectors: number;
+        discardedPersonalFields: boolean;
+        sourceFile: string;
+        sourceDate?: string;
+        importedAt: string;
+      }>(`/tse/import?${queryString({ sourceDate })}`, { method: 'POST', body: form });
+    },
+    districts: (params: { province?: string; canton?: string; q?: string }) =>
+      request<{ data: TseDistrict[]; total: number }>(`/tse/districts?${queryString(params)}`),
+    overview: () =>
+      request<{
+        provinces: TseProvinceSummary[];
+        metadata: { lastImport?: string; sourceDate?: string; districts: number; electors: number };
+      }>('/tse/overview'),
+  },
+};
