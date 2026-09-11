@@ -53,6 +53,42 @@ export interface TseProvinceSummary {
   districts: number;
 }
 
+export interface HealthCoverageRow {
+  province: string;
+  canton: string;
+  electors: number;
+  districts: number;
+  hospitals: number;
+  clinics: number;
+  pharmacies: number;
+  healthPoints: number;
+  electorsPerHealthPoint: number | null;
+  osmSynced: boolean;
+  deficit: boolean;
+}
+
+export interface ElectoralSecurityDistrict {
+  electoralCode: string;
+  province: string;
+  canton: string;
+  district: string;
+  electors: number;
+  pollingStations: number;
+  police: number;
+  fireStations: number;
+}
+
+export interface SecurityStation {
+  id: string;
+  category: string;
+  name: string;
+  canton: string;
+  province: string;
+  latitude: number;
+  longitude: number;
+  phone?: string;
+}
+
 const queryString = (params: Record<string, string | number | undefined>) =>
   new URLSearchParams(
     Object.entries(params)
@@ -111,5 +147,13 @@ export const api = {
         provinces: TseProvinceSummary[];
         metadata: { lastImport?: string; sourceDate?: string; districts: number; electors: number };
       }>('/tse/overview'),
+  },
+  coverage: {
+    health: (params: { province?: string; canton?: string }) =>
+      request<HealthCoverageRow[]>(`/coverage/health?${queryString(params)}`),
+    electoralSecurity: (params: { province?: string; canton?: string }) =>
+      request<{ districts: ElectoralSecurityDistrict[]; stations: SecurityStation[] }>(
+        `/coverage/electoral-security?${queryString(params)}`,
+      ),
   },
 };

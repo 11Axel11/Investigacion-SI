@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <nav aria-label="Navegación principal">
               <Link href="/mapa">Mapa OSM</Link>
               <Link href="/electoral">Datos TSE</Link>
+              <Link href="/cobertura">Cobertura</Link>
             </nav>
           </header>
           <main className="container">{children}</main>

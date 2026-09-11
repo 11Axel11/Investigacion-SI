@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoverageModule } from './coverage/coverage.module';
 import { OsmModule } from './osm/osm.module';
 import { TseModule } from './tse/tse.module';
 
@@ -18,6 +19,7 @@ import { TseModule } from './tse/tse.module';
     }),
     OsmModule,
     TseModule,
+    CoverageModule,
   ],
 })
 export class AppModule {}
