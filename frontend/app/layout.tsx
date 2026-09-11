@@ -1,29 +1,29 @@
-import { QueryProvider } from '@/components/query-provider';
-import Link from 'next/link';
-import './globals.css';
+import { Google_Sans } from "next/font/google";
+
+import { AppShell } from "@/components/app-shell";
+import { QueryProvider } from "@/components/query-provider";
+import "./globals.css";
+
+const googleSans = Google_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-google-sans",
+  display: "swap",
+  axes: ["opsz"],
+  adjustFontFallback: false,
+  fallback: ["ui-sans-serif", "system-ui", "Segoe UI", "Arial", "sans-serif"],
+});
 
 export const metadata = {
-  title: 'Observatorio Territorial y Electoral CR',
-  description: 'Visualización responsable de fuentes OSINT sobre Costa Rica',
+  title: "Observatorio Territorial y Electoral CR",
+  description: "Visualización responsable de fuentes OSINT sobre Costa Rica",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
-      <body>
+    <html lang="es" className={`${googleSans.variable} h-full`}>
+      <body className={`${googleSans.className} h-full overflow-x-hidden antialiased`}>
         <QueryProvider>
-          <header className="nav">
-            <Link className="brand" href="/">Observatorio CR</Link>
-            <nav aria-label="Navegación principal">
-              <Link href="/mapa">Mapa OSM</Link>
-              <Link href="/electoral">Datos TSE</Link>
-              <Link href="/cobertura">Cobertura</Link>
-            </nav>
-          </header>
-          <main className="container">{children}</main>
-          <footer>
-            Proyecto académico OSINT · Datos públicos, procedencia visible y uso responsable
-          </footer>
+          <AppShell>{children}</AppShell>
         </QueryProvider>
       </body>
     </html>

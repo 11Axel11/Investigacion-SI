@@ -1,8 +1,22 @@
 'use client';
 
-import { api } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { PageHeader } from '@/components/page-header';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { api } from '@/lib/api';
 
 export default function CoberturaPage() {
   const [province, setProvince] = useState('');
@@ -19,120 +33,155 @@ export default function CoberturaPage() {
   });
 
   return (
-    <>
-      <header className="page-heading">
-        <span className="eyebrow">Cruce de fuentes</span>
-        <h1>Cobertura territorial de salud y seguridad electoral</h1>
-        <p>
-          Combina los electores agregados del TSE con la infraestructura pública registrada en OpenStreetMap.
-          El cruce se hace por cantón, que es el nivel geográfico en común entre ambas fuentes.
-        </p>
-      </header>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <PageHeader crumbs={[{ label: 'Cobertura' }]} title="Cobertura" />
 
-      <aside className="privacy-note">
-        <strong>Requisito previo:</strong> los conteos de OSM solo aparecen si ya sincronizaste esa provincia/cantón
-        y categoría en <a href="/mapa">Mapa OSM</a> (hospital, clinic, pharmacy, police, fire_station). Sin
-        sincronizar, la fila muestra cero infraestructura, no significa que no exista.
-      </aside>
-
-      <form className="filters" onSubmit={(event) => event.preventDefault()}>
-        <label>Provincia<input value={province} onChange={(event) => setProvince(event.target.value)} /></label>
-        <label>Cantón<input value={canton} onChange={(event) => setCanton(event.target.value)} /></label>
+      <form className="grid gap-4 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2" onSubmit={(event) => event.preventDefault()}>
+        <div className="grid gap-2">
+          <Label htmlFor="coverage-province">Provincia</Label>
+          <Input id="coverage-province" value={province} onChange={(event) => setProvince(event.target.value)} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="coverage-canton">Cantón</Label>
+          <Input id="coverage-canton" value={canton} onChange={(event) => setCanton(event.target.value)} />
+        </div>
       </form>
 
-      <section>
-        <div className="section-title">
-          <div>
-            <span className="eyebrow">1 · Diagnóstico de cobertura de salud</span>
-            <h2>Electores por cantón vs. infraestructura sanitaria</h2>
-          </div>
-        </div>
-        <p>
-          Detecta cantones con muchos electores y poca infraestructura de salud cercana, útil para priorizar
-          inversión municipal o del ministerio de salud.
-        </p>
-        {healthQuery.isError && <div className="error">{healthQuery.error.message}</div>}
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Provincia</th><th>Cantón</th><th>Electores</th><th>Hospitales</th><th>Clínicas</th>
-                <th>Farmacias</th><th>Electores/punto de salud</th><th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-medium">Salud</h2>
+        {healthQuery.isError && (
+          <Alert variant="destructive">
+            <AlertDescription>{healthQuery.error.message}</AlertDescription>
+          </Alert>
+        )}
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Provincia</TableHead>
+                <TableHead>Cantón</TableHead>
+                <TableHead>Electores</TableHead>
+                <TableHead>Hospitales</TableHead>
+                <TableHead>Clínicas</TableHead>
+                <TableHead>Farmacias</TableHead>
+                <TableHead>Electores/punto de salud</TableHead>
+                <TableHead>Estado</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {(healthQuery.data ?? []).map((row) => (
-                <tr key={`${row.province}-${row.canton}`}>
-                  <td>{row.province}</td><td>{row.canton}</td>
-                  <td>{row.electors.toLocaleString('es-CR')}</td>
-                  <td>{row.hospitals}</td><td>{row.clinics}</td><td>{row.pharmacies}</td>
-                  <td>{row.electorsPerHealthPoint?.toLocaleString('es-CR') ?? 'Sin datos'}</td>
-                  <td>
-                    {row.deficit
-                      ? (row.osmSynced ? 'Déficit: sin infraestructura registrada' : 'Sincronizar OSM')
-                      : 'Con cobertura'}
-                  </td>
-                </tr>
+                <TableRow key={`${row.province}-${row.canton}`}>
+                  <TableCell>{row.province}</TableCell>
+                  <TableCell className="font-medium">{row.canton}</TableCell>
+                  <TableCell className="tabular-nums">{row.electors.toLocaleString('es-CR')}</TableCell>
+                  <TableCell className="tabular-nums">{row.hospitals}</TableCell>
+                  <TableCell className="tabular-nums">{row.clinics}</TableCell>
+                  <TableCell className="tabular-nums">{row.pharmacies}</TableCell>
+                  <TableCell className="tabular-nums">{row.electorsPerHealthPoint?.toLocaleString('es-CR') ?? 'Sin datos'}</TableCell>
+                  <TableCell>
+                    {row.deficit ? (
+                      <Badge
+                        variant="outline"
+                        className={row.osmSynced
+                          ? 'border-red-200 bg-red-50 text-red-700'
+                          : 'border-amber-200 bg-amber-50 text-amber-700'}
+                      >
+                        {row.osmSynced ? 'Déficit' : 'Sincronizar OSM'}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
+                        Con cobertura
+                      </Badge>
+                    )}
+                  </TableCell>
+                </TableRow>
               ))}
               {!healthQuery.isLoading && !healthQuery.data?.length && (
-                <tr><td colSpan={8}>Importa el padrón del TSE para esta zona primero.</td></tr>
+                <TableRow>
+                  <TableCell colSpan={8} className="text-muted-foreground">
+                    Sin datos.
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </section>
 
-      <section>
-        <div className="section-title">
-          <div>
-            <span className="eyebrow">2 · Logística y seguridad electoral</span>
-            <h2>Electores y juntas por distrito vs. policía y bomberos del cantón</h2>
-          </div>
-        </div>
-        <p>
-          Apoya la planificación de contingencia el día de elecciones: distritos con muchas juntas receptoras y
-          poca cobertura de policía o bomberos en su cantón requieren refuerzo o ruta de emergencia definida.
-        </p>
-        {securityQuery.isError && <div className="error">{securityQuery.error.message}</div>}
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Código</th><th>Provincia</th><th>Cantón</th><th>Distrito</th><th>Electores</th>
-                <th>Juntas</th><th>Policía (cantón)</th><th>Bomberos (cantón)</th>
-              </tr>
-            </thead>
-            <tbody>
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-medium">Seguridad</h2>
+        {securityQuery.isError && (
+          <Alert variant="destructive">
+            <AlertDescription>{securityQuery.error.message}</AlertDescription>
+          </Alert>
+        )}
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Código</TableHead>
+                <TableHead>Provincia</TableHead>
+                <TableHead>Cantón</TableHead>
+                <TableHead>Distrito</TableHead>
+                <TableHead>Electores</TableHead>
+                <TableHead>Juntas</TableHead>
+                <TableHead>Policía (cantón)</TableHead>
+                <TableHead>Bomberos (cantón)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {(securityQuery.data?.districts ?? []).map((row) => (
-                <tr key={row.electoralCode}>
-                  <td>{row.electoralCode}</td><td>{row.province}</td><td>{row.canton}</td><td>{row.district}</td>
-                  <td>{row.electors.toLocaleString('es-CR')}</td><td>{row.pollingStations}</td>
-                  <td>{row.police}</td><td>{row.fireStations}</td>
-                </tr>
+                <TableRow key={row.electoralCode}>
+                  <TableCell className="font-medium">{row.electoralCode}</TableCell>
+                  <TableCell>{row.province}</TableCell>
+                  <TableCell>{row.canton}</TableCell>
+                  <TableCell>{row.district}</TableCell>
+                  <TableCell className="tabular-nums">{row.electors.toLocaleString('es-CR')}</TableCell>
+                  <TableCell className="tabular-nums">{row.pollingStations}</TableCell>
+                  <TableCell className="tabular-nums">{row.police}</TableCell>
+                  <TableCell className="tabular-nums">{row.fireStations}</TableCell>
+                </TableRow>
               ))}
               {!securityQuery.isLoading && !securityQuery.data?.districts.length && (
-                <tr><td colSpan={8}>Importa el padrón del TSE para esta zona primero.</td></tr>
+                <TableRow>
+                  <TableCell colSpan={8} className="text-muted-foreground">
+                    Sin datos.
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {!!securityQuery.data?.stations.length && (
-          <div className="table-wrap">
-            <table>
-              <thead><tr><th>Tipo</th><th>Nombre</th><th>Cantón</th><th>Teléfono</th></tr></thead>
-              <tbody>
+          <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Cantón</TableHead>
+                  <TableHead>Teléfono</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {securityQuery.data.stations.map((station) => (
-                  <tr key={station.id}>
-                    <td>{station.category === 'police' ? 'Policía' : 'Bomberos'}</td>
-                    <td>{station.name}</td><td>{station.canton}</td><td>{station.phone ?? '—'}</td>
-                  </tr>
+                  <TableRow key={station.id}>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {station.category === 'police' ? 'Policía' : 'Bomberos'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">{station.name}</TableCell>
+                    <TableCell>{station.canton}</TableCell>
+                    <TableCell>{station.phone ?? '—'}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }

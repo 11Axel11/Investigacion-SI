@@ -1,49 +1,43 @@
-import Link from 'next/link';
+import Link from "next/link";
+import { ArrowRight, Landmark, Map } from "lucide-react";
+
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
+const modules = [
+  { href: "/mapa", icon: Map, title: "Mapa", action: "Abrir mapa" },
+  { href: "/electoral", icon: Landmark, title: "Padrón", action: "Ver padrón" },
+];
 
 export default function HomePage() {
   return (
-    <>
-      <section className="hero">
-        <span className="eyebrow">Fuentes abiertas · Costa Rica</span>
-        <h1>Observatorio territorial y electoral</h1>
-        <p>
-          Una aplicación que convierte dos fuentes OSINT en información consultable:
-          infraestructura cercana de OpenStreetMap y estadísticas agregadas del padrón electoral del TSE.
-        </p>
-      </section>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <PageHeader crumbs={[]} title="Observatorio" />
 
-      <section className="cards" aria-label="Módulos del observatorio">
-        <article className="card card-map">
-          <span className="card-number">01</span>
-          <h2>Servicios en el territorio</h2>
-          <p>
-            Consulta hospitales, clínicas, farmacias, centros educativos y servicios de emergencia
-            dentro de cualquier provincia o cantón del país.
-          </p>
-          <p className="source-tag">OpenStreetMap · Overpass API · JSON normalizado y caché</p>
-          <Link className="button-link" href="/mapa">Explorar el mapa →</Link>
-        </article>
-
-        <article className="card card-tse">
-          <span className="card-number">02</span>
-          <h2>Radiografía electoral</h2>
-          <p>
-            Importa un ZIP oficial del TSE y analiza cantidades de electores y juntas por provincia,
-            cantón y distrito electoral.
-          </p>
-          <p className="source-tag">TSE · ZIP/TXT · ETL agregado sin datos personales</p>
-          <Link className="button-link" href="/electoral">Ver datos electorales →</Link>
-        </article>
-      </section>
-
-      <section className="principles">
-        <h2>Del dato público a una capacidad útil</h2>
-        <div>
-          <p><strong>Consumir</strong><br />El backend consulta o procesa cada fuente real.</p>
-          <p><strong>Transformar</strong><br />Los formatos externos se normalizan antes de guardarlos.</p>
-          <p><strong>Visualizar</strong><br />Mapas, resúmenes y filtros permiten interpretar los resultados.</p>
-        </div>
-      </section>
-    </>
+      <div className="grid gap-4 md:grid-cols-2">
+        {modules.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Card key={item.href}>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>{item.title}</CardTitle>
+                <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="size-4" />
+                </span>
+              </CardHeader>
+              <CardFooter>
+                <Button asChild className="w-full">
+                  <Link href={item.href}>
+                    {item.action}
+                    <ArrowRight />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 }
