@@ -11,3 +11,7 @@ dist/
 .DS_Store
 Thumbs.db
 __MACOSX/
+
+.local-postgres/
+!backend/.env.example
+

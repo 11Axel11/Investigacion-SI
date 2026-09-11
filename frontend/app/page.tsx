@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Landmark, Map } from "lucide-react";
+import { ArrowRight, Landmark, Map, ShieldCheck } from "lucide-react";
 
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const modules = [
+  { href: "/oij", icon: ShieldCheck, title: "Estadísticas OIJ", action: "Explorar delitos" },
   { href: "/mapa", icon: Map, title: "Mapa", action: "Abrir mapa" },
   { href: "/electoral", icon: Landmark, title: "Padrón", action: "Ver padrón" },
 ];
@@ -41,3 +42,4 @@ export default function HomePage() {
     </div>
   );
 }
+

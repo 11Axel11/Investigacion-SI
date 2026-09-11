@@ -157,3 +157,18 @@ export const api = {
       ),
   },
 };
+
+export interface OijOverview {
+  total: number;
+  years: number[];
+  byProvince: { name: string; count: number }[];
+  byCrime: { name: string; count: number }[];
+  byMonth: { name: string; count: number }[];
+  cantons: { province: string; canton: string; count: number }[];
+  options: { provinces: string[]; cantons: string[]; crimes: string[] };
+  metadata: { year: number; source: string; sourceUrl: string; fetchedAt: string; firstDate: string; lastDate: string; importedRecords: number } | null;
+}
+export const oijApi = {
+  overview: (params: { year: number; province: string; canton: string; crime: string }) => request<OijOverview>(`/oij/overview?${queryString(params)}`),
+  sync: (year: number) => request<{ total: number; cache: boolean }>('/oij/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year }) }),
+};

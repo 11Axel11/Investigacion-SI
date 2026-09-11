@@ -1,3 +1,4 @@
+import { OijModule } from './oij/oij.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,6 +21,8 @@ import { TseModule } from './tse/tse.module';
     OsmModule,
     TseModule,
     CoverageModule,
+    OijModule,
   ],
 })
 export class AppModule {}
+
