@@ -1,0 +1,8 @@
+cantones-cr.geojson
+
+Fuente: https://github.com/schweini/CR_distritos_geojson (geojson/{codigo}.geojson, nivel cantón)
+Origen original: IGN / ArcGIS Open Data (daticos-geotec.opendata.arcgis.com)
+Licencia: Apache License 2.0 (https://raw.githubusercontent.com/schweini/CR_distritos_geojson/master/LICENSE)
+
+Este archivo es una combinación de los 81 geoJSON de cantón del repositorio anterior,
+simplificado con mapshaper (visvalingam, 6%) para reducir tamaño de ~19MB a ~400KB.

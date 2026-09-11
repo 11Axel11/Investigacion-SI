@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
+import { CantonHeatmap } from '@/components/canton-heatmap';
 import { PageHeader } from '@/components/page-header';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -209,6 +210,7 @@ export default function CoberturaPage() {
             <AlertDescription>{crimeQuery.error.message}</AlertDescription>
           </Alert>
         )}
+        <CantonHeatmap rows={crimeQuery.data ?? []} year={year} />
         <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
           <Table>
             <TableHeader>

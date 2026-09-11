@@ -29,6 +29,22 @@ function locationKey(province: string, canton: string) {
   return `${normalizeText(province)}::${normalizeText(canton)}`;
 }
 
+// El TSE usa variantes de nombre distintas al nombre oficial INEC que usan
+// OSM/OIJ/el geoJSON de cantones. Se amplía esta tabla según se detecten más
+// casos al importar el resto de provincias.
+const CANTON_ALIASES: Record<string, string> = {
+  'LEON CORTES CASTRO': 'LEON CORTES',
+};
+
+// El TSE nombra el cantón cabecera de 6 provincias literalmente "CENTRAL"
+// (San José -> "CENTRAL") en vez del nombre oficial INEC ("SAN JOSE"). Sin
+// esto, esos 6 cantones nunca cruzan con las otras fuentes.
+function canonicalCanton(province: string, canton: string) {
+  const normalized = normalizeText(canton);
+  if (normalized === 'CENTRAL') return province;
+  return CANTON_ALIASES[normalized] ?? canton;
+}
+
 function matchesFilter(rowValue: string, filterValue?: string) {
   if (!filterValue?.trim()) return true;
   return normalizeText(rowValue) === normalizeText(filterValue);
@@ -50,6 +66,7 @@ export class CoverageService {
     const osmByKey = await this.osmCountsByCanton(HEALTH_CATEGORIES);
 
     return tseRows
+      .map((row) => ({ ...row, canton: canonicalCanton(row.province, row.canton) }))
       .filter((row) => matchesFilter(row.province, province) && matchesFilter(row.canton, canton))
       .map((row) => {
         const key = locationKey(row.province, row.canton);
@@ -100,6 +117,7 @@ export class CoverageService {
       .slice(0, 250);
 
     const districtRows = districts
+      .map((row) => ({ ...row, canton: canonicalCanton(row.province, row.canton) }))
       .filter((row) => matchesFilter(row.province, province) && matchesFilter(row.canton, canton))
       .map((row) => {
         const counts = osmByKey.get(locationKey(row.province, row.canton)) ?? {};
@@ -133,6 +151,7 @@ export class CoverageService {
     const policeByKey = await this.osmCountsByCanton(['police']);
 
     return tseRows
+      .map((row) => ({ ...row, canton: canonicalCanton(row.province, row.canton) }))
       .filter((row) => matchesFilter(row.province, province) && matchesFilter(row.canton, canton))
       .map((row) => {
         const key = locationKey(row.province, row.canton);
