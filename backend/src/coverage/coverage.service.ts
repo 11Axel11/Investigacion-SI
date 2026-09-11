@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OijDataset } from '../oij/oij-dataset.entity';
 import { OsmPlace } from '../osm/osm-place.entity';
 import { TseElectoralSummary } from '../tse/tse-electoral-summary.entity';
 
@@ -40,18 +41,12 @@ export class CoverageService {
     private readonly tse: Repository<TseElectoralSummary>,
     @InjectRepository(OsmPlace)
     private readonly osm: Repository<OsmPlace>,
+    @InjectRepository(OijDataset)
+    private readonly oij: Repository<OijDataset>,
   ) {}
 
   async healthCoverage(province?: string, canton?: string) {
-    const tseRows = await this.tse.createQueryBuilder('summary')
-      .select('summary.province', 'province')
-      .addSelect('summary.canton', 'canton')
-      .addSelect('SUM(summary.electors)', 'electors')
-      .addSelect('COUNT(*)', 'districts')
-      .groupBy('summary.province')
-      .addGroupBy('summary.canton')
-      .getRawMany<{ province: string; canton: string; electors: string; districts: string }>();
-
+    const tseRows = await this.tseElectorsByCanton();
     const osmByKey = await this.osmCountsByCanton(HEALTH_CATEGORIES);
 
     return tseRows
@@ -123,6 +118,57 @@ export class CoverageService {
       .slice(0, 250);
 
     return { districts: districtRows, stations };
+  }
+
+  async crimeRate(province?: string, canton?: string, year?: string) {
+    const targetYear = this.year(year ?? new Date().getFullYear());
+    const dataset = await this.oij.findOneBy({ year: targetYear });
+    const crimesByKey = new Map<string, number>();
+    for (const group of dataset?.groups ?? []) {
+      const key = locationKey(group.province, group.canton);
+      crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
+    }
+
+    const tseRows = await this.tseElectorsByCanton();
+    const policeByKey = await this.osmCountsByCanton(['police']);
+
+    return tseRows
+      .filter((row) => matchesFilter(row.province, province) && matchesFilter(row.canton, canton))
+      .map((row) => {
+        const key = locationKey(row.province, row.canton);
+        const electors = Number(row.electors);
+        const crimes = crimesByKey.get(key) ?? 0;
+        const police = policeByKey.get(key)?.police ?? 0;
+        return {
+          province: row.province,
+          canton: row.canton,
+          year: targetYear,
+          electors,
+          crimes,
+          crimeRatePer1000Electors: electors > 0 ? Math.round((crimes / electors) * 1000 * 100) / 100 : null,
+          police,
+          electorsPerPolice: police > 0 ? Math.round(electors / police) : null,
+          oijSynced: dataset != null,
+        };
+      })
+      .sort((a, b) => (b.crimeRatePer1000Electors ?? -1) - (a.crimeRatePer1000Electors ?? -1));
+  }
+
+  private year(value: unknown) {
+    const year = Number(value);
+    if (!Number.isInteger(year) || year < 2015 || year > new Date().getFullYear()) throw new BadRequestException('Seleccione un año válido desde 2015.');
+    return year;
+  }
+
+  private async tseElectorsByCanton() {
+    return this.tse.createQueryBuilder('summary')
+      .select('summary.province', 'province')
+      .addSelect('summary.canton', 'canton')
+      .addSelect('SUM(summary.electors)', 'electors')
+      .addSelect('COUNT(*)', 'districts')
+      .groupBy('summary.province')
+      .addGroupBy('summary.canton')
+      .getRawMany<{ province: string; canton: string; electors: string; districts: string }>();
   }
 
   private async osmCountsByCanton(categories: readonly string[]) {

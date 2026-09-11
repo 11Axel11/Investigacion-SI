@@ -14,4 +14,9 @@ export class CoverageController {
   electoralSecurity(@Query('province') province?: string, @Query('canton') canton?: string) {
     return this.coverageService.electoralSecurity(province, canton);
   }
+
+  @Get('crime-rate')
+  crimeRate(@Query('province') province?: string, @Query('canton') canton?: string, @Query('year') year?: string) {
+    return this.coverageService.crimeRate(province, canton, year);
+  }
 }

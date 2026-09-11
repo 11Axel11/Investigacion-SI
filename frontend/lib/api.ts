@@ -78,6 +78,18 @@ export interface ElectoralSecurityDistrict {
   fireStations: number;
 }
 
+export interface CrimeRateRow {
+  province: string;
+  canton: string;
+  year: number;
+  electors: number;
+  crimes: number;
+  crimeRatePer1000Electors: number | null;
+  police: number;
+  electorsPerPolice: number | null;
+  oijSynced: boolean;
+}
+
 export interface SecurityStation {
   id: string;
   category: string;
@@ -155,6 +167,8 @@ export const api = {
       request<{ districts: ElectoralSecurityDistrict[]; stations: SecurityStation[] }>(
         `/coverage/electoral-security?${queryString(params)}`,
       ),
+    crimeRate: (params: { province?: string; canton?: string; year?: number }) =>
+      request<CrimeRateRow[]>(`/coverage/crime-rate?${queryString(params)}`),
   },
 };
 

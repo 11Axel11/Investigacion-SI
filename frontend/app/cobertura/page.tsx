@@ -21,6 +21,7 @@ import { api } from '@/lib/api';
 export default function CoberturaPage() {
   const [province, setProvince] = useState('');
   const [canton, setCanton] = useState('');
+  const [year, setYear] = useState(String(new Date().getFullYear()));
   const filters = { province: province || undefined, canton: canton || undefined };
 
   const healthQuery = useQuery({
@@ -30,6 +31,10 @@ export default function CoberturaPage() {
   const securityQuery = useQuery({
     queryKey: ['coverage-security', filters],
     queryFn: () => api.coverage.electoralSecurity(filters),
+  });
+  const crimeQuery = useQuery({
+    queryKey: ['coverage-crime-rate', filters, year],
+    queryFn: () => api.coverage.crimeRate({ ...filters, year: Number(year) }),
   });
 
   return (
@@ -181,6 +186,64 @@ export default function CoberturaPage() {
             </Table>
           </div>
         )}
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-sm font-medium">Seguridad ciudadana (OIJ + TSE + OSM)</h2>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="crime-year" className="text-xs text-muted-foreground">Año</Label>
+            <Input
+              id="crime-year"
+              className="w-24"
+              type="number"
+              min={2015}
+              max={new Date().getFullYear()}
+              value={year}
+              onChange={(event) => setYear(event.target.value)}
+            />
+          </div>
+        </div>
+        {crimeQuery.isError && (
+          <Alert variant="destructive">
+            <AlertDescription>{crimeQuery.error.message}</AlertDescription>
+          </Alert>
+        )}
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Provincia</TableHead>
+                <TableHead>Cantón</TableHead>
+                <TableHead>Electores</TableHead>
+                <TableHead>Delitos ({year})</TableHead>
+                <TableHead>Tasa /1000 electores</TableHead>
+                <TableHead>Policía (OSM)</TableHead>
+                <TableHead>Electores/policía</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(crimeQuery.data ?? []).map((row) => (
+                <TableRow key={`${row.province}-${row.canton}`}>
+                  <TableCell>{row.province}</TableCell>
+                  <TableCell className="font-medium">{row.canton}</TableCell>
+                  <TableCell className="tabular-nums">{row.electors.toLocaleString('es-CR')}</TableCell>
+                  <TableCell className="tabular-nums">{row.crimes.toLocaleString('es-CR')}</TableCell>
+                  <TableCell className="tabular-nums">{row.crimeRatePer1000Electors ?? 'Sin datos'}</TableCell>
+                  <TableCell className="tabular-nums">{row.police}</TableCell>
+                  <TableCell className="tabular-nums">{row.electorsPerPolice?.toLocaleString('es-CR') ?? 'Sin datos'}</TableCell>
+                </TableRow>
+              ))}
+              {!crimeQuery.isLoading && !crimeQuery.data?.length && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-muted-foreground">
+                    Sin datos. {!crimeQuery.data?.some((row) => row.oijSynced) && 'Sincronice el OIJ para este año en la sección OIJ.'}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </section>
     </div>
   );
