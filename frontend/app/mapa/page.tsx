@@ -39,6 +39,22 @@ const CATEGORIES = [
   ['school', 'Centros educativos'],
   ['police', 'Policía'],
   ['fire_station', 'Estaciones de bomberos'],
+  ['bank', 'Bancos'],
+  ['bar', 'Bares'],
+  ['restaurant', 'Restaurantes/sodas'],
+  ['fuel', 'Gasolineras'],
+  ['place_of_worship', 'Iglesias/templos'],
+  ['veterinary', 'Veterinarias'],
+  ['supermarket', 'Supermercados'],
+  ['jewelry', 'Joyerías'],
+  ['bakery', 'Panaderías'],
+  ['hardware', 'Ferreterías'],
+  ['clothes', 'Tiendas de ropa'],
+  ['alcohol', 'Licoreras'],
+  ['books', 'Librerías'],
+  ['hairdresser', 'Salones de belleza'],
+  ['car', 'Venta de autos'],
+  ['mobile_phone', 'Venta de celulares'],
 ];
 
 export default function MapaPage() {

@@ -10,13 +10,30 @@ import { ILike, Repository } from 'typeorm';
 import { OsmPlace } from './osm-place.entity';
 import { OsmQueryCache } from './osm-query-cache.entity';
 
-const CATEGORY_LABELS = {
-  hospital: 'Hospital',
-  clinic: 'Clínica',
-  pharmacy: 'Farmacia',
-  school: 'Centro educativo',
-  police: 'Policía',
-  fire_station: 'Estación de bomberos',
+// "key" es la etiqueta OSM (amenity=* o shop=*) que identifica la categoría.
+const CATEGORY_DEFS = {
+  hospital: { label: 'Hospital', key: 'amenity', value: 'hospital' },
+  clinic: { label: 'Clínica', key: 'amenity', value: 'clinic' },
+  pharmacy: { label: 'Farmacia', key: 'amenity', value: 'pharmacy' },
+  school: { label: 'Centro educativo', key: 'amenity', value: 'school' },
+  police: { label: 'Policía', key: 'amenity', value: 'police' },
+  fire_station: { label: 'Estación de bomberos', key: 'amenity', value: 'fire_station' },
+  bank: { label: 'Banco', key: 'amenity', value: 'bank' },
+  bar: { label: 'Bar', key: 'amenity', value: 'bar' },
+  restaurant: { label: 'Restaurante/soda', key: 'amenity', value: 'restaurant' },
+  fuel: { label: 'Gasolinera', key: 'amenity', value: 'fuel' },
+  place_of_worship: { label: 'Iglesia/templo', key: 'amenity', value: 'place_of_worship' },
+  veterinary: { label: 'Veterinaria', key: 'amenity', value: 'veterinary' },
+  supermarket: { label: 'Supermercado', key: 'shop', value: 'supermarket' },
+  jewelry: { label: 'Joyería', key: 'shop', value: 'jewelry' },
+  bakery: { label: 'Panadería', key: 'shop', value: 'bakery' },
+  hardware: { label: 'Ferretería', key: 'shop', value: 'hardware' },
+  clothes: { label: 'Tienda de ropa', key: 'shop', value: 'clothes' },
+  alcohol: { label: 'Licorera', key: 'shop', value: 'alcohol' },
+  books: { label: 'Librería', key: 'shop', value: 'books' },
+  hairdresser: { label: 'Salón de belleza', key: 'shop', value: 'hairdresser' },
+  car: { label: 'Venta de autos', key: 'shop', value: 'car' },
+  mobile_phone: { label: 'Venta de celulares', key: 'shop', value: 'mobile_phone' },
 } as const;
 
 const LOCATIONS = [
@@ -50,7 +67,7 @@ const LOCATIONS = [
   },
 ] as const;
 
-export type OsmCategory = keyof typeof CATEGORY_LABELS;
+export type OsmCategory = keyof typeof CATEGORY_DEFS;
 
 export interface OsmSearchParams {
   province: string;
@@ -106,11 +123,12 @@ rel(area.provinceArea)["boundary"="administrative"]["admin_level"="6"]["name"="$
       : `rel(${params.provinceInfo.relationId})->.boundary;
 area(${3_600_000_000 + params.provinceInfo.relationId})->.searchArea;`;
     const boundaryLevel = params.canton ? '6' : '4';
+    const categoryDef = CATEGORY_DEFS[params.category];
     const query = `[out:json][timeout:30];
 ${areaSetup}
 (
   .boundary;
-  nwr["amenity"="${params.category}"](area.searchArea);
+  nwr["${categoryDef.key}"="${categoryDef.value}"](area.searchArea);
 );
 out center tags 251;`;
 
@@ -134,7 +152,7 @@ out center tags 251;`;
     const sourceUpdatedAt = this.toDate(payload.osm3s?.timestamp_osm_base);
     const fetchedAt = new Date();
     const normalized = (payload.elements ?? [])
-      .filter((element) => element !== boundary && element.tags?.amenity === params.category)
+      .filter((element) => element !== boundary && element.tags?.[categoryDef.key] === categoryDef.value)
       .map((element) => this.normalize(element, params, sourceUpdatedAt, fetchedAt))
       .filter((place) => place !== undefined);
 
@@ -204,7 +222,7 @@ out center tags 251;`;
     if (canton && !(provinceInfo.cantons as readonly string[]).includes(canton)) {
       throw new BadRequestException(`El cantón indicado no pertenece a ${province}.`);
     }
-    if (!(raw.category in CATEGORY_LABELS)) {
+    if (!(raw.category in CATEGORY_DEFS)) {
       throw new BadRequestException('La categoría de OpenStreetMap no está permitida.');
     }
     return {
@@ -265,7 +283,7 @@ out center tags 251;`;
       province: params.province,
       canton: params.canton,
       category: params.category,
-      name: tags.name ?? tags['name:es'] ?? `${CATEGORY_LABELS[params.category]} sin nombre`,
+      name: tags.name ?? tags['name:es'] ?? `${CATEGORY_DEFS[params.category].label} sin nombre`,
       latitude,
       longitude,
       address: address || undefined,

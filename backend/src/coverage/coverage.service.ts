@@ -7,6 +7,13 @@ import { TseElectoralSummary } from '../tse/tse-electoral-summary.entity';
 
 const HEALTH_CATEGORIES = ['hospital', 'clinic', 'pharmacy'] as const;
 const SECURITY_CATEGORIES = ['police', 'fire_station'] as const;
+// Comercios sincronizables en /mapa. Solo informativos (competencia
+// existente por cantón): no entran en el cálculo del score de Cobertura.
+const BUSINESS_CATEGORIES = [
+  'bank', 'bar', 'restaurant', 'fuel', 'place_of_worship', 'veterinary',
+  'supermarket', 'jewelry', 'bakery', 'hardware', 'clothes', 'alcohol',
+  'books', 'hairdresser', 'car', 'mobile_phone',
+] as const;
 
 interface OsmCategoryCount {
   province: string;
@@ -199,6 +206,7 @@ export class CoverageService {
 
     const tseRows = await this.tseElectorsByCanton();
     const serviceByKey = await this.osmCountsByCanton([...HEALTH_CATEGORIES, ...SECURITY_CATEGORIES]);
+    const businessByKey = await this.osmCountsByCanton(BUSINESS_CATEGORIES);
 
     const raw = tseRows.map((row) => {
       const province = row.province;
@@ -215,6 +223,8 @@ export class CoverageService {
       const healthPoints = hospitals + clinics + pharmacies;
       const policePoints = police + fireStations;
       const crimes = crimesByKey.get(key) ?? 0;
+      const businessCounts = businessByKey.get(key) ?? {};
+      const businesses = Object.fromEntries(BUSINESS_CATEGORIES.map((c) => [c, businessCounts[c] ?? 0])) as Record<typeof BUSINESS_CATEGORIES[number], number>;
       return {
         province,
         canton,
@@ -227,6 +237,7 @@ export class CoverageService {
         fireStations,
         healthPoints,
         policePoints,
+        businesses,
         crimeRatePer1000Electors: electors > 0 ? (crimes / electors) * 1000 : null,
         crimes,
         coberturaPer10k: electors > 0 ? ((healthPoints + policePoints) / electors) * 10000 : null,
@@ -286,6 +297,7 @@ export class CoverageService {
           electors: row.electors,
           per10kElectors: row.electoralPer10k == null ? null : Math.round(row.electoralPer10k * 10) / 10,
         },
+        businesses: row.businesses,
       };
     });
 

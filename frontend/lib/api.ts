@@ -125,7 +125,27 @@ export interface ViabilityIndexRow {
     electors: number;
     per10kElectors: number | null;
   };
+  businesses: Record<string, number>;
 }
+
+export const BUSINESS_CATEGORY_LABELS: Record<string, string> = {
+  bank: 'Bancos',
+  bar: 'Bares',
+  restaurant: 'Restaurantes/sodas',
+  fuel: 'Gasolineras',
+  place_of_worship: 'Iglesias/templos',
+  veterinary: 'Veterinarias',
+  supermarket: 'Supermercados',
+  jewelry: 'Joyerías',
+  bakery: 'Panaderías',
+  hardware: 'Ferreterías',
+  clothes: 'Tiendas de ropa',
+  alcohol: 'Licoreras',
+  books: 'Librerías',
+  hairdresser: 'Salones de belleza',
+  car: 'Venta de autos',
+  mobile_phone: 'Venta de celulares',
+};
 
 export interface SecurityStation {
   id: string;

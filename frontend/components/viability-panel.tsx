@@ -2,7 +2,7 @@
 
 import { X } from 'lucide-react';
 
-import { ViabilityIndexRow } from '@/lib/api';
+import { BUSINESS_CATEGORY_LABELS, ViabilityIndexRow } from '@/lib/api';
 import { bandColor } from '@/lib/viability';
 
 function perPointLabel(electors: number, count: number) {
@@ -45,6 +45,8 @@ function SourceCard({
 
 export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClose: () => void }) {
   const color = bandColor(row.band);
+  const businesses = Object.entries(row.businesses).sort((a, b) => b[1] - a[1]);
+  const businessesWithData = businesses.filter(([, count]) => count > 0);
 
   return (
     <div className="flex h-full w-full flex-col gap-4 overflow-y-auto rounded-xl border bg-card p-4 shadow-lg">
@@ -115,6 +117,21 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
           score={row.electoral.score}
           detail={`${row.electoral.pollingStations} juntas receptoras · ${row.electoral.per10kElectors ?? '—'} por 10 000 electores`}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold tracking-wide text-muted-foreground">COMERCIOS (OSM) · no entra en el puntaje</p>
+        <div className="rounded-lg border p-3">
+          {businessesWithData.length > 0 ? (
+            <div className="flex flex-col gap-1">
+              {businesses.map(([key, count]) => (
+                <ServiceRow key={key} label={BUSINESS_CATEGORY_LABELS[key] ?? key} electors={row.electors} count={count} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">Sin comercios sincronizados en este cantón. Sincronícelos desde /mapa (Bancos, Bares, Supermercados, Joyerías, etc.).</p>
+          )}
+        </div>
       </div>
 
       <p className="text-[11px] text-muted-foreground">
