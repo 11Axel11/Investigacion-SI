@@ -11,7 +11,10 @@ export function aggregateCsv(buffer: Buffer, year: number) {
   } catch {
     throw new BadRequestException('El CSV del OIJ tiene un formato inválido. No se sustituyeron los datos guardados.');
   }
-  const groups = new Map<string, { province: string; canton: string; crime: string; month: string; count: number }>();
+  const groups = new Map<string, {
+    province: string; canton: string; district: string; crime: string; modality: string;
+    targetCategory: string; targetType: string; month: string; count: number;
+  }>();
   let firstDate = '', lastDate = '', total = 0;
   for (const sourceRow of rows) {
     // Los CSV históricos incluyen nacionalidades con una coma sin escapar.
@@ -30,8 +33,24 @@ export function aggregateCsv(buffer: Buffer, year: number) {
     }
     const date = row[2];
     if (Number.isNaN(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date) throw new BadRequestException('Fecha inválida en el CSV.');
-    const group = { province: row[8].trim().toUpperCase(), canton: row[9].trim().toUpperCase(), crime: row[0].trim().toUpperCase(), month: date.slice(0, 7), count: 0 };
-    const key = JSON.stringify([group.province, group.canton, group.crime, group.month]);
+    // subvíctima llega como "FARMACIA [EDIFICACION]": el corchete es la
+    // categoría del objetivo (persona/vivienda/vehículo/edificación) y el
+    // texto previo el tipo específico (farmacia, banco, bar...), clave para
+    // cruzar delitos contra un tipo de negocio puntual.
+    const rawTarget = row[4]?.trim().toUpperCase() || '';
+    const targetType = rawTarget.replace(/\s*\[[^\]]*\]\s*$/, '').trim() || 'DESCONOCIDO';
+    const group = {
+      province: row[8].trim().toUpperCase(),
+      canton: row[9].trim().toUpperCase(),
+      district: row[10]?.trim().toUpperCase() || 'DESCONOCIDO',
+      crime: row[0].trim().toUpperCase(),
+      modality: row[1]?.trim().toUpperCase() || 'DESCONOCIDA',
+      targetCategory: row[3]?.trim().toUpperCase() || 'DESCONOCIDA',
+      targetType,
+      month: date.slice(0, 7),
+      count: 0,
+    };
+    const key = JSON.stringify([group.province, group.canton, group.district, group.crime, group.modality, group.targetCategory, group.targetType, group.month]);
     const item = groups.get(key) ?? group;
     item.count++;
     groups.set(key, item);

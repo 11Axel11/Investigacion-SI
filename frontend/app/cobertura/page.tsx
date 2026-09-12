@@ -30,6 +30,8 @@ export default function CoberturaPage() {
   const [province, setProvince] = useState('');
   const [canton, setCanton] = useState('');
   const [indexYear, setIndexYear] = useState(String(new Date().getFullYear()));
+  const [viabilityProvince, setViabilityProvince] = useState('');
+  const [businessType, setBusinessType] = useState('');
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const filters = { province: province || undefined, canton: canton || undefined };
 
@@ -41,9 +43,13 @@ export default function CoberturaPage() {
     queryKey: ['coverage-security', filters],
     queryFn: () => api.coverage.electoralSecurity(filters),
   });
+  const businessTypesQuery = useQuery({
+    queryKey: ['coverage-business-types', indexYear],
+    queryFn: () => api.coverage.businessTypes({ year: Number(indexYear) }),
+  });
   const viabilityQuery = useQuery({
-    queryKey: ['coverage-viability-index', indexYear],
-    queryFn: () => api.coverage.viabilityIndex({ year: Number(indexYear) }),
+    queryKey: ['coverage-viability-index', indexYear, businessType],
+    queryFn: () => api.coverage.viabilityIndex({ year: Number(indexYear), businessType: businessType || undefined }),
   });
 
   const viabilityRows = viabilityQuery.data ?? [];
@@ -56,7 +62,7 @@ export default function CoberturaPage() {
     <div className="flex w-full flex-col gap-6">
       <div className="relative -mx-4 -mt-4 -mb-4 h-[calc(100vh-3.75rem)] overflow-hidden md:-mx-6 md:-mt-6 md:-mb-6">
         <div className="absolute inset-0">
-          <ViabilityMap rows={viabilityRows} selectedKey={selectedKey} onSelect={setSelectedKey} />
+          <ViabilityMap rows={viabilityRows} selectedKey={selectedKey} onSelect={setSelectedKey} province={viabilityProvince} />
         </div>
 
         <div className="absolute top-4 left-4 z-[1200] h-[calc(100%-2rem)] w-full max-w-xs">
@@ -66,6 +72,11 @@ export default function CoberturaPage() {
             onSelect={setSelectedKey}
             year={indexYear}
             onYearChange={setIndexYear}
+            province={viabilityProvince}
+            onProvinceChange={setViabilityProvince}
+            businessTypes={businessTypesQuery.data ?? []}
+            businessType={businessType}
+            onBusinessTypeChange={setBusinessType}
           />
         </div>
 

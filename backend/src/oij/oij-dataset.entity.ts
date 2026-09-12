@@ -8,5 +8,8 @@ export class OijDataset {
   @Column() firstDate: string;
   @Column() lastDate: string;
   @Column('integer') total: number;
-  @Column('jsonb') groups: Array<{ province: string; canton: string; crime: string; month: string; count: number }>;
+  @Column('jsonb') groups: Array<{
+    province: string; canton: string; district: string; crime: string; modality: string;
+    targetCategory: string; targetType: string; month: string; count: number;
+  }>;
 }

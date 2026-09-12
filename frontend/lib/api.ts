@@ -96,6 +96,7 @@ export interface ViabilityIndexRow {
   province: string;
   canton: string;
   year: number;
+  electors: number;
   score: number | null;
   band: ViabilityBand | null;
   dataComplete: boolean;
@@ -105,11 +106,17 @@ export interface ViabilityIndexRow {
     electors: number;
     ratePer1000: number | null;
     oijSynced: boolean;
+    businessType: string | null;
   };
   cobertura: {
     score: number | null;
     healthPoints: number;
     policePoints: number;
+    hospitals: number;
+    clinics: number;
+    pharmacies: number;
+    police: number;
+    fireStations: number;
     per10kElectors: number | null;
   };
   electoral: {
@@ -197,10 +204,12 @@ export const api = {
       request<{ districts: ElectoralSecurityDistrict[]; stations: SecurityStation[] }>(
         `/coverage/electoral-security?${queryString(params)}`,
       ),
-    crimeRate: (params: { province?: string; canton?: string; year?: number }) =>
+    crimeRate: (params: { province?: string; canton?: string; year?: number; businessType?: string }) =>
       request<CrimeRateRow[]>(`/coverage/crime-rate?${queryString(params)}`),
-    viabilityIndex: (params: { year?: number }) =>
+    viabilityIndex: (params: { year?: number; businessType?: string }) =>
       request<ViabilityIndexRow[]>(`/coverage/viability-index?${queryString(params)}`),
+    businessTypes: (params: { year?: number }) =>
+      request<string[]>(`/coverage/business-types?${queryString(params)}`),
   },
 };
 
@@ -210,11 +219,20 @@ export interface OijOverview {
   byProvince: { name: string; count: number }[];
   byCrime: { name: string; count: number }[];
   byMonth: { name: string; count: number }[];
+  byModality: { name: string; count: number }[];
+  byTargetType: { name: string; count: number }[];
   cantons: { province: string; canton: string; count: number }[];
-  options: { provinces: string[]; cantons: string[]; crimes: string[] };
+  districts: { province: string; canton: string; district: string; count: number }[];
+  options: {
+    provinces: string[]; cantons: string[]; districts: string[]; crimes: string[]; modalities: string[];
+    targetCategories: string[]; targetTypes: string[];
+  };
   metadata: { year: number; source: string; sourceUrl: string; fetchedAt: string; firstDate: string; lastDate: string; importedRecords: number } | null;
 }
 export const oijApi = {
-  overview: (params: { year: number; province: string; canton: string; crime: string }) => request<OijOverview>(`/oij/overview?${queryString(params)}`),
+  overview: (params: {
+    year: number; province: string; canton: string; district: string; crime: string; modality: string;
+    targetCategory: string; targetType: string;
+  }) => request<OijOverview>(`/oij/overview?${queryString(params)}`),
   sync: (year: number) => request<{ total: number; cache: boolean }>('/oij/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year }) }),
 };

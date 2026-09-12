@@ -17,14 +17,20 @@ interface CantonProperties {
   Codigo: string;
 }
 
+function normalizeText(value: string) {
+  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toUpperCase();
+}
+
 export function ViabilityMap({
   rows,
   selectedKey,
   onSelect,
+  province,
 }: {
   rows: ViabilityIndexRow[];
   selectedKey: string | null;
   onSelect: (key: string) => void;
+  province: string;
 }) {
   const geoQuery = useQuery({
     queryKey: ['cantones-cr-geojson'],
@@ -48,11 +54,14 @@ export function ViabilityMap({
     const key = keyOf(feature);
     const row = rowByKey.get(key);
     const isSelected = key === selectedKey;
+    const props = feature?.properties as CantonProperties | undefined;
+    const isDimmed = !!province && !!props && normalizeText(props.Provincia) !== normalizeText(province);
     return {
       fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
-      fillOpacity: isSelected ? 0.9 : 0.7,
+      fillOpacity: isDimmed ? 0.12 : isSelected ? 0.9 : 0.7,
       color: isSelected ? '#0b0b0b' : '#fcfcfb',
       weight: isSelected ? 2.5 : 1,
+      opacity: isDimmed ? 0.3 : 1,
     };
   };
 
@@ -67,7 +76,7 @@ export function ViabilityMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <GeoJSON
-        key={rows.length ? rows[0].year : 'empty'}
+        key={`${rows.length ? rows[0].year : 'empty'}-${province}`}
         data={geoQuery.data}
         style={style}
         onEachFeature={(feature, layer: Layer) => {

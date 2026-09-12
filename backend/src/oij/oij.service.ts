@@ -53,26 +53,52 @@ export class OijService {
     }
   }
 
-  async overview(query: { year?: string; province?: string; canton?: string; crime?: string }) {
+  async overview(query: {
+    year?: string; province?: string; canton?: string; district?: string; crime?: string; modality?: string;
+    targetCategory?: string; targetType?: string;
+  }) {
     const year = this.year(query.year ?? new Date().getFullYear());
     const dataset = await this.repo.findOneBy({ year });
     const years = (await this.repo.find({ select: { year: true }, order: { year: 'DESC' } })).map(r => r.year);
     const all = dataset?.groups ?? [];
     const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim();
     const same = (a: string, b?: string) => !b || normalize(a) === normalize(b);
-    const rows = all.filter(r => same(r.province, query.province) && same(r.canton, query.canton) && same(r.crime, query.crime));
-    const sumBy = (key: 'province' | 'crime' | 'month') => {
+    const rows = all.filter(r =>
+      same(r.province, query.province) && same(r.canton, query.canton) && same(r.district, query.district)
+      && same(r.crime, query.crime) && same(r.modality, query.modality)
+      && same(r.targetCategory, query.targetCategory) && same(r.targetType, query.targetType));
+    const sumBy = (key: 'province' | 'crime' | 'month' | 'modality' | 'targetType') => {
       const counts = new Map<string, number>();
       rows.forEach(r => counts.set(r[key], (counts.get(r[key]) ?? 0) + r.count));
       return [...counts].map(([name, count]) => ({ name, count })).sort((a, b) => key === 'month' ? a.name.localeCompare(b.name) : b.count - a.count);
     };
-    const cantons = new Map<string, { province: string; canton: string; count: number }>();
-    rows.forEach(r => { const key = JSON.stringify([r.province, r.canton]); const item = cantons.get(key) ?? { province: r.province, canton: r.canton, count: 0 }; item.count += r.count; cantons.set(key, item); });
+    const groupCounts = (keys: ('province' | 'canton' | 'district')[]) => {
+      const counts = new Map<string, { fields: Record<string, string>; count: number }>();
+      rows.forEach(r => {
+        const groupKey = JSON.stringify(keys.map(k => r[k]));
+        const item = counts.get(groupKey) ?? { fields: Object.fromEntries(keys.map(k => [k, r[k]])), count: 0 };
+        item.count += r.count;
+        counts.set(groupKey, item);
+      });
+      return [...counts.values()].map(({ fields, count }) => ({ ...fields, count })).sort((a, b) => b.count - a.count);
+    };
+    const cantonsByProvince = all.filter(r => same(r.province, query.province));
+    const districtsByCanton = all.filter(r => same(r.province, query.province) && same(r.canton, query.canton));
+    const targetTypesByCategory = all.filter(r => same(r.targetCategory, query.targetCategory));
     return {
       total: rows.reduce((sum, r) => sum + r.count, 0), years,
-      byProvince: sumBy('province'), byCrime: sumBy('crime'), byMonth: sumBy('month'),
-      cantons: [...cantons.values()].sort((a, b) => b.count - a.count),
-      options: { provinces: [...new Set(all.map(r => r.province))].sort(), cantons: [...new Set(all.filter(r => same(r.province, query.province)).map(r => r.canton))].sort(), crimes: [...new Set(all.map(r => r.crime))].sort() },
+      byProvince: sumBy('province'), byCrime: sumBy('crime'), byMonth: sumBy('month'), byModality: sumBy('modality'), byTargetType: sumBy('targetType'),
+      cantons: groupCounts(['province', 'canton']),
+      districts: groupCounts(['province', 'canton', 'district']),
+      options: {
+        provinces: [...new Set(all.map(r => r.province))].sort(),
+        cantons: [...new Set(cantonsByProvince.map(r => r.canton))].sort(),
+        districts: [...new Set(districtsByCanton.map(r => r.district))].sort(),
+        crimes: [...new Set(all.map(r => r.crime))].sort(),
+        modalities: [...new Set(all.map(r => r.modality))].sort(),
+        targetCategories: [...new Set(all.map(r => r.targetCategory))].sort(),
+        targetTypes: [...new Set(targetTypesByCategory.map(r => r.targetType))].sort(),
+      },
       metadata: dataset ? { year, source: OIJ_SOURCE, sourceUrl: dataset.sourceUrl, fetchedAt: dataset.fetchedAt, firstDate: dataset.firstDate, lastDate: dataset.lastDate, importedRecords: dataset.total } : null,
     };
   }

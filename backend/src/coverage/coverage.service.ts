@@ -156,14 +156,10 @@ export class CoverageService {
     return { districts: districtRows, stations };
   }
 
-  async crimeRate(province?: string, canton?: string, year?: string) {
+  async crimeRate(province?: string, canton?: string, year?: string, businessType?: string) {
     const targetYear = this.year(year ?? new Date().getFullYear());
     const dataset = await this.oij.findOneBy({ year: targetYear });
-    const crimesByKey = new Map<string, number>();
-    for (const group of dataset?.groups ?? []) {
-      const key = locationKey(group.province, group.canton);
-      crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
-    }
+    const crimesByKey = this.crimesByCantonKey(dataset?.groups, businessType);
 
     const tseRows = await this.tseElectorsByCanton();
     const policeByKey = await this.osmCountsByCanton(['police']);
@@ -196,14 +192,10 @@ export class CoverageService {
   // receptoras por elector, proxy de infraestructura institucional). Cada
   // sub-score se normaliza min-max contra los cantones con dato disponible
   // ese año, no contra una escala absoluta.
-  async viabilityIndex(year?: string) {
+  async viabilityIndex(year?: string, businessType?: string) {
     const targetYear = this.year(year ?? new Date().getFullYear());
     const dataset = await this.oij.findOneBy({ year: targetYear });
-    const crimesByKey = new Map<string, number>();
-    for (const group of dataset?.groups ?? []) {
-      const key = locationKey(group.province, group.canton);
-      crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
-    }
+    const crimesByKey = this.crimesByCantonKey(dataset?.groups, businessType);
 
     const tseRows = await this.tseElectorsByCanton();
     const serviceByKey = await this.osmCountsByCanton([...HEALTH_CATEGORIES, ...SECURITY_CATEGORIES]);
@@ -215,14 +207,24 @@ export class CoverageService {
       const electors = Number(row.electors);
       const pollingStations = Number(row.pollingStations);
       const counts = serviceByKey.get(key) ?? {};
-      const healthPoints = (counts.hospital ?? 0) + (counts.clinic ?? 0) + (counts.pharmacy ?? 0);
-      const policePoints = (counts.police ?? 0) + (counts.fire_station ?? 0);
+      const hospitals = counts.hospital ?? 0;
+      const clinics = counts.clinic ?? 0;
+      const pharmacies = counts.pharmacy ?? 0;
+      const police = counts.police ?? 0;
+      const fireStations = counts.fire_station ?? 0;
+      const healthPoints = hospitals + clinics + pharmacies;
+      const policePoints = police + fireStations;
       const crimes = crimesByKey.get(key) ?? 0;
       return {
         province,
         canton,
         electors,
         pollingStations,
+        hospitals,
+        clinics,
+        pharmacies,
+        police,
+        fireStations,
         healthPoints,
         policePoints,
         crimeRatePer1000Electors: electors > 0 ? (crimes / electors) * 1000 : null,
@@ -255,6 +257,7 @@ export class CoverageService {
         province: row.province,
         canton: row.canton,
         year: targetYear,
+        electors: row.electors,
         score,
         band: score == null ? null : band(score),
         dataComplete,
@@ -264,11 +267,17 @@ export class CoverageService {
           electors: row.electors,
           ratePer1000: row.crimeRatePer1000Electors == null ? null : Math.round(row.crimeRatePer1000Electors * 100) / 100,
           oijSynced: row.oijSynced,
+          businessType: businessType ?? null,
         },
         cobertura: {
           score: coberturaScore == null ? null : Math.round(coberturaScore * 10) / 10,
           healthPoints: row.healthPoints,
           policePoints: row.policePoints,
+          hospitals: row.hospitals,
+          clinics: row.clinics,
+          pharmacies: row.pharmacies,
+          police: row.police,
+          fireStations: row.fireStations,
           per10kElectors: row.coberturaPer10k == null ? null : Math.round(row.coberturaPer10k * 10) / 10,
         },
         electoral: {
@@ -283,10 +292,36 @@ export class CoverageService {
     return results.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
   }
 
+  // Tipos de negocio/edificación que el OIJ registra como objetivo del
+  // delito (ej. FARMACIA, BANCO, BAR), para el filtro "tipo de negocio" del
+  // mapa de viabilidad. Solo categoría EDIFICACION: PERSONA/VEHICULO/VIVIENDA
+  // no son rubros de negocio.
+  async businessTypes(year?: string) {
+    const targetYear = this.year(year ?? new Date().getFullYear());
+    const dataset = await this.oij.findOneBy({ year: targetYear });
+    const types = new Set<string>();
+    for (const group of dataset?.groups ?? []) {
+      if (group.targetCategory === 'EDIFICACION' && group.targetType !== 'DESCONOCIDO') types.add(group.targetType);
+    }
+    return [...types].sort();
+  }
+
   private year(value: unknown) {
     const year = Number(value);
     if (!Number.isInteger(year) || year < 2015 || year > new Date().getFullYear()) throw new BadRequestException('Seleccione un año válido desde 2015.');
     return year;
+  }
+
+  // Suma delitos por cantón, opcionalmente restringido a un tipo de objetivo
+  // (ej. "FARMACIA") tomado del campo subvíctima del OIJ.
+  private crimesByCantonKey(groups: OijDataset['groups'] | undefined, businessType?: string) {
+    const crimesByKey = new Map<string, number>();
+    for (const group of groups ?? []) {
+      if (businessType && normalizeText(group.targetType) !== normalizeText(businessType)) continue;
+      const key = locationKey(group.province, group.canton);
+      crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
+    }
+    return crimesByKey;
   }
 
   private async tseElectorsByCanton() {

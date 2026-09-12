@@ -5,6 +5,22 @@ import { X } from 'lucide-react';
 import { ViabilityIndexRow } from '@/lib/api';
 import { bandColor } from '@/lib/viability';
 
+function perPointLabel(electors: number, count: number) {
+  return count > 0 ? `${Math.round(electors / count).toLocaleString('es-CR')} empadronados/punto` : 'Sin datos';
+}
+
+function ServiceRow({ label, electors, count }: { label: string; electors: number; count: number }) {
+  return (
+    <div className="flex items-center justify-between text-xs">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="flex items-center gap-2">
+        <span className="tabular-nums">{count}</span>
+        <span className="text-muted-foreground">{perPointLabel(electors, count)}</span>
+      </span>
+    </div>
+  );
+}
+
 function SourceCard({
   title,
   source,
@@ -42,6 +58,11 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
         </button>
       </div>
 
+      <p className="text-sm">
+        <span className="font-semibold tabular-nums">{row.electors.toLocaleString('es-CR')}</span>{' '}
+        <span className="text-muted-foreground">empadronados</span>
+      </p>
+
       <div className="rounded-lg p-3" style={{ backgroundColor: `${color}1a` }}>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-semibold tabular-nums" style={{ color }}>{row.score ?? '—'}</span>
@@ -68,14 +89,26 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
           title="Seguridad"
           source="OIJ + TSE"
           score={row.seguridad.score}
-          detail={`${row.seguridad.crimes.toLocaleString('es-CR')} delitos registrados · tasa ${row.seguridad.ratePer1000 ?? '—'} por 1000 electores`}
+          detail={
+            row.seguridad.businessType
+              ? `${row.seguridad.crimes.toLocaleString('es-CR')} delitos contra ${row.seguridad.businessType.toLowerCase()} · tasa ${row.seguridad.ratePer1000 ?? '—'} por 1000 electores`
+              : `${row.seguridad.crimes.toLocaleString('es-CR')} delitos registrados · tasa ${row.seguridad.ratePer1000 ?? '—'} por 1000 electores`
+          }
         />
-        <SourceCard
-          title="Cobertura"
-          source="OSM"
-          score={row.cobertura.score}
-          detail={`${row.cobertura.healthPoints} puntos de salud · ${row.cobertura.policePoints} de seguridad · ${row.cobertura.per10kElectors ?? '—'} por 10 000 electores`}
-        />
+        <div className="rounded-lg border p-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold tracking-wide text-muted-foreground">Cobertura · OSM</p>
+            <p className="tabular-nums text-sm font-medium">{row.cobertura.score ?? '—'}</p>
+          </div>
+          <div className="mt-2 flex flex-col gap-1">
+            <ServiceRow label="Hospitales" electors={row.electors} count={row.cobertura.hospitals} />
+            <ServiceRow label="Clínicas" electors={row.electors} count={row.cobertura.clinics} />
+            <ServiceRow label="Farmacias" electors={row.electors} count={row.cobertura.pharmacies} />
+            <ServiceRow label="Policía" electors={row.electors} count={row.cobertura.police} />
+            <ServiceRow label="Bomberos" electors={row.electors} count={row.cobertura.fireStations} />
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">{row.cobertura.per10kElectors ?? '—'} puntos por 10 000 empadronados (total)</p>
+        </div>
         <SourceCard
           title="Electoral"
           source="TSE"

@@ -16,12 +16,22 @@ export class CoverageController {
   }
 
   @Get('crime-rate')
-  crimeRate(@Query('province') province?: string, @Query('canton') canton?: string, @Query('year') year?: string) {
-    return this.coverageService.crimeRate(province, canton, year);
+  crimeRate(
+    @Query('province') province?: string,
+    @Query('canton') canton?: string,
+    @Query('year') year?: string,
+    @Query('businessType') businessType?: string,
+  ) {
+    return this.coverageService.crimeRate(province, canton, year, businessType);
   }
 
   @Get('viability-index')
-  viabilityIndex(@Query('year') year?: string) {
-    return this.coverageService.viabilityIndex(year);
+  viabilityIndex(@Query('year') year?: string, @Query('businessType') businessType?: string) {
+    return this.coverageService.viabilityIndex(year, businessType);
+  }
+
+  @Get('business-types')
+  businessTypes(@Query('year') year?: string) {
+    return this.coverageService.businessTypes(year);
   }
 }
