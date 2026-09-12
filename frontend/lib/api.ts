@@ -90,6 +90,36 @@ export interface CrimeRateRow {
   oijSynced: boolean;
 }
 
+export type ViabilityBand = 'ALTO' | 'MEDIO-ALTO' | 'MEDIO-BAJO' | 'BAJO';
+
+export interface ViabilityIndexRow {
+  province: string;
+  canton: string;
+  year: number;
+  score: number | null;
+  band: ViabilityBand | null;
+  dataComplete: boolean;
+  seguridad: {
+    score: number | null;
+    crimes: number;
+    electors: number;
+    ratePer1000: number | null;
+    oijSynced: boolean;
+  };
+  cobertura: {
+    score: number | null;
+    healthPoints: number;
+    policePoints: number;
+    per10kElectors: number | null;
+  };
+  electoral: {
+    score: number | null;
+    pollingStations: number;
+    electors: number;
+    per10kElectors: number | null;
+  };
+}
+
 export interface SecurityStation {
   id: string;
   category: string;
@@ -169,6 +199,8 @@ export const api = {
       ),
     crimeRate: (params: { province?: string; canton?: string; year?: number }) =>
       request<CrimeRateRow[]>(`/coverage/crime-rate?${queryString(params)}`),
+    viabilityIndex: (params: { year?: number }) =>
+      request<ViabilityIndexRow[]>(`/coverage/viability-index?${queryString(params)}`),
   },
 };
 

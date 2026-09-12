@@ -19,4 +19,9 @@ export class CoverageController {
   crimeRate(@Query('province') province?: string, @Query('canton') canton?: string, @Query('year') year?: string) {
     return this.coverageService.crimeRate(province, canton, year);
   }
+
+  @Get('viability-index')
+  viabilityIndex(@Query('year') year?: string) {
+    return this.coverageService.viabilityIndex(year);
+  }
 }

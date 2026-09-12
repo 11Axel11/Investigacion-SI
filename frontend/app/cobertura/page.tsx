@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
 
-import { CantonHeatmap } from '@/components/canton-heatmap';
-import { PageHeader } from '@/components/page-header';
+import { ViabilityList } from '@/components/viability-list';
+import { ViabilityPanel } from '@/components/viability-panel';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -18,11 +19,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { api } from '@/lib/api';
+import { normalizeCantonKey } from '@/lib/viability';
+
+const ViabilityMap = dynamic(() => import('@/components/viability-map').then((mod) => mod.ViabilityMap), {
+  ssr: false,
+  loading: () => <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Cargando mapa…</div>,
+});
 
 export default function CoberturaPage() {
   const [province, setProvince] = useState('');
   const [canton, setCanton] = useState('');
-  const [year, setYear] = useState(String(new Date().getFullYear()));
+  const [indexYear, setIndexYear] = useState(String(new Date().getFullYear()));
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const filters = { province: province || undefined, canton: canton || undefined };
 
   const healthQuery = useQuery({
@@ -33,15 +41,50 @@ export default function CoberturaPage() {
     queryKey: ['coverage-security', filters],
     queryFn: () => api.coverage.electoralSecurity(filters),
   });
-  const crimeQuery = useQuery({
-    queryKey: ['coverage-crime-rate', filters, year],
-    queryFn: () => api.coverage.crimeRate({ ...filters, year: Number(year) }),
+  const viabilityQuery = useQuery({
+    queryKey: ['coverage-viability-index', indexYear],
+    queryFn: () => api.coverage.viabilityIndex({ year: Number(indexYear) }),
   });
 
-  return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-      <PageHeader crumbs={[{ label: 'Cobertura' }]} title="Cobertura" />
+  const viabilityRows = viabilityQuery.data ?? [];
+  const selectedRow = useMemo(
+    () => viabilityRows.find((row) => normalizeCantonKey(row.province, row.canton) === selectedKey) ?? null,
+    [viabilityRows, selectedKey],
+  );
 
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <div className="relative -mx-4 -mt-4 -mb-4 h-[calc(100vh-3.75rem)] overflow-hidden md:-mx-6 md:-mt-6 md:-mb-6">
+        <div className="absolute inset-0">
+          <ViabilityMap rows={viabilityRows} selectedKey={selectedKey} onSelect={setSelectedKey} />
+        </div>
+
+        <div className="absolute top-4 left-4 z-[1200] h-[calc(100%-2rem)] w-full max-w-xs">
+          <ViabilityList
+            rows={viabilityRows}
+            selectedKey={selectedKey}
+            onSelect={setSelectedKey}
+            year={indexYear}
+            onYearChange={setIndexYear}
+          />
+        </div>
+
+        {selectedRow && (
+          <div className="absolute top-4 right-4 z-[1200] h-[calc(100%-2rem)] w-full max-w-sm">
+            <ViabilityPanel row={selectedRow} onClose={() => setSelectedKey(null)} />
+          </div>
+        )}
+
+        {viabilityQuery.isError && (
+          <div className="absolute bottom-4 left-4 z-[1200] max-w-md">
+            <Alert variant="destructive">
+              <AlertDescription>{viabilityQuery.error.message}</AlertDescription>
+            </Alert>
+          </div>
+        )}
+      </div>
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <form className="grid gap-4 rounded-xl border bg-card p-4 shadow-sm sm:grid-cols-2" onSubmit={(event) => event.preventDefault()}>
         <div className="grid gap-2">
           <Label htmlFor="coverage-province">Provincia</Label>
@@ -188,65 +231,7 @@ export default function CoberturaPage() {
           </div>
         )}
       </section>
-
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-sm font-medium">Seguridad ciudadana (OIJ + TSE + OSM)</h2>
-          <div className="flex items-center gap-2">
-            <Label htmlFor="crime-year" className="text-xs text-muted-foreground">Año</Label>
-            <Input
-              id="crime-year"
-              className="w-24"
-              type="number"
-              min={2015}
-              max={new Date().getFullYear()}
-              value={year}
-              onChange={(event) => setYear(event.target.value)}
-            />
-          </div>
-        </div>
-        {crimeQuery.isError && (
-          <Alert variant="destructive">
-            <AlertDescription>{crimeQuery.error.message}</AlertDescription>
-          </Alert>
-        )}
-        <CantonHeatmap rows={crimeQuery.data ?? []} year={year} />
-        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Provincia</TableHead>
-                <TableHead>Cantón</TableHead>
-                <TableHead>Electores</TableHead>
-                <TableHead>Delitos ({year})</TableHead>
-                <TableHead>Tasa /1000 electores</TableHead>
-                <TableHead>Policía (OSM)</TableHead>
-                <TableHead>Electores/policía</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(crimeQuery.data ?? []).map((row) => (
-                <TableRow key={`${row.province}-${row.canton}`}>
-                  <TableCell>{row.province}</TableCell>
-                  <TableCell className="font-medium">{row.canton}</TableCell>
-                  <TableCell className="tabular-nums">{row.electors.toLocaleString('es-CR')}</TableCell>
-                  <TableCell className="tabular-nums">{row.crimes.toLocaleString('es-CR')}</TableCell>
-                  <TableCell className="tabular-nums">{row.crimeRatePer1000Electors ?? 'Sin datos'}</TableCell>
-                  <TableCell className="tabular-nums">{row.police}</TableCell>
-                  <TableCell className="tabular-nums">{row.electorsPerPolice?.toLocaleString('es-CR') ?? 'Sin datos'}</TableCell>
-                </TableRow>
-              ))}
-              {!crimeQuery.isLoading && !crimeQuery.data?.length && (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-muted-foreground">
-                    Sin datos. {!crimeQuery.data?.some((row) => row.oijSynced) && 'Sincronice el OIJ para este año en la sección OIJ.'}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

@@ -50,6 +50,24 @@ function matchesFilter(rowValue: string, filterValue?: string) {
   return normalizeText(rowValue) === normalizeText(filterValue);
 }
 
+function minMax(values: number[]) {
+  return { min: Math.min(...values), max: Math.max(...values) };
+}
+
+// Min-max a 0-100. Si todos los cantones tienen el mismo valor (rango 0),
+// no hay con qué diferenciarlos: se asume el máximo (100) en vez de NaN.
+function normalize(value: number, range: { min: number; max: number }) {
+  if (range.max === range.min) return 100;
+  return ((value - range.min) / (range.max - range.min)) * 100;
+}
+
+function band(score: number) {
+  if (score >= 75) return 'ALTO';
+  if (score >= 55) return 'MEDIO-ALTO';
+  if (score >= 40) return 'MEDIO-BAJO';
+  return 'BAJO';
+}
+
 @Injectable()
 export class CoverageService {
   constructor(
@@ -173,6 +191,98 @@ export class CoverageService {
       .sort((a, b) => (b.crimeRatePer1000Electors ?? -1) - (a.crimeRatePer1000Electors ?? -1));
   }
 
+  // Índice compuesto 0-100 por cantón: 1/3 Seguridad (OIJ+TSE), 1/3 Cobertura
+  // de servicios (OSM salud+seguridad por elector), 1/3 Electoral (juntas
+  // receptoras por elector, proxy de infraestructura institucional). Cada
+  // sub-score se normaliza min-max contra los cantones con dato disponible
+  // ese año, no contra una escala absoluta.
+  async viabilityIndex(year?: string) {
+    const targetYear = this.year(year ?? new Date().getFullYear());
+    const dataset = await this.oij.findOneBy({ year: targetYear });
+    const crimesByKey = new Map<string, number>();
+    for (const group of dataset?.groups ?? []) {
+      const key = locationKey(group.province, group.canton);
+      crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
+    }
+
+    const tseRows = await this.tseElectorsByCanton();
+    const serviceByKey = await this.osmCountsByCanton([...HEALTH_CATEGORIES, ...SECURITY_CATEGORIES]);
+
+    const raw = tseRows.map((row) => {
+      const province = row.province;
+      const canton = canonicalCanton(row.province, row.canton);
+      const key = locationKey(province, canton);
+      const electors = Number(row.electors);
+      const pollingStations = Number(row.pollingStations);
+      const counts = serviceByKey.get(key) ?? {};
+      const healthPoints = (counts.hospital ?? 0) + (counts.clinic ?? 0) + (counts.pharmacy ?? 0);
+      const policePoints = (counts.police ?? 0) + (counts.fire_station ?? 0);
+      const crimes = crimesByKey.get(key) ?? 0;
+      return {
+        province,
+        canton,
+        electors,
+        pollingStations,
+        healthPoints,
+        policePoints,
+        crimeRatePer1000Electors: electors > 0 ? (crimes / electors) * 1000 : null,
+        crimes,
+        coberturaPer10k: electors > 0 ? ((healthPoints + policePoints) / electors) * 10000 : null,
+        electoralPer10k: electors > 0 ? (pollingStations / electors) * 10000 : null,
+        oijSynced: dataset != null,
+      };
+    });
+
+    const seguridadValues = raw.filter((r) => r.oijSynced && r.crimeRatePer1000Electors != null).map((r) => r.crimeRatePer1000Electors as number);
+    const coberturaValues = raw.filter((r) => r.coberturaPer10k != null).map((r) => r.coberturaPer10k as number);
+    const electoralValues = raw.filter((r) => r.electoralPer10k != null).map((r) => r.electoralPer10k as number);
+    const seguridadRange = minMax(seguridadValues);
+    const coberturaRange = minMax(coberturaValues);
+    const electoralRange = minMax(electoralValues);
+
+    const results = raw.map((row) => {
+      const seguridadScore = row.oijSynced && row.crimeRatePer1000Electors != null
+        ? 100 - normalize(row.crimeRatePer1000Electors, seguridadRange)
+        : null;
+      const coberturaScore = row.coberturaPer10k != null ? normalize(row.coberturaPer10k, coberturaRange) : null;
+      const electoralScore = row.electoralPer10k != null ? normalize(row.electoralPer10k, electoralRange) : null;
+      const subScores = [seguridadScore, coberturaScore, electoralScore];
+      const dataComplete = subScores.every((value) => value != null);
+      const score = dataComplete
+        ? Math.round(((seguridadScore! + coberturaScore! + electoralScore!) / 3) * 10) / 10
+        : null;
+      return {
+        province: row.province,
+        canton: row.canton,
+        year: targetYear,
+        score,
+        band: score == null ? null : band(score),
+        dataComplete,
+        seguridad: {
+          score: seguridadScore == null ? null : Math.round(seguridadScore * 10) / 10,
+          crimes: row.crimes,
+          electors: row.electors,
+          ratePer1000: row.crimeRatePer1000Electors == null ? null : Math.round(row.crimeRatePer1000Electors * 100) / 100,
+          oijSynced: row.oijSynced,
+        },
+        cobertura: {
+          score: coberturaScore == null ? null : Math.round(coberturaScore * 10) / 10,
+          healthPoints: row.healthPoints,
+          policePoints: row.policePoints,
+          per10kElectors: row.coberturaPer10k == null ? null : Math.round(row.coberturaPer10k * 10) / 10,
+        },
+        electoral: {
+          score: electoralScore == null ? null : Math.round(electoralScore * 10) / 10,
+          pollingStations: row.pollingStations,
+          electors: row.electors,
+          per10kElectors: row.electoralPer10k == null ? null : Math.round(row.electoralPer10k * 10) / 10,
+        },
+      };
+    });
+
+    return results.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  }
+
   private year(value: unknown) {
     const year = Number(value);
     if (!Number.isInteger(year) || year < 2015 || year > new Date().getFullYear()) throw new BadRequestException('Seleccione un año válido desde 2015.');
@@ -184,10 +294,11 @@ export class CoverageService {
       .select('summary.province', 'province')
       .addSelect('summary.canton', 'canton')
       .addSelect('SUM(summary.electors)', 'electors')
+      .addSelect('SUM(summary.pollingStations)', 'pollingStations')
       .addSelect('COUNT(*)', 'districts')
       .groupBy('summary.province')
       .addGroupBy('summary.canton')
-      .getRawMany<{ province: string; canton: string; electors: string; districts: string }>();
+      .getRawMany<{ province: string; canton: string; electors: string; pollingStations: string; districts: string }>();
   }
 
   private async osmCountsByCanton(categories: readonly string[]) {

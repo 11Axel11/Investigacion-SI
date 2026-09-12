@@ -2,6 +2,7 @@ import { Google_Sans } from "next/font/google";
 
 import { AppShell } from "@/components/app-shell";
 import { QueryProvider } from "@/components/query-provider";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 const googleSans = Google_Sans({
