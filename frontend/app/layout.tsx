@@ -22,7 +22,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${googleSans.variable} h-full`}>
-      <body className={`${googleSans.className} h-full overflow-x-hidden antialiased`}>
+      <body className={`${googleSans.className} flex min-h-full flex-col overflow-x-hidden antialiased`}>
         <QueryProvider>
           <AppShell>{children}</AppShell>
         </QueryProvider>

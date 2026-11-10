@@ -33,7 +33,7 @@ function SourceCard({
   detail: string;
 }) {
   return (
-    <div className="rounded-lg border p-3">
+    <div className="rounded-lg bg-muted/50 p-3">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold tracking-wide text-muted-foreground">{title} · {source}</p>
         <p className="tabular-nums text-sm font-medium">{score ?? '—'}</p>
@@ -49,7 +49,7 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
   const businessesWithData = businesses.filter(([, count]) => count > 0);
 
   return (
-    <div className="flex h-full w-full flex-col gap-4 overflow-y-auto rounded-xl border bg-card p-4 shadow-lg">
+    <div className="flex h-full w-full flex-col gap-4 overflow-y-auto rounded-2xl bg-background/95 p-4 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)] backdrop-blur-xl">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-xs text-muted-foreground">{row.province}</p>
@@ -97,7 +97,7 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
               : `${row.seguridad.crimes.toLocaleString('es-CR')} delitos registrados · tasa ${row.seguridad.ratePer1000 ?? '—'} por 1000 electores`
           }
         />
-        <div className="rounded-lg border p-3">
+        <div className="rounded-lg bg-muted/50 p-3">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold tracking-wide text-muted-foreground">Cobertura · OSM</p>
             <p className="tabular-nums text-sm font-medium">{row.cobertura.score ?? '—'}</p>
@@ -121,7 +121,7 @@ export function ViabilityPanel({ row, onClose }: { row: ViabilityIndexRow; onClo
 
       <div className="flex flex-col gap-2">
         <p className="text-xs font-semibold tracking-wide text-muted-foreground">COMERCIOS (OSM) · no entra en el puntaje</p>
-        <div className="rounded-lg border p-3">
+        <div className="rounded-lg bg-muted/50 p-3">
           {businessesWithData.length > 0 ? (
             <div className="flex flex-col gap-1">
               {businesses.map(([key, count]) => (

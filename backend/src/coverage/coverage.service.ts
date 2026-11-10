@@ -362,7 +362,7 @@ export class CoverageService {
 
     const byKey = new Map<string, Record<string, number>>();
     for (const row of rows) {
-      const key = locationKey(row.province, row.canton);
+      const key = locationKey(row.province, canonicalCanton(row.province, row.canton));
       const bucket = byKey.get(key) ?? {};
       bucket[row.category] = Number(row.total);
       byKey.set(key, bucket);

@@ -37,8 +37,8 @@ export function ViabilityList({
   const visibleRows = rows.filter((row) => (!province || row.province === province) && (!canton || row.canton === canton));
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border bg-card shadow-lg">
-      <div className="flex shrink-0 flex-col gap-2 border-b p-3">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl bg-background/95 shadow-[0_8px_30px_-12px_rgb(0_0_0/0.25)] backdrop-blur-xl">
+      <div className="flex shrink-0 flex-col gap-2 border-b border-border/60 p-3">
         <div className="flex items-center justify-between gap-2">
           <div>
             <h2 className="text-sm font-medium">Índice de Viabilidad</h2>
@@ -61,7 +61,7 @@ export function ViabilityList({
           <Label htmlFor="index-province" className="sr-only">Provincia</Label>
           <select
             id="index-province"
-            className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+            className="field-select"
             value={province}
             onChange={(event) => { onProvinceChange(event.target.value); onCantonChange(''); }}
           >
@@ -73,7 +73,7 @@ export function ViabilityList({
           <Label htmlFor="index-canton" className="sr-only">Cantón</Label>
           <select
             id="index-canton"
-            className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+            className="field-select"
             value={canton}
             disabled={!province}
             onChange={(event) => onCantonChange(event.target.value)}
@@ -86,7 +86,7 @@ export function ViabilityList({
           <Label htmlFor="index-business-type" className="sr-only">Tipo de negocio</Label>
           <select
             id="index-business-type"
-            className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+            className="field-select"
             value={businessType}
             onChange={(event) => onBusinessTypeChange(event.target.value)}
           >
@@ -104,7 +104,7 @@ export function ViabilityList({
             key={key}
             type="button"
             onClick={() => onSelect(key)}
-            className={`flex items-center justify-between gap-2 border-b px-3 py-2 text-left text-sm last:border-b-0 hover:bg-accent ${isSelected ? 'bg-accent' : ''}`}
+            className={`flex items-center justify-between gap-2 border-b border-border/40 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-muted ${isSelected ? 'bg-muted' : ''}`}
           >
             <span className="flex min-w-0 items-center gap-2">
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: bandColor(row.band) }} />

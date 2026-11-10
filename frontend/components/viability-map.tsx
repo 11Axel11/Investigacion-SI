@@ -1,10 +1,18 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip } from 'react-leaflet';
-import type { Layer, Path, PathOptions } from 'leaflet';
+import {
+  CircleMarker,
+  GeoJSON,
+  MapContainer,
+  TileLayer,
+  Tooltip,
+  useMap,
+} from 'react-leaflet';
+import L from 'leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
+import type { Layer, Path, PathOptions } from 'leaflet';
 
 import { api, OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY, ViabilityIndexRow } from '@/lib/api';
 import { bandColor, normalizeCantonKey, NO_DATA_COLOR } from '@/lib/viability';
@@ -18,7 +26,32 @@ interface CantonProperties {
 }
 
 function normalizeText(value: string) {
-  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toUpperCase();
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase();
+}
+
+function MapLifecycle({ geo }: { geo: FeatureCollection }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const fit = () => {
+      map.invalidateSize();
+      const bounds = L.geoJSON(geo).getBounds();
+      if (bounds.isValid()) map.fitBounds(bounds, { padding: [28, 28], maxZoom: 9 });
+    };
+
+    const raf = requestAnimationFrame(fit);
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(map.getContainer());
+    window.addEventListener('resize', fit);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener('resize', fit);
+    };
+  }, [map, geo]);
+
+  return null;
 }
 
 export function ViabilityMap({
@@ -36,16 +69,27 @@ export function ViabilityMap({
   canton: string;
   businessType: string;
 }) {
+  const geoLayerRef = useRef<L.GeoJSON | null>(null);
+  const styleForRef = useRef<(feature?: Feature | { properties?: unknown } | null) => PathOptions>(
+    () => ({}),
+  );
+
   const geoQuery = useQuery({
     queryKey: ['cantones-cr-geojson'],
-    queryFn: () => fetch('/cantones-cr.geojson').then((res) => res.json() as Promise<FeatureCollection>),
+    queryFn: () =>
+      fetch('/cantones-cr.geojson').then((res) => res.json() as Promise<FeatureCollection>),
     staleTime: Infinity,
   });
 
   const osmCategory = businessType ? OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY[businessType] : undefined;
   const placesQuery = useQuery({
     queryKey: ['viability-business-places', osmCategory, province, canton],
-    queryFn: () => api.osm.byCategory({ category: osmCategory as string, province: province || undefined, canton: canton || undefined }),
+    queryFn: () =>
+      api.osm.byCategory({
+        category: osmCategory as string,
+        province: province || undefined,
+        canton: canton || undefined,
+      }),
     enabled: !!osmCategory,
   });
 
@@ -55,56 +99,89 @@ export function ViabilityMap({
     return map;
   }, [rows]);
 
-  const keyOf = (feature?: { properties?: unknown }) => {
+  const keyOf = (feature?: Feature | { properties?: unknown } | null) => {
     const props = feature?.properties as CantonProperties | undefined;
     if (!props) return '';
     return normalizeCantonKey(props.Provincia, props.Canton);
   };
 
-  const style = (feature?: { properties?: unknown }): PathOptions => {
-    const key = keyOf(feature);
-    const row = rowByKey.get(key);
-    const isSelected = key === selectedKey;
-    const props = feature?.properties as CantonProperties | undefined;
-    const isDimmed = !!props && (
-      (!!province && normalizeText(props.Provincia) !== normalizeText(province))
-      || (!!canton && normalizeText(props.Canton) !== normalizeText(canton))
-    );
-    return {
-      fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
-      fillOpacity: isDimmed ? 0.12 : isSelected ? 0.9 : 0.7,
-      color: isSelected ? '#0b0b0b' : '#fcfcfb',
-      weight: isSelected ? 2.5 : 1,
-      opacity: isDimmed ? 0.3 : 1,
+  const styleFor = useMemo(() => {
+    return (feature?: Feature | { properties?: unknown } | null): PathOptions => {
+      const key = keyOf(feature);
+      const row = rowByKey.get(key);
+      const isSelected = key === selectedKey;
+      const props = feature?.properties as CantonProperties | undefined;
+      const isDimmed =
+        !!props &&
+        ((!!province && normalizeText(props.Provincia) !== normalizeText(province)) ||
+          (!!canton && normalizeText(props.Canton) !== normalizeText(canton)));
+      return {
+        fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
+        fillOpacity: isDimmed ? 0.12 : isSelected ? 0.85 : 0.65,
+        color: isSelected ? '#1a1a1a' : '#ffffff',
+        weight: isSelected ? 2 : 0.8,
+        opacity: isDimmed ? 0.3 : 1,
+      };
     };
-  };
+  }, [rowByKey, selectedKey, province, canton]);
+
+  styleForRef.current = styleFor;
+
+  useEffect(() => {
+    const layer = geoLayerRef.current;
+    if (!layer) return;
+    layer.eachLayer((child) => {
+      const feature = (child as Layer & { feature?: Feature }).feature;
+      if (child instanceof L.Path) child.setStyle(styleFor(feature));
+    });
+  }, [styleFor]);
 
   if (geoQuery.isLoading || !geoQuery.data) {
-    return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Cargando mapa…</div>;
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+        Cargando mapa…
+      </div>
+    );
   }
 
   return (
-    <MapContainer center={CR_CENTER} zoom={8} className="h-full w-full" scrollWheelZoom zoomControl={false}>
+    <MapContainer
+      center={CR_CENTER}
+      zoom={8}
+      className="h-full w-full bg-[#f4f4f5]"
+      scrollWheelZoom
+      zoomControl={false}
+      zoomSnap={1}
+      zoomDelta={1}
+      attributionControl={false}
+      style={{ height: '100%', width: '100%' }}
+    >
+      <MapLifecycle geo={geoQuery.data} />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <GeoJSON
-        key={`${rows.length ? rows[0].year : 'empty'}-${province}-${canton}`}
+        key={`${rows[0]?.year ?? 'empty'}-${province}-${canton}`}
+        ref={(instance) => {
+          geoLayerRef.current = instance;
+        }}
         data={geoQuery.data}
-        style={style}
+        style={(feature) => styleFor(feature)}
         onEachFeature={(feature, layer: Layer) => {
           const key = keyOf(feature);
           const row = rowByKey.get(key);
           const props = feature.properties as CantonProperties;
           layer.bindTooltip(
-            row?.score != null ? `${props.Canton}: ${row.score} (${row.band})` : `${props.Canton}: sin datos`,
+            row?.score != null
+              ? `${props.Canton}: ${row.score} (${row.band})`
+              : `${props.Canton}: sin datos`,
             { sticky: true },
           );
           layer.on({
             click: () => onSelect(key),
-            mouseover: (event) => (event.target as Path).setStyle({ weight: 3 }),
-            mouseout: (event) => (event.target as Path).setStyle(style(feature) as PathOptions),
+            mouseover: (event) => (event.target as Path).setStyle({ weight: 2.5 }),
+            mouseout: (event) => (event.target as Path).setStyle(styleForRef.current(feature)),
           });
         }}
       />
@@ -112,10 +189,18 @@ export function ViabilityMap({
         <CircleMarker
           key={place.id}
           center={[place.latitude, place.longitude]}
-          radius={6}
-          pathOptions={{ color: '#0b0b0b', weight: 1.5, fillColor: '#fab219', fillOpacity: 0.9 }}
+          radius={5}
+          pathOptions={{
+            color: '#1a1a1a',
+            weight: 1,
+            fillColor: '#2f6f5e',
+            fillOpacity: 0.9,
+          }}
         >
-          <Tooltip>{place.name}{place.address ? ` — ${place.address}` : ''}</Tooltip>
+          <Tooltip>
+            {place.name}
+            {place.address ? ` — ${place.address}` : ''}
+          </Tooltip>
         </CircleMarker>
       ))}
     </MapContainer>

@@ -155,7 +155,7 @@ export function OsmMap({
   const selected = places.find((place) => `${place.osmType}-${place.osmId}` === selectedId);
 
   return (
-    <figure className="relative overflow-hidden rounded-xl border bg-muted">
+    <figure className="relative overflow-hidden rounded-xl bg-muted">
       <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
         <Button
           type="button"
@@ -192,7 +192,7 @@ export function OsmMap({
       </div>
 
       {selected && (
-        <div className="absolute bottom-10 left-3 z-10 max-w-[70%] rounded-md border bg-card px-2.5 py-1.5 text-sm shadow-sm">
+        <div className="absolute bottom-10 left-3 z-10 max-w-[70%] rounded-lg bg-background/95 px-2.5 py-1.5 text-sm backdrop-blur-sm">
           <p className="font-medium">{selected.name}</p>
           {selected.address && <p className="text-xs text-muted-foreground">{selected.address}</p>}
         </div>
