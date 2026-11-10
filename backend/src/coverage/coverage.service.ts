@@ -41,6 +41,8 @@ function locationKey(province: string, canton: string) {
 // casos al importar el resto de provincias.
 const CANTON_ALIASES: Record<string, string> = {
   'LEON CORTES CASTRO': 'LEON CORTES',
+  // El OIJ escribe "VASQUEZ"; TSE, OSM y el geoJSON usan "VAZQUEZ".
+  'VASQUEZ DE CORONADO': 'VAZQUEZ DE CORONADO',
 };
 
 // El TSE nombra el cantón cabecera de 6 provincias literalmente "CENTRAL"
@@ -330,7 +332,7 @@ export class CoverageService {
     const crimesByKey = new Map<string, number>();
     for (const group of groups ?? []) {
       if (businessType && normalizeText(group.targetType) !== normalizeText(businessType)) continue;
-      const key = locationKey(group.province, group.canton);
+      const key = locationKey(group.province, canonicalCanton(group.province, group.canton));
       crimesByKey.set(key, (crimesByKey.get(key) ?? 0) + group.count);
     }
     return crimesByKey;
