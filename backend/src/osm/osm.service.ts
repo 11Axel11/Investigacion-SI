@@ -214,6 +214,25 @@ out center tags 251;`;
     return LOCATIONS.map(({ province, cantons }) => ({ province, cantons: [...cantons] }));
   }
 
+  // Puntos de una categoría a nivel nacional (o filtrados), para marcarlos en
+  // el mapa de viabilidad. A diferencia de findAll(), no exige una provincia
+  // válida de LOCATIONS ni el formato acentuado exacto de OSM: normaliza para
+  // aceptar "SAN JOSE" (TSE/OIJ) o "San José" (OSM) indistintamente.
+  async findByCategory(params: { category: string; province?: string; canton?: string }) {
+    if (!(params.category in CATEGORY_DEFS)) throw new BadRequestException('Categoría de OpenStreetMap no válida.');
+    const normalize = (value: string) => value.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim();
+    const rows = await this.places.find({
+      where: { category: params.category },
+      order: { name: 'ASC' },
+      take: 1000,
+    });
+    return rows
+      .filter((row) =>
+        (!params.province?.trim() || normalize(row.province) === normalize(params.province))
+        && (!params.canton?.trim() || normalize(row.canton) === normalize(params.canton)))
+      .slice(0, 500);
+  }
+
   private validate(raw: OsmSearchParams) {
     const province = raw.province?.trim();
     const canton = raw.canton?.trim() ?? '';

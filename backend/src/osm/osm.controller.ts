@@ -24,4 +24,13 @@ export class OsmController {
   locations() {
     return this.osmService.locations();
   }
+
+  @Get('by-category')
+  byCategory(
+    @Query('category') category: string,
+    @Query('province') province?: string,
+    @Query('canton') canton?: string,
+  ) {
+    return this.osmService.findByCategory({ category, province, canton });
+  }
 }

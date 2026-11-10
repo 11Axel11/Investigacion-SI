@@ -31,6 +31,7 @@ export default function CoberturaPage() {
   const [canton, setCanton] = useState('');
   const [indexYear, setIndexYear] = useState(String(new Date().getFullYear()));
   const [viabilityProvince, setViabilityProvince] = useState('');
+  const [viabilityCanton, setViabilityCanton] = useState('');
   const [businessType, setBusinessType] = useState('');
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const filters = { province: province || undefined, canton: canton || undefined };
@@ -62,7 +63,14 @@ export default function CoberturaPage() {
     <div className="flex w-full flex-col gap-6">
       <div className="relative -mx-4 -mt-4 -mb-4 h-[calc(100vh-3.75rem)] overflow-hidden md:-mx-6 md:-mt-6 md:-mb-6">
         <div className="absolute inset-0">
-          <ViabilityMap rows={viabilityRows} selectedKey={selectedKey} onSelect={setSelectedKey} province={viabilityProvince} />
+          <ViabilityMap
+            rows={viabilityRows}
+            selectedKey={selectedKey}
+            onSelect={setSelectedKey}
+            province={viabilityProvince}
+            canton={viabilityCanton}
+            businessType={businessType}
+          />
         </div>
 
         <div className="absolute top-4 left-4 z-[1200] h-[calc(100%-2rem)] w-full max-w-xs">
@@ -74,6 +82,8 @@ export default function CoberturaPage() {
             onYearChange={setIndexYear}
             province={viabilityProvince}
             onProvinceChange={setViabilityProvince}
+            canton={viabilityCanton}
+            onCantonChange={setViabilityCanton}
             businessTypes={businessTypesQuery.data ?? []}
             businessType={businessType}
             onBusinessTypeChange={setBusinessType}

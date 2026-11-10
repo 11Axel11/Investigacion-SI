@@ -128,6 +128,31 @@ export interface ViabilityIndexRow {
   businesses: Record<string, number>;
 }
 
+// Tipo de negocio del OIJ (subvíctima) -> categoría OSM sincronizable en
+// /mapa. Solo los que tienen equivalente OSM razonable; el resto (BODEGA,
+// OFICINAS/EMPRESA, PARQUEO, SIN CLASIFICAR, etc.) no se puede marcar en el
+// mapa por ahora.
+export const OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY: Record<string, string> = {
+  FARMACIA: 'pharmacy',
+  BANCO: 'bank',
+  BAR: 'bar',
+  'RESTAURANTE/SODA': 'restaurant',
+  GASOLINERIA: 'fuel',
+  'IGLESIA/TEMPLO': 'place_of_worship',
+  VETERINARIA: 'veterinary',
+  'SUPER MERCADO': 'supermarket',
+  JOYERIA: 'jewelry',
+  PANADERIA: 'bakery',
+  'FERRETERIA/CENTRO PINTURAS': 'hardware',
+  'TIENDA/BOUTIQUE': 'clothes',
+  LICORERA: 'alcohol',
+  LIBRERIA: 'books',
+  'SALA DE BELLEZA': 'hairdresser',
+  'VENTA DE AUTOS': 'car',
+  'VENTA CELULARES': 'mobile_phone',
+  'CENTRO EDUCATIVO': 'school',
+};
+
 export const BUSINESS_CATEGORY_LABELS: Record<string, string> = {
   bank: 'Bancos',
   bar: 'Bares',
@@ -195,6 +220,8 @@ export const api = {
       })}`),
     locations: () =>
       request<Array<{ province: string; cantons: string[] }>>('/osm/locations'),
+    byCategory: (params: { category: string; province?: string; canton?: string }) =>
+      request<OsmPlace[]>(`/osm/by-category?${queryString(params)}`),
   },
   tse: {
     importZip: (file: File, sourceDate?: string) => {

@@ -2,11 +2,11 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { GeoJSON, MapContainer, TileLayer } from 'react-leaflet';
+import { CircleMarker, GeoJSON, MapContainer, TileLayer, Tooltip } from 'react-leaflet';
 import type { Layer, Path, PathOptions } from 'leaflet';
 import type { Feature, FeatureCollection } from 'geojson';
 
-import { ViabilityIndexRow } from '@/lib/api';
+import { api, OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY, ViabilityIndexRow } from '@/lib/api';
 import { bandColor, normalizeCantonKey, NO_DATA_COLOR } from '@/lib/viability';
 
 const CR_CENTER: [number, number] = [9.7489, -83.7534];
@@ -26,16 +26,27 @@ export function ViabilityMap({
   selectedKey,
   onSelect,
   province,
+  canton,
+  businessType,
 }: {
   rows: ViabilityIndexRow[];
   selectedKey: string | null;
   onSelect: (key: string) => void;
   province: string;
+  canton: string;
+  businessType: string;
 }) {
   const geoQuery = useQuery({
     queryKey: ['cantones-cr-geojson'],
     queryFn: () => fetch('/cantones-cr.geojson').then((res) => res.json() as Promise<FeatureCollection>),
     staleTime: Infinity,
+  });
+
+  const osmCategory = businessType ? OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY[businessType] : undefined;
+  const placesQuery = useQuery({
+    queryKey: ['viability-business-places', osmCategory, province, canton],
+    queryFn: () => api.osm.byCategory({ category: osmCategory as string, province: province || undefined, canton: canton || undefined }),
+    enabled: !!osmCategory,
   });
 
   const rowByKey = useMemo(() => {
@@ -55,7 +66,10 @@ export function ViabilityMap({
     const row = rowByKey.get(key);
     const isSelected = key === selectedKey;
     const props = feature?.properties as CantonProperties | undefined;
-    const isDimmed = !!province && !!props && normalizeText(props.Provincia) !== normalizeText(province);
+    const isDimmed = !!props && (
+      (!!province && normalizeText(props.Provincia) !== normalizeText(province))
+      || (!!canton && normalizeText(props.Canton) !== normalizeText(canton))
+    );
     return {
       fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
       fillOpacity: isDimmed ? 0.12 : isSelected ? 0.9 : 0.7,
@@ -76,7 +90,7 @@ export function ViabilityMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <GeoJSON
-        key={`${rows.length ? rows[0].year : 'empty'}-${province}`}
+        key={`${rows.length ? rows[0].year : 'empty'}-${province}-${canton}`}
         data={geoQuery.data}
         style={style}
         onEachFeature={(feature, layer: Layer) => {
@@ -94,6 +108,16 @@ export function ViabilityMap({
           });
         }}
       />
+      {placesQuery.data?.map((place) => (
+        <CircleMarker
+          key={place.id}
+          center={[place.latitude, place.longitude]}
+          radius={6}
+          pathOptions={{ color: '#0b0b0b', weight: 1.5, fillColor: '#fab219', fillOpacity: 0.9 }}
+        >
+          <Tooltip>{place.name}{place.address ? ` — ${place.address}` : ''}</Tooltip>
+        </CircleMarker>
+      ))}
     </MapContainer>
   );
 }

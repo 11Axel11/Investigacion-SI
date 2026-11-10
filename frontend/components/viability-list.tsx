@@ -13,6 +13,8 @@ export function ViabilityList({
   onYearChange,
   province,
   onProvinceChange,
+  canton,
+  onCantonChange,
   businessTypes,
   businessType,
   onBusinessTypeChange,
@@ -24,12 +26,15 @@ export function ViabilityList({
   onYearChange: (year: string) => void;
   province: string;
   onProvinceChange: (province: string) => void;
+  canton: string;
+  onCantonChange: (canton: string) => void;
   businessTypes: string[];
   businessType: string;
   onBusinessTypeChange: (businessType: string) => void;
 }) {
   const provinces = [...new Set(rows.map((row) => row.province))].sort();
-  const visibleRows = rows.filter((row) => !province || row.province === province);
+  const cantons = [...new Set(rows.filter((row) => !province || row.province === province).map((row) => row.canton))].sort();
+  const visibleRows = rows.filter((row) => (!province || row.province === province) && (!canton || row.canton === canton));
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden rounded-xl border bg-card shadow-lg">
@@ -58,10 +63,23 @@ export function ViabilityList({
             id="index-province"
             className="h-9 w-full rounded-md border bg-background px-2 text-sm"
             value={province}
-            onChange={(event) => onProvinceChange(event.target.value)}
+            onChange={(event) => { onProvinceChange(event.target.value); onCantonChange(''); }}
           >
             <option value="">Todas las provincias</option>
             {provinces.map((p) => <option key={p}>{p}</option>)}
+          </select>
+        </div>
+        <div className="grid gap-1.5">
+          <Label htmlFor="index-canton" className="sr-only">Cantón</Label>
+          <select
+            id="index-canton"
+            className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+            value={canton}
+            disabled={!province}
+            onChange={(event) => onCantonChange(event.target.value)}
+          >
+            <option value="">{province ? 'Todos los cantones' : 'Selecciona una provincia'}</option>
+            {cantons.map((c) => <option key={c}>{c}</option>)}
           </select>
         </div>
         <div className="grid gap-1.5">

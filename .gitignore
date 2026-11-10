@@ -15,3 +15,4 @@ __MACOSX/
 .local-postgres/
 !backend/.env.example
 
+*.tsbuildinfo
