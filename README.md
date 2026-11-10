@@ -119,6 +119,10 @@ Abre la URL indicada por Next.js, normalmente `http://localhost:3000`. Si el pue
 - `synchronize: true` de TypeORM simplifica este laboratorio, pero debe sustituirse por migraciones antes de usar el sistema en producción.
 
 
+## Documentación de seguridad y planificación
+
+La base de conocimiento del proyecto (flujos críticos, arquitectura y permisos, amenazas, terceros y secretos, preguntas abiertas) está en [docs/kb/](docs/kb/README.md). Las instrucciones para agentes de IA están en [AGENTS.md](AGENTS.md).
+
 ## Módulo OIJ
 
 Ruta visible: `/oij`, también en Inicio y en el menú **Datos OIJ**.
