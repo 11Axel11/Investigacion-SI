@@ -1,0 +1,2098 @@
+{
+  "version": "2.6.2",
+  "summary": {
+    "title": "Observatorio Territorial CR",
+    "owner": "Equipo del proyecto",
+    "description": "Modelo de amenazas STRIDE de los flujos F-01, F-02 y F-03. Fuente de verdad textual: docs/kb/amenazas.md y docs/kb/arquitectura.md.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [
+      {
+        "name": "Frander"
+      },
+      {
+        "name": "Axel"
+      },
+      {
+        "name": "Daniel"
+      },
+      {
+        "name": "José"
+      }
+    ],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "Flujos F-01, F-02 y F-03",
+        "diagramType": "STRIDE",
+        "placeholder": "Arquitectura y límites de confianza del observatorio",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.4.0",
+        "cells": [
+          {
+            "position": {
+              "x": 300,
+              "y": 60
+            },
+            "size": {
+              "width": 280,
+              "height": 330
+            },
+            "attrs": {
+              "label": {
+                "text": "Navegador del usuario"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "27a50960-969c-474f-83e5-9d0d7e55c916",
+            "zIndex": -1,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 660,
+              "y": 60
+            },
+            "size": {
+              "width": 340,
+              "height": 640
+            },
+            "attrs": {
+              "label": {
+                "text": "Servidor propio"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "b2b8f047-1992-4d08-a0fc-97e1fa087e4e",
+            "zIndex": -1,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 1080,
+              "y": 60
+            },
+            "size": {
+              "width": 280,
+              "height": 640
+            },
+            "attrs": {
+              "label": {
+                "text": "Terceros"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "c70d98d9-27f6-4b19-8e82-28c6151bdf4b",
+            "zIndex": -1,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 60,
+              "y": 140
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Visitante anónimo"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "7dc4e1e1-88b1-48a8-ae04-c6025781f0cf"
+                },
+                {
+                  "group": "right",
+                  "id": "33d5318d-19af-43b1-9642-3d64ffb8a604"
+                },
+                {
+                  "group": "bottom",
+                  "id": "f6c2c680-c500-4780-bfb5-569594eb7aaa"
+                },
+                {
+                  "group": "left",
+                  "id": "ed1997cc-5571-483b-ac2b-bb330628211d"
+                }
+              ]
+            },
+            "id": "4b6902ee-3139-4d09-b54e-d69e822a4161",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Visitante anónimo",
+              "description": "Hoy accede sin sesión. Solo debe leer.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 60,
+              "y": 330
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Operador"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "01ff6e59-d026-4c00-b2fd-952112cdbb3e"
+                },
+                {
+                  "group": "right",
+                  "id": "6793db58-371a-43f6-961b-5f1c8f800ce9"
+                },
+                {
+                  "group": "bottom",
+                  "id": "4d0fc176-09f1-4402-afdd-f063256d9f0b"
+                },
+                {
+                  "group": "left",
+                  "id": "9c8d883d-3516-4416-85a1-c150b02e140d"
+                }
+              ]
+            },
+            "id": "efc25d1b-b017-40fa-99be-d0049bff6fee",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Operador",
+              "description": "Rol propuesto (Q-01 y Q-02): único autorizado a sincronizar e importar.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 60,
+              "y": 560
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Portal TSE (TP-03)"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "dd79bdab-107a-4e3a-bb18-18a0e892fb6d"
+                },
+                {
+                  "group": "right",
+                  "id": "2b7e733f-2fe7-4146-b689-f60189592f66"
+                },
+                {
+                  "group": "bottom",
+                  "id": "5d78d04f-7897-48b7-961a-d2862e691404"
+                },
+                {
+                  "group": "left",
+                  "id": "4de316da-6378-43b5-a630-feb324d5486b"
+                }
+              ]
+            },
+            "id": "bef27f2c-ca0f-4325-91c7-f7b332cc922b",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "Portal TSE (TP-03)",
+              "description": "Publica el ZIP del padrón; se descarga a mano.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 370,
+              "y": 160
+            },
+            "size": {
+              "width": 140,
+              "height": 130
+            },
+            "attrs": {
+              "text": {
+                "text": "C-01 Frontend Next.js"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.0,
+                "strokeDasharray": "4 4"
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "b4b96d4b-8256-43f9-82d2-455872e5fe68"
+                },
+                {
+                  "group": "right",
+                  "id": "fb329b2b-6373-4705-bb1c-19d4665d5989"
+                },
+                {
+                  "group": "bottom",
+                  "id": "09e71b3c-5979-44eb-8de4-d70177f5a528"
+                },
+                {
+                  "group": "left",
+                  "id": "27ac5e7d-f6bd-498f-8870-dc7a218c8db1"
+                }
+              ]
+            },
+            "id": "2a05740a-7fcf-44da-9018-b42725d93249",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Process",
+              "name": "C-01 Frontend Next.js",
+              "description": "Interfaz web con mapas y tableros.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "id": "098169c5-7f87-4881-9dc3-aa7d58fafe5c",
+                  "title": "T-10 Índice de viabilidad leído como medición absoluta o causal",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "Puntaje relativo min-max, electores no son habitantes y /cobertura no advierte las limitaciones. Responsable: Frander. Revisor: Daniel.",
+                  "mitigation": "M-10: mostrar metodología, denominador, fecha y fuente de cada componente y la advertencia de que no es causal (Q-04 resuelta). Comprobación: prueba E2E del aviso y revisión del README. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                }
+              ],
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": ""
+            }
+          },
+          {
+            "position": {
+              "x": 760,
+              "y": 180
+            },
+            "size": {
+              "width": 140,
+              "height": 130
+            },
+            "attrs": {
+              "text": {
+                "text": "C-02 API NestJS"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.0,
+                "strokeDasharray": "4 4"
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "91f6b6f2-d4ef-4076-af20-a40be15221bf"
+                },
+                {
+                  "group": "right",
+                  "id": "42fda876-73be-4599-bdde-d64d6398f47d"
+                },
+                {
+                  "group": "bottom",
+                  "id": "a07e4f77-fb92-4fff-8c79-209ff94f072f"
+                },
+                {
+                  "group": "left",
+                  "id": "d6827ace-5435-4ac3-b2c9-b206df920010"
+                }
+              ]
+            },
+            "id": "019aa03c-b0ff-4336-8153-7936f3531859",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Process",
+              "name": "C-02 API NestJS",
+              "description": "Endpoints osm, tse, oij y coverage.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "threats": [
+                {
+                  "id": "90a14d33-5ada-429b-aeb3-75576f326ab9",
+                  "title": "T-01 Endpoints de escritura sin autenticación",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "POST /tse/import, /oij/sync y /osm/sync son públicos. Cualquiera puede reemplazar agregados oficiales. Flujos F-01, F-02 y F-03. Responsable: Frander. Revisor: José.",
+                  "mitigation": "M-01: guard de administración en el backend con clave X-Admin-Key (Q-01 resuelta). Fail-closed si falta la clave. Comprobación: pruebas de autorización 401/403 sin cambios en la BD. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": ""
+                },
+                {
+                  "id": "ba279740-803c-4f16-b51c-1a3c072cc559",
+                  "title": "T-02 Sincronizaciones repetidas agotan Overpass, OIJ o la BD",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "Sin límite de peticiones, se recorren combinaciones distintas de provincia, cantón y categoría. Responsable: Frander. Revisor: Axel.",
+                  "mitigation": "M-02: autenticación (T-01) más límite de peticiones por IP en endpoints de escritura. Comprobación: Artillery, respuesta 429 y cero llamadas extra a terceros. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": ""
+                },
+                {
+                  "id": "6bea3fa8-3fcf-430a-adb9-42dc33d899cb",
+                  "title": "T-08 Sin registro de quién ejecuta sincronizaciones e importaciones",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "No hay actor, operación ni resultado registrados. Responsable: Daniel. Revisor: José.",
+                  "mitigation": "M-08: evento de seguridad por escritura y acceso denegado, sin datos sensibles; retención de 90 días (Q-03 resuelta). Comprobación: prueba con acceso denegado e importación válida. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                },
+                {
+                  "id": "bbea4ed2-8648-4477-bf9b-11d1e8c4b065",
+                  "title": "T-12 Dependencias vulnerables y lockfiles ambiguos",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "multer 1.x por confirmar con OSV-Scanner; dos lockfiles por proyecto. Responsable: Daniel. Revisor: Axel.",
+                  "mitigation": "M-12: npm como gestor único (Q-05 resuelta), OSV-Scanner en CI y Renovate. Comprobación: sin hallazgos críticos o altos sin tratamiento y un PR real de Renovate. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 13,
+                  "score": ""
+                }
+              ],
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": ""
+            }
+          },
+          {
+            "position": {
+              "x": 750,
+              "y": 520
+            },
+            "size": {
+              "width": 160,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "C-03 PostgreSQL"
+              },
+              "topLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "a40d996a-60f9-4bea-9b40-8145ec6840fd"
+                },
+                {
+                  "group": "right",
+                  "id": "c676155a-8efb-4cc7-a9d6-672fcfff903b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "38ada932-ec9e-45b1-8d10-bd655fd2847f"
+                },
+                {
+                  "group": "left",
+                  "id": "c704161d-99cb-4d45-bda2-8994ec955364"
+                }
+              ]
+            },
+            "id": "3f9f6a9e-048c-4a82-9c9c-222d327a35c6",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Store",
+              "name": "C-03 PostgreSQL",
+              "description": "Agregados TSE y OIJ, lugares OSM y caché.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false
+            }
+          },
+          {
+            "position": {
+              "x": 1140,
+              "y": 130
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "TP-01 Overpass API"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "eee6322a-985f-45e0-8313-4cfc6f1ba729"
+                },
+                {
+                  "group": "right",
+                  "id": "f8bfb783-43fd-4510-849c-9b57ff770782"
+                },
+                {
+                  "group": "bottom",
+                  "id": "963af36f-3ded-4098-8d8c-10b2f036e034"
+                },
+                {
+                  "group": "left",
+                  "id": "e2c24059-40c4-4e56-9910-f45219008617"
+                }
+              ]
+            },
+            "id": "31c417ee-b897-41ab-ab7e-67dff35e3c92",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "TP-01 Overpass API",
+              "description": "Lugares de OpenStreetMap.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 1140,
+              "y": 330
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "TP-02 Catálogo y CSV del OIJ"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "77f0768c-20fc-40a9-892e-98c0cc3352eb"
+                },
+                {
+                  "group": "right",
+                  "id": "d5320555-2755-4b2d-9295-d9286ec9c570"
+                },
+                {
+                  "group": "bottom",
+                  "id": "2d54642e-a7ce-494b-bae7-a747eec7c29b"
+                },
+                {
+                  "group": "left",
+                  "id": "9ba46c71-9c5d-4424-a4fe-378cd6ef445b"
+                }
+              ]
+            },
+            "id": "79ee647d-73cc-4268-82a8-63628e36a7a0",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "TP-02 Catálogo y CSV del OIJ",
+              "description": "CKAN y blob de Azure del Poder Judicial.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 1140,
+              "y": 540
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "TP-04 Teselas OSM"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "b0b80342-6201-4b0f-9bae-e22b780cdc55"
+                },
+                {
+                  "group": "right",
+                  "id": "cfc1706b-5c74-4dc3-8f3d-3fddc7e15771"
+                },
+                {
+                  "group": "bottom",
+                  "id": "c69f3390-097d-4db9-912a-df638c680f38"
+                },
+                {
+                  "group": "left",
+                  "id": "9af2d314-8209-47fb-9e8a-90b5f2b84922"
+                }
+              ]
+            },
+            "id": "9ddc5ba3-848d-4ce0-9dce-bc8bc41957c2",
+            "zIndex": 3,
+            "data": {
+              "type": "tm.Actor",
+              "name": "TP-04 Teselas OSM",
+              "description": "Teselas del mapa que carga el navegador.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "threats": [],
+              "providesAuthentication": false
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "1 HTTP",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Visitante a frontend",
+              "description": "Navegación del visitante.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "HTTP",
+              "threats": []
+            },
+            "id": "70195f33-0af6-4d28-991a-fefd709306bd",
+            "source": {
+              "cell": "4b6902ee-3139-4d09-b54e-d69e822a4161",
+              "port": "33d5318d-19af-43b1-9642-3d64ffb8a604"
+            },
+            "target": {
+              "cell": "2a05740a-7fcf-44da-9018-b42725d93249",
+              "port": "27ac5e7d-f6bd-498f-8870-dc7a218c8db1"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "1b HTTP",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Operador a frontend",
+              "description": "Navegación del operador.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "HTTP",
+              "threats": []
+            },
+            "id": "0414a86b-e4ef-4e19-8af2-ac22d24e0c66",
+            "source": {
+              "cell": "efc25d1b-b017-40fa-99be-d0049bff6fee",
+              "port": "01ff6e59-d026-4c00-b2fd-952112cdbb3e"
+            },
+            "target": {
+              "cell": "2a05740a-7fcf-44da-9018-b42725d93249",
+              "port": "27ac5e7d-f6bd-498f-8870-dc7a218c8db1"
+            },
+            "vertices": [
+              {
+                "x": 260,
+                "y": 300
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": "4 4",
+                "strokeWidth": 2.0
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "2 HTTP",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Frontend a API",
+              "description": "JSON por HTTP. CORS abierto hoy.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": true,
+              "protocol": "HTTP",
+              "threats": [
+                {
+                  "id": "88f48749-2a8f-4c7d-9fb3-b4063e3026a1",
+                  "title": "T-09 CORS abierto, errores verbosos y sin cabeceras de seguridad",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Information disclosure",
+                  "description": "enableCors() sin restricción, detalle interno en mensajes y synchronize: true. Responsable: Daniel. Revisor: Frander.",
+                  "mitigation": "M-09: CORS con lista blanca, mensajes genéricos al cliente, helmet y migraciones en lugar de synchronize. Comprobación: pruebas de cabeceras y CORS, y DAST. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                },
+                {
+                  "id": "97787ef5-b46d-4005-94f1-9712484bf8ec",
+                  "title": "T-11 Validación de entradas desigual en consultas",
+                  "status": "Open",
+                  "severity": "Low",
+                  "type": "Tampering",
+                  "description": "Sin ValidationPipe global; ILIKE acepta comodines escritos por el usuario. Responsable: José. Revisor: Axel.",
+                  "mitigation": "M-11: DTOs con class-validator, longitud máxima y escape de comodines. Comprobación: prueba de integración con parámetros largos y comodines. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 12,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "8eb34729-f449-4177-b22d-b648b9f6868a",
+            "source": {
+              "cell": "2a05740a-7fcf-44da-9018-b42725d93249",
+              "port": "fb329b2b-6373-4705-bb1c-19d4665d5989"
+            },
+            "target": {
+              "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
+              "port": "d6827ace-5435-4ac3-b2c9-b206df920010"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "3 HTTPS",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Frontend a teselas OSM",
+              "description": "El navegador pide teselas; el tercero ve IP y zona.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": []
+            },
+            "id": "1bf1c7af-b382-456f-8be5-df7164f1cd54",
+            "source": {
+              "cell": "2a05740a-7fcf-44da-9018-b42725d93249",
+              "port": "b4b96d4b-8256-43f9-82d2-455872e5fe68"
+            },
+            "target": {
+              "cell": "9ddc5ba3-848d-4ce0-9dce-bc8bc41957c2",
+              "port": "9af2d314-8209-47fb-9e8a-90b5f2b84922"
+            },
+            "vertices": [
+              {
+                "x": 620,
+                "y": 100
+              },
+              {
+                "x": 1000,
+                "y": 100
+              },
+              {
+                "x": 1000,
+                "y": 580
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": "4 4",
+                "strokeWidth": 2.0
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "4 ZIP",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Operador a API (ZIP del padrón)",
+              "description": "Subida multipart del ZIP con datos personales a POST /tse/import.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": true,
+              "protocol": "HTTP",
+              "threats": [
+                {
+                  "id": "67d6b43b-b04b-4ff8-b09a-0140c601e3a4",
+                  "title": "T-03 ZIP diseñado para agotar memoria o CPU",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "multer guarda hasta 80 MB en memoria; las líneas vacías no cuentan para el límite de 5 millones. Responsable: Axel. Revisor: Daniel.",
+                  "mitigation": "M-03: límite de bytes descomprimidos, contar todas las líneas, tiempo máximo y solo nombres de archivo esperados. Comprobación: ZIP ficticio con millones de líneas vacías rechazado. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": ""
+                },
+                {
+                  "id": "4749d32f-1f45-4f3b-aef7-28ec09dcd8c7",
+                  "title": "T-04 Exposición de datos personales del padrón",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Cédula, nombre y vencimiento no deben persistir ni salir en respuestas, logs o errores. Responsable: Axel. Revisor: José.",
+                  "mitigation": "M-04: el importador descarta campos personales (implementada). Comprobación: ZIP ficticio y consultas SQL sin cédulas ni nombres. Estado: implementada, sin verificar.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                },
+                {
+                  "id": "14a62fee-9615-4724-86c9-2d00b06e8364",
+                  "title": "T-05 ZIP importado sin autenticidad verificable",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "Un archivo manipulado o de otra fecha sobrescribe conteos oficiales; sourceDate es manual. Responsable: Axel. Revisor: Daniel.",
+                  "mitigation": "M-05: guardar SHA-256 del ZIP y la fecha de corte por distrito. Comprobación: prueba que registra el hash y revisión del procedimiento. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "fb8e2706-ec4a-4073-86fc-45c37eb93e8b",
+            "source": {
+              "cell": "efc25d1b-b017-40fa-99be-d0049bff6fee",
+              "port": "6793db58-371a-43f6-961b-5f1c8f800ce9"
+            },
+            "target": {
+              "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
+              "port": "d6827ace-5435-4ac3-b2c9-b206df920010"
+            },
+            "vertices": [
+              {
+                "x": 140,
+                "y": 450
+              },
+              {
+                "x": 620,
+                "y": 450
+              },
+              {
+                "x": 830,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": "4 4",
+                "strokeWidth": 2.0
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "5 SQL",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "API a PostgreSQL",
+              "description": "SQL con DATABASE_URL.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "PostgreSQL",
+              "threats": [
+                {
+                  "id": "847f52b1-1e46-458d-b1b4-b96737d2c235",
+                  "title": "T-06 Sincronización OSM borra datos antes de insertar",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "places.delete seguido de upsert sin transacción; una respuesta vacía o un fallo pierde los datos. Responsable: Frander. Revisor: Axel.",
+                  "mitigation": "M-06: reemplazo en transacción y no borrar si el resultado está vacío. Comprobación: prueba de integración con Overpass simulado vacío y con fallo de inserción. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                },
+                {
+                  "id": "9529ff1e-a47d-408a-92ba-361e115a0fc2",
+                  "title": "T-13 Credenciales reales en Git, imágenes, logs o prompts",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Information disclosure",
+                  "description": "DATABASE_URL, clave de administración y tokens futuros. Responsable: Daniel. Revisor: Frander.",
+                  "mitigation": "M-13: Gitleaks en desarrollo y CI, .env fuera de Git y gestor de secretos al desplegar; rotar toda credencial expuesta. Comprobación: Gitleaks detecta un secreto ficticio y bloquea el PR. Estado: propuesta.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 14,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "c7d98dbc-9651-4638-9d6d-4f3cb2bc1650",
+            "source": {
+              "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
+              "port": "42fda876-73be-4599-bdde-d64d6398f47d"
+            },
+            "target": {
+              "cell": "3f9f6a9e-048c-4a82-9c9c-222d327a35c6",
+              "port": "a40d996a-60f9-4bea-9b40-8145ec6840fd"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": "4 4",
+                "strokeWidth": 2.0
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "6 HTTPS",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "API a Overpass",
+              "description": "Consulta Overpass QL por POST.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "id": "ea6e8ac3-8f7f-4ac0-8e7b-fd912f0fe841",
+                  "title": "T-07 Fuente externa cambia de esquema, host o contenido",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Spoofing",
+                  "description": "Catálogo, CSV o respuesta de Overpass inesperados. Responsable: José. Revisor: Daniel.",
+                  "mitigation": "M-07: host fijo, https, sin redirecciones, 40 MB y 60 s, validación de estructura (implementada en OIJ). Comprobación: npm run test:oij en CI y prueba equivalente para OSM. Estado: implementada; verificada solo en parte.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "52af2f76-0ad5-4c12-9116-0c0bc4b97daa",
+            "source": {
+              "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
+              "port": "42fda876-73be-4599-bdde-d64d6398f47d"
+            },
+            "target": {
+              "cell": "31c417ee-b897-41ab-ab7e-67dff35e3c92",
+              "port": "e2c24059-40c4-4e56-9910-f45219008617"
+            },
+            "vertices": [
+              {
+                "x": 960,
+                "y": 160
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": "4 4",
+                "strokeWidth": 2.0
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "7 HTTPS",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "API a OIJ",
+              "description": "Catálogo y CSV por GET.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "id": "92158c44-512c-4a62-a58f-f3151060bd92",
+                  "title": "T-07 Fuente externa cambia de esquema, host o contenido",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Spoofing",
+                  "description": "Catálogo, CSV o respuesta de Overpass inesperados. Responsable: José. Revisor: Daniel.",
+                  "mitigation": "M-07: host fijo, https, sin redirecciones, 40 MB y 60 s, validación de estructura (implementada en OIJ). Comprobación: npm run test:oij en CI y prueba equivalente para OSM. Estado: implementada; verificada solo en parte.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "01b6acce-630e-4270-8e92-0f0143e11181",
+            "source": {
+              "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
+              "port": "42fda876-73be-4599-bdde-d64d6398f47d"
+            },
+            "target": {
+              "cell": "79ee647d-73cc-4268-82a8-63628e36a7a0",
+              "port": "9ba46c71-9c5d-4424-a4fe-378cd6ef445b"
+            },
+            "vertices": [
+              {
+                "x": 960,
+                "y": 370
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "0 manual",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": {
+                  "distance": 0.5,
+                  "args": {
+                    "keepGradient": true,
+                    "ensureLegibility": true
+                  }
+                }
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Descarga manual del padrón",
+              "description": "Una persona descarga el ZIP y lo sube al backend.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": []
+            },
+            "id": "abb7c4fe-d85d-4ebe-b2a1-4c88ef618dfb",
+            "source": {
+              "cell": "bef27f2c-ca0f-4325-91c7-f7b332cc922b",
+              "port": "dd79bdab-107a-4e3a-bb18-18a0e892fb6d"
+            },
+            "target": {
+              "cell": "efc25d1b-b017-40fa-99be-d0049bff6fee",
+              "port": "9c8d883d-3516-4416-85a1-c150b02e140d"
+            }
+          }
+        ]
+      }
+    ],
+    "diagramTop": 1,
+    "reviewer": "Frander (revisor del ítem 1.3)",
+    "threatTop": 15
+  }
+}
