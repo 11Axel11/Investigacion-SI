@@ -16,22 +16,22 @@ Cómo se distinguen los tipos de información en esta base de conocimiento:
 2. Se registra la decisión en la columna de estado: `aceptada`, `rechazada` o `falso positivo`, con fecha y nombre.
 3. Si se acepta, se incorpora como criterio en [flujos.md](flujos.md), como amenaza en [amenazas.md](amenazas.md) o como pregunta en [preguntas-abiertas.md](preguntas-abiertas.md), en el mismo PR.
 
-Todas las sugerencias parten como **pendiente**. Validador: por asignar.
+Todas las sugerencias parten como **pendiente**. Validadores asignados el 2026-11-10 ([responsables.md](responsables.md#validadores-de-las-sugerencias-de-ia)): IA-01 a IA-04, Daniel; IA-05 a IA-08, José; IA-09 a IA-12, Axel. Cuando el asistente comprobó el hecho leyendo el código, la tabla lo indica; eso no sustituye la validación humana.
 
 | ID | Flujo | Sugerencia | Estado |
 |---|---|---|---|
-| [IA-01](#ia-01) | F-01 | Cualquier `.txt` del ZIP se trata como padrón | pendiente |
-| [IA-02](#ia-02) | F-01 | Un ZIP por cantón deja fechas de corte mezcladas | pendiente |
-| [IA-03](#ia-03) | F-01 | Territorios desconocidos en los agregados | pendiente |
+| [IA-01](#ia-01) | F-01 | Cualquier `.txt` del ZIP se trata como padrón | pendiente (hecho confirmado en el código) |
+| [IA-02](#ia-02) | F-01 | Un ZIP por cantón deja fechas de corte mezcladas | pendiente (hecho confirmado en el código) |
+| [IA-03](#ia-03) | F-01 | Territorios desconocidos en los agregados | pendiente (hecho confirmado en el código) |
 | [IA-04](#ia-04) | F-02 | Más de un recurso del catálogo coincide con el año | pendiente |
 | [IA-05](#ia-05) | F-02 | Filtros que no coinciden devuelven cero en lugar de error | pendiente |
-| [IA-06](#ia-06) | F-03 | Sincronizaciones simultáneas de la misma combinación | pendiente |
+| [IA-06](#ia-06) | F-03 | Sincronizaciones simultáneas de la misma combinación | pendiente (hecho confirmado en el código) |
 | [IA-07](#ia-07) | F-03 | Cantones sin límite administrativo en OSM | pendiente |
 | [IA-08](#ia-08) | F-03 | Colisión de nombres entre provincia y cantón | pendiente |
 | [IA-09](#ia-09) | Cobertura | Cantones con cero electores o todos con el mismo valor | pendiente |
 | [IA-10](#ia-10) | Cobertura | Datos de fuentes con fechas distintas en un mismo índice | pendiente |
 | [IA-11](#ia-11) | Cobertura | Alias de cantones incompletos | pendiente |
-| [IA-12](#ia-12) | Frontend | Visitantes pueden iniciar importaciones desde la interfaz | pendiente |
+| [IA-12](#ia-12) | Frontend | Visitantes pueden iniciar importaciones desde la interfaz | pendiente; cubierta por la decisión de Q-02 |
 
 ---
 
@@ -99,5 +99,5 @@ Todas las sugerencias parten como **pendiente**. Validador: por asignar.
 ## IA-12
 
 - **Observación:** el frontend público incluye las acciones de sincronizar e importar (`frontend/lib/api.ts`). Aunque se protejan en el backend, un visitante vería botones que no puede usar.
-- **Comprobación sugerida:** definir, según [Q-02](preguntas-abiertas.md#q-02), si se ocultan, se condicionan o se mueven a una vista de operador.
+- **Comprobación sugerida:** verificar la vista de operador decidida en [Q-02](preguntas-abiertas.md#q-02): las acciones solo se habilitan con la clave, que no se persiste.
 - **Relacionada con:** [T-01](amenazas.md#t-01).

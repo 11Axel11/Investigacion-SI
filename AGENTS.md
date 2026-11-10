@@ -18,16 +18,16 @@ Cambios en `coverage` o en las vistas de `/cobertura` y `/oij`: lee además [T-1
 
 ## Qué es regla y qué no
 
-- Un criterio **[A]** es una regla aprobada: debes respetarla.
+- Un criterio **[A]** es una regla aprobada: debes respetarla, aunque el código aún no la cumpla (la "Brecha actual" indica qué falta).
 - Un criterio **[O]** describe lo que hace el código hoy. No lo trates como requisito ni lo uses para justificar un cambio de comportamiento.
 - Un criterio **[P]** y las entradas de [docs/kb/ia-sugerencias.md](docs/kb/ia-sugerencias.md) están pendientes de validación humana. No los implementes como si fueran reglas.
 
 ## Dudas que requieren una decisión humana
 
-Si no puedes determinar con la documentación el permiso o comportamiento correcto:
+Las nueve preguntas iniciales están resueltas ([docs/kb/preguntas-abiertas.md](docs/kb/preguntas-abiertas.md)); aplica esas decisiones. Si surge una duda nueva y no puedes determinar con la documentación el permiso o comportamiento correcto:
 
 - **No asumas la respuesta.** Ni siquiera la recomendada en la pregunta.
-- Registra la duda como una nueva `Q-nn` en [docs/kb/preguntas-abiertas.md](docs/kb/preguntas-abiertas.md) o cítala si ya existe.
+- Registra la duda como una nueva `Q-nn` en [docs/kb/preguntas-abiertas.md](docs/kb/preguntas-abiertas.md), con un responsable de resolverla ([docs/kb/responsables.md](docs/kb/responsables.md)).
 - Detén el cambio afectado y repórtalo en tu resultado, indicando qué necesitas que se decida.
 
 ## Mantenimiento de la base de conocimiento
@@ -37,6 +37,7 @@ Todo cambio de **comportamiento, datos, arquitectura o permisos** actualiza el c
 ## Reglas de seguridad
 
 - **Datos personales del padrón del TSE.** Nunca los persistas, registres, devuelvas ni envíes a un servicio externo. El importador solo conserva conteos por distrito. Para pruebas usa ZIP **ficticios** con datos inventados.
+- **Escritura.** Los endpoints `POST /osm/sync`, `POST /oij/sync` y `POST /tse/import` exigen la cabecera `X-Admin-Key` ([Q-01](docs/kb/preguntas-abiertas.md#q-01)). No agregues endpoints de escritura sin protección ni expongas la clave en el frontend (nunca `NEXT_PUBLIC_*`).
 - **Secretos.** No leas, imprimas ni incluyas en prompts, logs o commits el contenido de `.env`, `.env.local` ni credenciales. No escribas valores secretos en ningún archivo. Las variables se documentan con nombre y propósito en [docs/kb/terceros-secretos.md](docs/kb/terceros-secretos.md).
 - **Fuentes externas.** No evadas autenticación, CAPTCHA, límites de uso ni controles de protección. No amplíes el consumo de una fuente (frecuencia, tamaño, hosts) sin registrarlo.
 - **Controles.** No desactives, debilites ni omitas pruebas, análisis, reglas o protecciones para conseguir que algo pase. No cambies la expectativa de una prueba solo para que coincida con el código.
@@ -52,7 +53,7 @@ Todo cambio de **comportamiento, datos, arquitectura o permisos** actualiza el c
 
 ## Comandos de comprobación
 
-Se usa `npm` según el README (ver [Q-05](docs/kb/preguntas-abiertas.md#q-05)). Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
+Se usa `npm` ([Q-05](docs/kb/preguntas-abiertas.md#q-05)); no regeneres ni edites `pnpm-lock.yaml`. Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
 
 | Qué | Dónde | Comando |
 |---|---|---|

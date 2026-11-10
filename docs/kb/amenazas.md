@@ -6,7 +6,7 @@ Las medidas y sus comprobaciones se mantienen aquí, junto a cada amenaza. No ha
 
 **Estado de la medida:** `propuesta` (definida, con comprobación prevista), `implementada` (existe en el código, sin prueba que la demuestre) o `verificada` (existe y hay una prueba o evidencia reproducible).
 
-**Responsable y revisor:** quedan como "por asignar" hasta que el equipo los designe. Ninguna amenaza puede quedar sin responsable antes de cerrar la fase 1.
+**Responsable y revisor:** asignados el 2026-11-10 (resumen en [responsables.md](responsables.md)). El revisor es siempre otro integrante y deja constancia de su revisión en el PR. Todas las amenazas tienen tratamiento decidido: mitigar. Ninguna se aplaza.
 
 Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a código son orientativas; si el archivo cambió, vale lo que diga el código vigente.
 
@@ -36,10 +36,11 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** agregados D-02, D-03 y D-04.
 - **Impacto:** un atacante reemplaza o falsea los datos que el sistema presenta como oficiales. El índice de viabilidad y los conteos pasan a ser incorrectos sin que nadie lo note.
 - **Prioridad:** Alta. Es la brecha de mayor alcance y la más simple de explotar; afecta los tres flujos críticos.
-- **Medida (propuesta):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. **Bloqueada por [Q-01](preguntas-abiertas.md#q-01).**
+- **Medida (propuesta):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
 - **Componente:** `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts`, `backend/src/oij/oij.controller.ts`.
 - **Comprobación prevista:** prueba de autorización por API. Sin credencial y con credencial incorrecta, los tres endpoints responden 401 o 403 y las filas de la BD no cambian. Con credencial válida responden como hoy. La prueba usa peticiones directas, no la interfaz.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Frander / José.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-02
@@ -51,7 +52,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** autenticación (T-01) más límite de peticiones por IP (por ejemplo `@nestjs/throttler`) en los endpoints de escritura, con un tope de sincronizaciones por hora.
 - **Componente:** módulos `osm` y `oij`; configuración global de `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba de carga con Artillery en el ambiente de pruebas. Al superar el límite el servidor responde 429 y no se generan llamadas adicionales a los terceros (se verifican con un servidor simulado).
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Frander / Axel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-03
@@ -63,7 +65,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** limitar los bytes descomprimidos y el tiempo total de procesamiento, contar todas las líneas leídas (no solo las válidas) y aceptar solo los nombres de archivo esperados del TSE. Considerar almacenamiento temporal en disco en lugar de memoria.
 - **Componente:** `backend/src/tse/tse.service.ts`, `backend/src/tse/tse.controller.ts`.
 - **Comprobación prevista:** prueba con un ZIP ficticio con millones de líneas vacías y otro con `.txt` adicionales. Ambos se rechazan en un tiempo acotado y la BD no cambia.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Axel / Daniel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta. Relacionada con [IA-01](ia-sugerencias.md#ia-01).
 
 ## T-04
@@ -75,7 +78,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (implementada):** el importador descarta los campos personales y devuelve `discardedPersonalFields: true`. Falta demostrarlo con una prueba.
 - **Componente:** `backend/src/tse/tse.service.ts` (`importZip`, `readLines`).
 - **Comprobación prevista:** importar un ZIP **ficticio** con cédulas y nombres inventados. Verificar con consultas SQL que ninguna cédula ni nombre está en la BD y que la respuesta, los logs y los mensajes de error no los contienen.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Axel / José.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** implementada, sin verificar.
 
 ## T-05
@@ -87,7 +91,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** calcular y guardar el SHA-256 del ZIP importado junto a la procedencia, y mostrar la fecha de corte por cada distrito. Procedimiento: el operador compara el hash con el de su descarga oficial.
 - **Componente:** `backend/src/tse/tse.service.ts`, `backend/src/tse/tse-electoral-summary.entity.ts`.
 - **Comprobación prevista:** prueba que importa un ZIP ficticio y confirma que el hash queda registrado; revisión manual del procedimiento por otro integrante.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Axel / Daniel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-06
@@ -99,7 +104,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** hacer el reemplazo en una transacción y no borrar si el resultado normalizado está vacío.
 - **Componente:** `backend/src/osm/osm.service.ts`.
 - **Comprobación prevista:** prueba de integración con Overpass simulado que devuelve cero elementos y otra que fuerza un error de inserción. En ambas los datos previos permanecen.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Frander / Axel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-07
@@ -111,7 +117,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (implementada):** en el OIJ se restringe el recurso a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
 - **Componente:** `backend/src/oij/oij.service.ts`, `backend/src/oij/oij.parser.ts`, `backend/src/osm/osm.service.ts`.
 - **Comprobación prevista:** ejecutar `npm run test:oij` en CI. Falta una prueba equivalente para OSM (respuesta con forma inesperada) y una para el host del OIJ.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** José / Daniel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** implementada; verificada solo en parte (el parser del OIJ).
 
 ## T-08
@@ -120,10 +127,11 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** API.
 - **Impacto:** no se puede investigar un cambio sospechoso ni atribuirlo.
 - **Prioridad:** Media. Se vuelve importante en cuanto existan credenciales (T-01).
-- **Medida (propuesta):** registrar un evento de seguridad por cada operación de escritura y por cada acceso denegado, con actor, operación, resultado y fecha, sin contenido sensible. Retención y acceso según [Q-03](preguntas-abiertas.md#q-03).
+- **Medida (propuesta):** registrar un evento de seguridad por cada operación de escritura y por cada acceso denegado, con actor, operación, resultado y fecha, sin contenido sensible. Retención de 90 días y acceso solo del operador y del responsable de operación ([Q-03](preguntas-abiertas.md#q-03)); el evento incluye la huella de la clave, no la clave.
 - **Componente:** API (interceptor o middleware global).
 - **Comprobación prevista:** prueba que ejecuta un acceso denegado y una importación válida y comprueba que cada una deja un evento con los campos esperados y sin datos personales.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Daniel / José.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-09
@@ -135,7 +143,8 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`.
 - **Componente:** `backend/src/main.ts`, `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba que verifica cabeceras y CORS con un origen no permitido, y que una falla simulada de Overpass no devuelve texto interno. El análisis DAST con ZAP (ítem 4.7) cubre el resto.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Daniel / Frander.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-10
@@ -144,10 +153,11 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** `backend/src/coverage/coverage.service.ts` y `frontend/app/cobertura/page.tsx`.
 - **Impacto:** conclusiones engañosas sobre zonas o personas, contra el uso responsable de OSINT del proyecto.
 - **Prioridad:** Media. No hay pérdida de datos, pero afecta la credibilidad y el criterio responsable que se evalúa.
-- **Medida (propuesta):** mostrar en `/cobertura` la metodología, el denominador usado y la advertencia de que es un puntaje relativo y no causal. Reconciliar el README, que dice que no se calculan tasas poblacionales. Contenido pendiente de [Q-04](preguntas-abiertas.md#q-04).
+- **Medida (propuesta):** mostrar en `/cobertura` la metodología, el denominador usado y la advertencia de que es un puntaje relativo y no causal. Reconciliar el README, que dice que no se calculan tasas poblacionales. Contenido definido en [Q-04](preguntas-abiertas.md#q-04): fórmula, denominador (electores), carácter relativo, no causalidad y fuente y fecha de cada componente. El README ya se corrigió.
 - **Componente:** `frontend/app/cobertura/page.tsx`, `frontend/components/viability-panel.tsx`, `README.md`.
 - **Comprobación prevista:** prueba E2E que verifica que el aviso es visible en `/cobertura`, y revisión del README por otro integrante.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Frander / Daniel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-11
@@ -159,19 +169,21 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** DTOs con `class-validator`, longitud máxima y escape de comodines.
 - **Componente:** controladores de `tse`, `oij` y `coverage`.
 - **Comprobación prevista:** prueba de integración con parámetros largos y con comodines; deben rechazarse o tratarse como texto literal.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** José / Axel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-12
 
-- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tienen a la vez `package-lock.json` y `pnpm-lock.yaml` ([Q-05](preguntas-abiertas.md#q-05)).
+- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tienen a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)).
 - **Recurso afectado:** cadena de suministro del backend y del frontend.
 - **Impacto:** ejecución de código no confiable o vulnerabilidades heredadas.
 - **Prioridad:** Media. Por confirmar con un análisis: no se ha ejecutado ningún escáner todavía.
-- **Medida (propuesta):** definir un único gestor de paquetes y lockfile, ejecutar OSV-Scanner en CI y configurar Renovate para actualizaciones.
+- **Medida (propuesta):** usar `npm` y un único lockfile por proyecto (eliminar `pnpm-lock.yaml`), ejecutar OSV-Scanner en CI y configurar Renovate para actualizaciones.
 - **Componente:** `backend/package.json`, `frontend/package.json` y sus lockfiles.
 - **Comprobación prevista:** OSV-Scanner sin hallazgos críticos o altos sin tratamiento, y un PR real de Renovate sujeto a los mismos controles.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Daniel / Axel.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ## T-13
@@ -183,11 +195,16 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** Gitleaks en el entorno de desarrollo y en CI, `.env` fuera de Git (ya está en `.gitignore`), y un gestor de secretos en el despliegue. Una credencial real expuesta se rota; no basta con borrarla del código.
 - **Componente:** repositorio, pipeline y despliegue.
 - **Comprobación prevista:** Gitleaks detecta un secreto ficticio controlado en un PR y bloquea la integración.
-- **Responsable / revisor:** por asignar.
+- **Responsable / revisor:** Daniel / Frander.
+- **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
 ---
 
 ## Aceptación o aplazamiento de riesgo
 
-Ninguna amenaza está aplazada. Si el equipo decide posponer una, debe registrarse aquí la justificación, quién acepta el riesgo y la fecha de revisión.
+Ninguna amenaza está aplazada ni aceptada. Si el equipo decide posponer una, debe registrarse aquí la justificación, quién acepta el riesgo y la fecha de revisión.
+
+## Modelo en Threat Dragon
+
+El diagrama y las amenazas están en [observatorio.json](../threat-model/observatorio.json). `T-07` aparece en los flujos 6 y 7, por lo que el archivo contiene 14 entradas para 13 amenazas.

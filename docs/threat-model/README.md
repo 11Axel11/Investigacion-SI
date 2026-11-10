@@ -1,16 +1,17 @@
 # Modelo de amenazas en OWASP Threat Dragon (ítem 1.3)
 
-El diagrama de Threat Dragon es el mapa de arquitectura del proyecto y el modelo de amenazas. Se reutiliza como el mapa del ítem 1.2 para no duplicar trabajo. El contenido textual equivalente está en [arquitectura.md](../kb/arquitectura.md) y [amenazas.md](../kb/amenazas.md).
+El modelo de Threat Dragon es el mapa de arquitectura y el modelo de amenazas del proyecto. Se reutiliza como el mapa del ítem 1.2 para no duplicar trabajo. El contenido textual equivalente está en [arquitectura.md](../kb/arquitectura.md) y [amenazas.md](../kb/amenazas.md), que son la fuente de verdad del texto.
 
-**Estado: pendiente.** El archivo del modelo (`observatorio.json`) aún no existe. Debe crearlo una persona con la aplicación de Threat Dragon y exportarlo a esta carpeta. No se generó a mano para evitar un archivo que la herramienta no pueda abrir.
+**Estado:** creado. [observatorio.json](observatorio.json) tiene 21 elementos (3 límites de confianza, 9 actores y procesos, 9 flujos) y 14 entradas de amenaza que cubren las 13 amenazas `T-01` a `T-13`. `T-07` aparece en dos flujos (OIJ y Overpass).
 
-## Cómo crearlo
+**Verificación (2026-11-10):** el archivo se importó en Threat Dragon web v2.6.2, en sesión local, sin errores. Se comprobó que se dibujan los 21 elementos y que los 13 IDs están presentes. Falta una revisión visual del diseño por parte de la persona revisora: las posiciones y los trazos de los flujos se fijaron por coordenadas y conviene ajustarlos a mano.
 
-1. Abrir [OWASP Threat Dragon](https://www.threatdragon.com/) (aplicación web o de escritorio) y crear un modelo nuevo llamado `Observatorio Territorial CR`, con un diagrama de tipo **STRIDE**.
-2. Dibujar los elementos de abajo, con los mismos IDs que usa [arquitectura.md](../kb/arquitectura.md).
-3. Para cada amenaza de [amenazas.md](../kb/amenazas.md), agregarla al elemento o flujo indicado, con el mismo ID (`T-01` a `T-13`), la categoría STRIDE, la prioridad y la mitigación.
-4. Guardar el modelo y exportarlo como `docs/threat-model/observatorio.json`. Hacer el cambio en un PR revisado por otro integrante.
-5. Comprobar que cada `T-nn` del archivo exista en `amenazas.md` y viceversa.
+## Cómo abrirlo y editarlo
+
+1. Abrir [Threat Dragon](https://www.threatdragon.com/) o la aplicación de escritorio. En la web, elegir "Sesión local" (no requiere cuenta ni envía el modelo a ningún servidor).
+2. En "Abrir un modelo de amenazas existente", cargar `docs/threat-model/observatorio.json` o pegar su contenido.
+3. Para cambiarlo, editar el diagrama y exportar el modelo de nuevo a este mismo archivo, en un PR revisado por otro integrante.
+4. Si cambia el texto de una amenaza, actualizarlo también en [amenazas.md](../kb/amenazas.md) en el mismo PR. Cada `T-nn` del modelo debe existir en ese archivo y viceversa.
 
 ## Elementos del diagrama
 
@@ -18,30 +19,32 @@ El diagrama de Threat Dragon es el mapa de arquitectura del proyecto y el modelo
 |---|---|---|
 | Actor externo | Visitante anónimo | — |
 | Actor externo | Operador | — |
+| Actor externo | Portal TSE | TP-03 |
 | Proceso | Frontend Next.js | C-01 |
 | Proceso | API NestJS | C-02 |
 | Almacén de datos | PostgreSQL | C-03 |
 | Actor externo (tercero) | Overpass API | TP-01 |
-| Actor externo (tercero) | Catálogo CKAN y blob del OIJ | TP-02 |
-| Actor externo (tercero) | Portal del TSE | TP-03 |
+| Actor externo (tercero) | Catálogo y CSV del OIJ | TP-02 |
 | Actor externo (tercero) | Teselas OSM | TP-04 |
 
 ## Límites de confianza
 
-1. Navegador del visitante o del operador.
+1. Navegador del usuario.
 2. Servidor propio (API y base de datos).
 3. Terceros (Overpass, OIJ, teselas OSM).
 
-## Flujos de datos
+## Flujos de datos y amenazas asociadas
 
-| # | Origen → destino | Contenido | Amenazas |
+| Etiqueta | Origen → destino | Contenido | Amenazas en el modelo |
 |---|---|---|---|
-| 1 | Visitante u operador → Frontend | HTTP | T-01, T-09 |
-| 2 | Frontend → API | JSON por HTTP, CORS abierto | T-01, T-02, T-09, T-11 |
+| 1 | Visitante → Frontend | HTTP | — |
+| 1b | Operador → Frontend | HTTP | — |
+| 2 | Frontend → API | JSON por HTTP, CORS abierto | T-09, T-11 |
 | 3 | Frontend → Teselas OSM | Teselas por HTTPS | — (ver TP-04) |
-| 4 | Operador → API | ZIP del padrón (datos personales) | T-01, T-03, T-04, T-05 |
-| 5 | API → PostgreSQL | SQL con `DATABASE_URL` | T-06, T-09, T-13 |
-| 6 | API → Overpass | Overpass QL por HTTPS | T-02, T-06, T-07 |
-| 7 | API → OIJ | Catálogo y CSV por HTTPS | T-02, T-07 |
+| 4 | Operador → API | ZIP del padrón (datos personales) | T-03, T-04, T-05 |
+| 5 | API → PostgreSQL | SQL con `DATABASE_URL` | T-06, T-13 |
+| 6 | API → Overpass | Overpass QL por HTTPS | T-07 |
+| 7 | API → OIJ | Catálogo y CSV por HTTPS | T-07 |
+| 0 | Portal TSE → Operador | Descarga manual del ZIP | — |
 
-Las amenazas T-08 (repudio), T-10 (uso indebido de la inferencia) y T-12 (cadena de suministro) se asocian al proceso de la API, a la interfaz de `/cobertura` y al repositorio respectivamente.
+Las amenazas sobre procesos: API (C-02) con T-01, T-02, T-08 y T-12; Frontend (C-01) con T-10.

@@ -81,9 +81,9 @@ Cruces señalados en el diagrama:
 
 ## Inventario de endpoints
 
-Todos son públicos hoy (**[O]**). La columna "Propuesto" refleja la regla pendiente de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02).
+Todos son públicos hoy (**[O]**). La columna "Aprobado" refleja las decisiones de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02) del 2026-11-10: el operador envía la cabecera `X-Admin-Key`.
 
-| Endpoint | Operación | Escribe | Hoy | Propuesto |
+| Endpoint | Operación | Escribe | Hoy | Aprobado |
 |---|---|---|---|---|
 | `POST /osm/sync` | Consulta Overpass y reemplaza lugares | Sí | Público | Operador |
 | `GET /osm/places` | Lista lugares por territorio y categoría | No | Público | Público |
@@ -102,25 +102,25 @@ Todos son públicos hoy (**[O]**). La columna "Propuesto" refleja la regla pendi
 
 ## Matriz de acceso
 
-Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es lo observado; "Propuesto" requiere la decisión de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02).
+Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es lo observado **[O]**; "Aprobado" es la regla vigente **[A]** según [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02). La diferencia entre ambas columnas es la brecha que cierran las medidas de [amenazas.md](amenazas.md).
 
-| Actor | Recurso | Acción | Condición hoy [O] | Condición propuesta [P] |
+| Actor | Recurso | Acción | Condición hoy [O] | Condición aprobada [A] |
 |---|---|---|---|---|
 | Visitante anónimo | Páginas del frontend (`/`, `/mapa`, `/electoral`, `/oij`, `/cobertura`) | Ver | Sin condición | Sin condición |
 | Visitante anónimo | Agregados D-02, D-03, D-04 (lecturas `GET`) | Leer | Sin condición | Sin condición |
-| Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | **Sin condición** | Denegado (401/403) |
-| Visitante anónimo | Sincronización OIJ (D-03) | Escribir | **Sin condición** | Denegado (401/403) |
-| Visitante anónimo | Sincronización OSM (D-04) | Escribir | **Sin condición** | Denegado (401/403) |
-| Operador | Importación TSE | Escribir | No existe el rol | Credencial de administración válida |
-| Operador | Sincronización OIJ y OSM | Escribir | No existe el rol | Credencial de administración válida |
-| Operador | Base de datos (D-02 a D-04) | Leer y escribir directo | Con `DATABASE_URL` | Solo desde la red del servidor, sin exposición pública |
+| Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | **Sin condición** | Denegado (401) |
+| Visitante anónimo | Sincronización OIJ (D-03) | Escribir | **Sin condición** | Denegado (401) |
+| Visitante anónimo | Sincronización OSM (D-04) | Escribir | **Sin condición** | Denegado (401) |
+| Operador | Importación TSE | Escribir | No existe el rol | Cabecera `X-Admin-Key` válida |
+| Operador | Sincronización OIJ y OSM | Escribir | No existe el rol | Cabecera `X-Admin-Key` válida |
+| Operador | Base de datos (D-02 a D-04) | Leer y escribir directo | Con `DATABASE_URL` | Solo desde la red interna del servidor; la BD no se publica ([Q-09](preguntas-abiertas.md#q-09)) |
 | API (C-02) | Overpass, OIJ | Consultar | Sin credenciales; `User-Agent` informativo | Igual |
 | Visitante o API | Datos personales del padrón (D-01) | Persistir o devolver | Se descartan; no se persisten ni se devuelven | Igual (regla [A], criterio [F01-AC2](flujos.md#f-01-importar-el-padrón-del-tse)) |
 
 **Propiedad del recurso:** no aplica. No hay cuentas de usuario ni recursos con dueño; todo dato es del conjunto compartido.
 
-**Acceso sin sesión:** hoy es el único modo de acceso. Esa es la brecha principal ([T-01](amenazas.md#t-01)).
+**Acceso sin sesión:** hoy es el único modo de acceso, también para escribir. Esa es la brecha principal ([T-01](amenazas.md#t-01)). La regla aprobada permite el acceso sin sesión solo para lecturas.
 
 ## Dónde deben comprobarse los permisos
 
-Los permisos deben aplicarse en el backend (guard o middleware de NestJS en `POST /osm/sync`, `POST /tse/import` y `POST /oij/sync`). Ocultar los botones en el frontend no es una protección: `frontend/lib/api.ts` llama directamente a esos endpoints y cualquiera puede hacer la misma petición sin la interfaz.
+Los permisos se aplican en el backend, con un guard de NestJS sobre `POST /osm/sync`, `POST /tse/import` y `POST /oij/sync`. Si falta la variable `ADMIN_API_KEY`, esos endpoints rechazan toda petición. Ocultar los botones en el frontend no es una protección: `frontend/lib/api.ts` llama directamente a esos endpoints y cualquiera puede hacer la misma petición sin la interfaz.
