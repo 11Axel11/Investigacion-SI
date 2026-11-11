@@ -190,22 +190,22 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 ### Verificación
 
 **1.1 [flujos.md](kb/flujos.md)**
-- [ ] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
-- [ ] Cada flujo indica actor, objetivo y resultado esperado.
-- [ ] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
-- [ ] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
+- [X] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
+- [X] Cada flujo indica actor, objetivo y resultado esperado.
+- [X] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
+- [X] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
 
 **1.3 [amenazas.md](kb/amenazas.md) y [observatorio.json](threat-model/observatorio.json)**
-- [ ] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 14, el mínimo es 3).
-- [ ] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 14 IDs T-01 a T-14.
-- [ ] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
+- [X] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 14, el mínimo es 3).
+- [X] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 14 IDs T-01 a T-14.
+- [X] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
 
 ### Firma
 
 | Ítem | Nombre | Fecha | Resultado | Observaciones |
 |---|---|---|---|---|
-| 1.1 | | | | |
-| 1.3 | | | | |
+| 1.1 | Pablo Obando Cortés | 2026-11-11 | Aprobado | Revisión documental de F-01, F-02 y F-03: actores, criterios, errores, uso indebido y brechas actuales identificadas. |
+| 1.3 | Pablo Obando Cortés | 2026-11-11 | Aprobado | Revisé el análisis STRIDE y el modelo Threat Dragon; contiene las amenazas T-01 a T-14. |
 
 ### Decisiones a ratificar
 
