@@ -1,0 +1,184 @@
+✔ la cabecera y el mínimo son los de Q-01 (0.629167ms)
+✔ acepta la clave correcta (0.399041ms)
+✔ rechaza sin cabecera, con cabecera vacía y con una clave incorrecta (0.358625ms)
+✔ es sensible a mayúsculas y a una diferencia de un solo carácter (0.12525ms)
+✔ rechaza un prefijo, un sufijo y la clave con espacios (0.197084ms)
+✔ rechaza una cabecera repetida (llega como arreglo) (0.134167ms)
+✔ falla cerrada si ADMIN_API_KEY falta o está vacía, aunque la cabecera coincida (0.110292ms)
+✔ valor límite: 31 caracteres se rechazan y 32 se aceptan (0.140125ms)
+✔ R-02: espacios o salto de línea alrededor de la clave configurada no la invalidan (0.228709ms)
+✔ R-02: el mínimo de 32 caracteres se mide sin los espacios de los extremos (0.137166ms)
+✔ una clave muy larga o con caracteres no ASCII no rompe la comparación (0.414208ms)
+✔ el mensaje de rechazo es idéntico en todos los casos y no revela ninguna clave (0.148083ms)
+✖ HTTP: los tres endpoints de escritura responden 401 sin clave o con una incorrecta y no ejecutan nada (45.218834ms)
+✔ HTTP: con la clave correcta los tres endpoints responden como antes (13.900417ms)
+✖ HTTP: sin ADMIN_API_KEY los tres endpoints rechazan incluso con una cabecera (4.743209ms)
+✔ HTTP: las lecturas siguen siendo públicas (Q-02) (4.822333ms)
+✖ regla: todo handler POST de los controladores tiene AdminKeyGuard y ningún GET lo tiene (0.235041ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 14
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 376.401291
+
+✖ failing tests:
+
+test at scripts/admin-key.test.cjs:150:1
+✖ HTTP: los tres endpoints de escritura responden 401 sin clave o con una incorrecta y no ejecutan nada (45.218834ms)
+  AssertionError [ERR_ASSERTION]: POST /oij/sync con {}
+  
+  201 !== 401
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/admin-key.test.cjs:157:16)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/admin-key.test.cjs:177:1
+✖ HTTP: sin ADMIN_API_KEY los tres endpoints rechazan incluso con una cabecera (4.743209ms)
+  AssertionError [ERR_ASSERTION]: POST /oij/sync
+  
+  201 !== 401
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/admin-key.test.cjs:183:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/admin-key.test.cjs:199:1
+✖ regla: todo handler POST de los controladores tiene AdminKeyGuard y ningún GET lo tiene (0.235041ms)
+  AssertionError [ERR_ASSERTION]: OijController.sync es POST y no tiene AdminKeyGuard
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/admin-key.test.cjs:209:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+✖ F01-AC7, F02-AC5, F03-AC7: sin clave o con clave incorrecta responde 401, no modifica la BD y no expone datos (128.082917ms)
+✖ T-01: la clave solo se acepta en la cabecera, no por la URL, el cuerpo ni una cabecera repetida (16.372ms)
+✔ T-01: con la clave del operador las tres escrituras no responden 401 (acceso permitido) (35071.640917ms)
+✖ T-01: el servidor falla cerrado sin ADMIN_API_KEY o con una de 31 caracteres, aunque la cabecera coincida (12.633958ms)
+✔ Q-02: las lecturas son públicas y no piden clave (45.145583ms)
+✔ Las rutas de lectura no escriben: una lectura repetida no cambia la BD (32.402292ms)
+✖ 4.6: variantes de la ruta de escritura (mayúsculas, barra final, doble barra, método alterno) no evaden la clave (16.747667ms)
+✔ 4.6: el padrón importado no sale por ninguna ruta de lectura ni por la búsqueda (F01-AC2) (38.893833ms)
+✔ 4.6: los filtros de las consultas tratan el texto como dato (inyección) y no devuelven más ni fallan (18.7355ms)
+✔ 4.6: no existe exportación, descarga ni operación masiva sin la clave (inventario de rutas) (9.883167ms)
+✔ F01-AC1 y F01-AC2: importa conteos por distrito y no persiste ningún dato personal (BD real) (132.71975ms)
+✔ F01-AC6: importar el mismo ZIP dos veces actualiza sin duplicar (restricción única real) (19.759667ms)
+✔ F01-AC3: un archivo inválido responde 400 y los datos anteriores no cambian (19.669625ms)
+✔ F01-AC5: una fecha de corte imposible responde 400 y no escribe (8.428ms)
+✔ F02-AC1 y F02-AC2: sincroniza el año, guarda procedencia y la segunda llamada usa la caché (21.565958ms)
+✔ F02-AC3: año fuera de rango o no entero responde 400 sin descargar (6.73025ms)
+✔ F02-AC4: si el catálogo falla responde 503 y el dato previo se conserva (15.507708ms)
+✔ F02-AC4: un CSV que cambió de estructura responde 400 y no sustituye los datos (15.759208ms)
+✔ F03-AC1 y F03-AC2: sincroniza, guarda lugares normalizados y la segunda llamada usa la caché (19.640458ms)
+✔ F03-AC3: provincia, cantón o categoría inválidos responden 400 y no llegan a Overpass (9.368458ms)
+✔ F03-AC4: si Overpass falla responde 503 y los lugares previos siguen intactos (8.690583ms)
+✔ F03-AC6 (Q-02): cualquier visitante consulta los lugares guardados sin clave (13.841042ms)
+✔ F03-AC5: si Overpass responde sin lugares, los lugares anteriores de esa combinación no se pierden (7.839125ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 19
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 36430.091708
+
+✖ failing tests:
+
+test at scripts/pruebas/autorizacion.test.cjs:40:1
+✖ F01-AC7, F02-AC5, F03-AC7: sin clave o con clave incorrecta responde 401, no modifica la BD y no expone datos (128.082917ms)
+  AssertionError [ERR_ASSERTION]: /oij/sync con []
+  
+  201 !== 401
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/pruebas/autorizacion.test.cjs:52:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/pruebas/autorizacion.test.cjs:59:1
+✖ T-01: la clave solo se acepta en la cabecera, no por la URL, el cuerpo ni una cabecera repetida (16.372ms)
+  AssertionError [ERR_ASSERTION]: /oij/sync?key
+  
+  201 !== 401
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/pruebas/autorizacion.test.cjs:63:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/pruebas/autorizacion.test.cjs:81:1
+✖ T-01: el servidor falla cerrado sin ADMIN_API_KEY o con una de 31 caracteres, aunque la cabecera coincida (12.633958ms)
+  AssertionError [ERR_ASSERTION]: /oij/sync con clave configurada undefined
+  
+  201 !== 401
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/pruebas/autorizacion.test.cjs:89:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/pruebas/autorizacion.test.cjs:114:1
+✖ 4.6: variantes de la ruta de escritura (mayúsculas, barra final, doble barra, método alterno) no evaden la clave (16.747667ms)
+  AssertionError [ERR_ASSERTION]: /Oij/SYNC respondió 400 sin clave
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/pruebas/autorizacion.test.cjs:119:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
