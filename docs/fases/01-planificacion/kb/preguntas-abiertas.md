@@ -18,7 +18,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-08](#q-08) | ¿Tamaño del equipo y responsable de cada fuente? | 4 integrantes; SNIT como cuarta fuente | resuelta |
 | [Q-09](#q-09) | ¿Plataforma de despliegue y proveedor de IA? | VPS con Docker Compose y Caddy; Claude | resuelta |
 | [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo; Pablo sin fuente propia | resuelta (provisional) |
-| [Q-11](#q-11) | ¿Quién revisa los cambios a scripts, reglas y permisos del agente, y quién valida la revisión de código asistida por IA? | Sin decidir | **abierta** |
+| [Q-11](#q-11) | ¿Quién revisa los cambios a scripts, reglas y permisos del agente, y quién valida la revisión de código asistida por IA? | Sin revisor asignado; revisión humana diferida por Frander (2026-11-11) | **abierta** |
 
 ---
 
@@ -31,7 +31,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Decisión (2026-11-10): opción (a).**
   - Los tres endpoints de escritura exigen la cabecera `X-Admin-Key`, validada en el backend por un guard de NestJS.
   - La clave viene de la variable de entorno `ADMIN_API_KEY` (secreto S-02), con al menos 32 caracteres aleatorios, y se compara en tiempo constante.
-  - Si la variable falta o está vacía, todos los endpoints de escritura rechazan la petición (falla cerrada). Sin clave o con una incorrecta responden 401 y no cambian datos.
+  - Si la variable falta o está vacía, todos los endpoints de escritura rechazan la petición (falla cerrada). Los espacios o saltos de línea en los extremos del valor configurado se ignoran (aclaración operativa del 2026-11-11, R-02 de 2.6); la clave que envía el cliente se compara exacta. Sin clave o con una incorrecta responden 401 y no cambian datos.
   - Rotación: manual; se cambia la variable y se reinicia el servicio.
 - **Por qué no (b):** el sistema no tiene cuentas ni recursos con dueño; un esquema de usuarios añade superficie y trabajo que no corresponden al riesgo ni al plazo. **Por qué no (c):** deja sin resolver la amenaza de mayor prioridad (T-01).
 - **Responsable de resolverla:** Frander. **Revisor:** José.
@@ -162,4 +162,6 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Por qué no se asumió:** las reglas del proyecto prohíben suponer una respuesta ([AGENTS.md](../../../../AGENTS.md)). Mientras tanto, las observaciones quedan en `pendiente` y los cambios en el PR sin aprobar.
 - **Responsable de resolverla:** el equipo. **Revisor:** por asignar.
 - **Afecta:** ítems 2.5 y 2.6; sin cambios en flujos, amenazas ni permisos.
-- **Estado:** abierta.
+- **Actualización (2026-11-11):** Frander, único integrante disponible hoy, indicó **dejar de lado la revisión humana** para cerrar el trabajo técnico de la fase 2. Eso **no designa revisor ni valida nada**: es solo el aplazamiento de la revisión. Consecuencias aplicadas: las observaciones de [2.6](../../02-desarrollo/evidencias/2.6-revision-ia.md) quedan con validación humana `Diferida` (no `Validada`), la fase 2 se declara cerrada **en lo técnico** y no en lo humano, y no se falsifican firmas ni aprobaciones.
+- **Qué sigue pendiente:** designar la persona que revisa los cambios a pruebas, reglas de Semgrep, `.gitleaks.toml`, `scripts/` y `.claude/settings.json`, y la que valida R-01 a R-09 de 2.6. Debe hacerlo antes de integrar a `main` o, a más tardar, en la revisión presencial del equipo.
+- **Estado:** abierta (revisión humana diferida por decisión de Frander; sin revisor asignado).
