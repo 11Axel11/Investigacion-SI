@@ -125,9 +125,9 @@ export function ViabilityMap({
     };
   }, [rowByKey, selectedKey, province, canton]);
 
-  styleForRef.current = styleFor;
-
   useEffect(() => {
+    // Los manejadores de mouseout leen la referencia al disparar el evento, siempre después del commit.
+    styleForRef.current = styleFor;
     const layer = geoLayerRef.current;
     if (!layer) return;
     layer.eachLayer((child) => {

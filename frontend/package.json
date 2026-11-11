@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "lint": "eslint .",
     "test:operator": "node --test scripts/operator.test.mjs"
   },
   "dependencies": {
@@ -30,6 +31,8 @@
     "@types/node": "^20.16.0",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
     "typescript": "^5.5.4"
   }
 }

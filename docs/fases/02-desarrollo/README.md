@@ -9,7 +9,7 @@
 | Ítem | Qué se espera | Estado hoy |
 |---|---|---|
 | 2.1 | `AGENTS.md` con dónde consultar requisitos, permisos, amenazas, convenciones y comandos. Demostrar que el agente consulta lo pertinente y señala dudas que requieren decisión humana | Parcial: `AGENTS.md` existe; falta la demostración |
-| 2.2 | Comandos reproducibles de compilación, **linting** y pruebas unitarias; pruebas de una regla de negocio con errores y valores límite; README y `AGENTS.md` los referencian | Parcial: hay `build`, `test:oij`, `test:admin` y `test:operator` (reglas de la clave de administración con valores límite y errores); falta linting |
+| 2.2 | Comandos reproducibles de compilación, **linting** y pruebas unitarias; pruebas de una regla de negocio con errores y valores límite; README y `AGENTS.md` los referencian | Parcial: hay `build`, `test:oij`, `test:admin` y `test:operator` (reglas de la clave de administración con valores límite y errores); linting con `npm run lint` en ambos proyectos; faltan pruebas de más reglas de negocio |
 | 2.3 | Semgrep CE (o equivalente) y Gitleaks; alcance documentado; demostración con un defecto controlado y un secreto ficticio | No iniciado |
 | 2.4 | Hook o wrapper que ejecuta las verificaciones al terminar la tarea y devuelve resultados al agente; reintentos con límite; si persiste, se detiene y reporta | No iniciado |
 | 2.5 | Límites del agente respaldados por permisos y mecanismos (no solo texto): archivos y herramientas permitidos, acciones con aprobación humana, no exponer secretos, no aprobar su propio trabajo ni desactivar controles; cambios en pruebas, reglas y scripts de verificación los revisa otro integrante | No iniciado |

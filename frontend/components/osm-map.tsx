@@ -75,11 +75,15 @@ export function OsmMap({
   const [center, setCenter] = useState<ViewCenter>(initialView.center);
   const [selectedId, setSelected] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Cuando cambia la vista inicial se reinician zoom, centro y selección (patrón recomendado por React
+  // para derivar estado de una propiedad, en lugar de un efecto que llama a setState).
+  const [previousView, setPreviousView] = useState(initialView);
+  if (previousView !== initialView) {
+    setPreviousView(initialView);
     setZoom(initialView.zoom);
     setCenter(initialView.center);
     setSelected(null);
-  }, [initialView]);
+  }
 
   useEffect(() => {
     const svg = svgRef.current;

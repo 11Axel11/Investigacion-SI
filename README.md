@@ -175,7 +175,7 @@ Abrir http://localhost:3000/oij. Backend: puerto 3001. No iniciar otra instancia
 
 ### Verificación y exposición
 
-Desde `backend`, `npm run test:admin` compila y prueba la clave de administración (valores límite, errores y los tres `POST` por HTTP con servicios simulados, sin BD). `npm run test:oij` compila y prueba agrupación, primera fila, comillas, codificación, estructura, años y fechas inválidas. Con backend activo y 2026 sincronizado, `node scripts/oij.integration.cjs` verifica sumas, filtros, vacío, validación, caché y respuestas de las APIs existentes. Desde `frontend`, `npm run test:operator` prueba el modo operador (la clave solo en memoria, enviada únicamente en las escrituras) y `npm run build` valida TypeScript y genera las páginas.
+Desde `backend` y desde `frontend`, `npm run lint` ejecuta ESLint (sin reglas desactivadas para que pase). Desde `backend`, `npm run test:admin` compila y prueba la clave de administración (valores límite, errores y los tres `POST` por HTTP con servicios simulados, sin BD). `npm run test:oij` compila y prueba agrupación, primera fila, comillas, codificación, estructura, años y fechas inválidas. Con backend activo y 2026 sincronizado, `node scripts/oij.integration.cjs` verifica sumas, filtros, vacío, validación, caché y respuestas de las APIs existentes. Desde `frontend`, `npm run test:operator` prueba el modo operador (la clave solo en memoria, enviada únicamente en las escrituras) y `npm run build` valida TypeScript y genera las páginas.
 
 Guion de un minuto:
 

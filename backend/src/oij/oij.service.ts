@@ -7,6 +7,9 @@ import { aggregateCsv } from './oij.parser';
 export const OIJ_SOURCE = 'https://datosabiertospj.poder-judicial.go.cr/dataset/estadisticas-policiales';
 const CATALOG = 'https://datosabiertospj.poder-judicial.go.cr/api/3/action/package_show?id=estadisticas-policiales';
 
+// Forma mínima de la respuesta de CKAN que se usa aquí; el resto de campos se ignora.
+type CkanCatalog = { result?: { resources?: Array<{ format?: unknown; name?: string; url?: string }> } };
+
 @Injectable()
 export class OijService {
   private pending = new Map<number, Promise<OijDataset>>();
@@ -32,15 +35,15 @@ export class OijService {
     try {
       const catalogResponse = await fetch(CATALOG, { signal: AbortSignal.timeout(20000) });
       if (!catalogResponse.ok) throw new Error('Catálogo no disponible');
-      const catalog = await catalogResponse.json();
-      const resource = catalog.result?.resources?.find((r: any) => String(r.format).toUpperCase() === 'CSV' && new RegExp(`\\b${year}\\b`).test(r.name));
+      const catalog = (await catalogResponse.json()) as CkanCatalog;
+      const resource = catalog.result?.resources?.find((r) => String(r.format).toUpperCase() === 'CSV' && new RegExp(`\\b${year}\\b`).test(r.name ?? ''));
       if (!resource) throw new BadRequestException('El catálogo no publica CSV para ese año.');
-      const url = new URL(resource.url);
+      const url = new URL(resource.url ?? '');
       if (url.protocol !== 'https:' || url.hostname !== 'pjcrdatosabiertos.blob.core.windows.net') throw new Error('Origen del recurso inesperado');
       const response = await fetch(url, { signal: AbortSignal.timeout(60000), redirect: 'error' });
       if (!response.ok || !response.body) throw new Error('CSV no disponible');
       const chunks: Buffer[] = []; let size = 0;
-      for await (const chunk of response.body as any) {
+      for await (const chunk of response.body as unknown as AsyncIterable<Uint8Array>) {
         size += chunk.length;
         if (size > 40 * 1024 * 1024) { throw new Error('CSV excede 40 MB'); }
         chunks.push(Buffer.from(chunk));

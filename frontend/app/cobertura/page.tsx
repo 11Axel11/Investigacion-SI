@@ -74,7 +74,7 @@ export default function CoberturaPage() {
     enabled: tab === 'mapa',
   });
 
-  const viabilityRows = viabilityQuery.data ?? [];
+  const viabilityRows = useMemo(() => viabilityQuery.data ?? [], [viabilityQuery.data]);
   const selectedRow = useMemo(
     () =>
       viabilityRows.find((row) => normalizeCantonKey(row.province, row.canton) === selectedKey) ??
