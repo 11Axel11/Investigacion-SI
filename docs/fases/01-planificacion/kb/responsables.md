@@ -84,7 +84,7 @@ Tareas que surgen de las medidas y decisiones. Cada una se convierte en una tare
 | Límite de peticiones, ZIP seguro, transacción en OSM, aviso de truncamiento | M-02, M-03, M-06, Q-07 | 2 |
 | Eventos de seguridad con retención de 90 días | M-08, Q-03 | 7 |
 | Aviso de metodología en `/cobertura` | M-10, Q-04 | 2 |
-| Eliminar `pnpm-lock.yaml` y comprobar `npm ci` | Q-05 | 2 y 3 |
+| Eliminar `pnpm-lock.yaml` y comprobar `npm ci` | Q-05 | 2 y 3 (hecho en la 2) |
 | Integrar SNIT y reemplazar el GeoJSON estático | Q-08 | 2 |
 | CORS, helmet, migraciones, DTOs | M-09, M-11 | 2 y 3 |
 | Gitleaks, OSV-Scanner, Renovate | M-12, M-13 | 2, 3 y 7 |

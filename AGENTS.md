@@ -54,7 +54,7 @@ Todo cambio de **comportamiento, datos, arquitectura o permisos** actualiza el c
 
 ## Comandos de comprobación
 
-Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05)); no regeneres ni edites `pnpm-lock.yaml`. Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
+Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05)); el único lockfile es `package-lock.json` de cada proyecto (los de pnpm se eliminaron); instala con `npm ci`, no con `pnpm`. Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
 
 | Qué | Dónde | Comando |
 |---|---|---|

@@ -87,7 +87,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Decisión (2026-11-10): `npm`.** Es lo que documenta el README y permite `npm ci` en CI con un único lockfile. Se eliminarán `pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml` al configurar los comandos reproducibles (ítem 2.2), comprobando antes que `npm ci` funcione en ambos proyectos.
 - **Responsable de resolverla:** Daniel. **Revisor:** Axel.
 - **Afecta:** [T-12](amenazas.md#t-12) y la instalación en CI.
-- **Estado:** resuelta. La limpieza de lockfiles está pendiente.
+- **Estado:** resuelta y aplicada (2026-11-11, rama `docs/fase-2-inicio`): se eliminaron `backend/pnpm-lock.yaml`, `frontend/pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml`. Se comprobó `npm ci` en copias aisladas de ambos proyectos y las pruebas y el build pasan con las dependencias reinstaladas con npm.
 
 ## Q-06
 

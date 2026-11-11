@@ -178,7 +178,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 ## T-12
 
-- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tienen a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)).
+- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tenían a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)) y los de pnpm ya se eliminaron.
 - **Recurso afectado:** cadena de suministro del backend y del frontend.
 - **Impacto:** ejecución de código no confiable o vulnerabilidades heredadas.
 - **Prioridad:** Media. Por confirmar con un análisis: no se ha ejecutado ningún escáner todavía.
