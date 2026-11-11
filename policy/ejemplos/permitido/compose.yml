@@ -1,0 +1,6 @@
+# Caso PERMITIDO: sin privilegios y con usuario no root explícito.
+services:
+  api:
+    image: node:22-alpine
+    user: node
+    privileged: false
