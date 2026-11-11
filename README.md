@@ -20,7 +20,7 @@ Los datos públicos suelen estar dispersos en APIs y archivos institucionales di
 | [TSE / Padrón Nacional Electoral](https://www.tse.go.cr/descarga_padron.html) | Carga batch de ZIP con archivos TXT | Relaciona `CODELEC` con `DISTELEC.TXT` y genera conteos agregados por territorio | Axel |
 | [IGN / SNIT](https://geos.snitcr.go.cr/be/IGN_5_CO/wfs?service=WFS&request=GetCapabilities) | WFS 2.0, capa `IGN_5_CO:limitecantonal_5k` | Sirve los límites cantonales en GeoJSON (EPSG:4326) para el mapa de cobertura | Daniel |
 
-`GET /coverage/canton-boundaries` entrega los límites del IGN/SNIT con la fecha de descarga. La primera consulta espera a que el backend descargue la capa completa. La API la conserva en memoria durante 24 horas y, al actualizarla, sirve la última copia disponible.
+`GET /coverage/canton-boundaries` entrega los límites del IGN/SNIT con la fecha de descarga. La primera consulta espera a que el backend descargue la capa completa. La API la conserva en memoria durante 24 horas y, al actualizarla, sirve la última copia disponible. El mapa asocia los nombres oficiales León Cortés Castro, Sarchí y Quepos con agregados que usen León Cortés, Valverde Vega o Aguirre.
 
 No se evade autenticación, CAPTCHA ni controles de acceso. Overpass se consulta por áreas administrativas, limita cada respuesta a 250 objetos y usa caché de 15 minutos.
 

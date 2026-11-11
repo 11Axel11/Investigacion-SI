@@ -92,7 +92,10 @@ export function ViabilityMap({
 
   const rowByKey = useMemo(() => {
     const map = new Map<string, ViabilityIndexRow>();
-    for (const row of rows) map.set(normalizeCantonKey(row.province, row.canton), row);
+    for (const row of rows) {
+      const key = normalizeCantonKey(row.province, row.canton);
+      if (!map.has(key)) map.set(key, row);
+    }
     return map;
   }, [rows]);
 
@@ -111,7 +114,7 @@ export function ViabilityMap({
       const isDimmed =
         !!props &&
         ((!!province && normalizeText(props.province) !== normalizeText(province)) ||
-          (!!canton && normalizeText(props.canton) !== normalizeText(canton)));
+          (!!canton && key !== normalizeCantonKey(province || props.province, canton)));
       return {
         fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
         fillOpacity: isDimmed ? 0.12 : isSelected ? 0.85 : 0.65,

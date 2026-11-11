@@ -101,7 +101,7 @@ export function ViabilityList({
         const isSelected = key === selectedKey;
         return (
           <button
-            key={key}
+            key={JSON.stringify([row.province, row.canton])}
             type="button"
             onClick={() => onSelect(key)}
             className={`flex items-center justify-between gap-2 border-b border-border/40 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-muted ${isSelected ? 'bg-muted' : ''}`}
