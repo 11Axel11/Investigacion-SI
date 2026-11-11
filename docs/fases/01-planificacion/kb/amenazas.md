@@ -55,7 +55,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Medida (propuesta):** autenticación (T-01) más límite de peticiones por IP (por ejemplo `@nestjs/throttler`) en los endpoints de escritura, con un tope de sincronizaciones por hora.
 - **Componente:** módulos `osm` y `oij`; configuración global de `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba de carga con Artillery en el ambiente de pruebas. Al superar el límite el servidor responde 429 y no se generan llamadas adicionales a los terceros (se verifican con un servidor simulado).
-- **Responsable / revisor:** Frander / Axel.
+- **Responsable / revisor:** Pablo / Axel.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -119,10 +119,10 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Prioridad:** Media.
 - **Medida (implementada):** en el OIJ se restringe el recurso CSV a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones de esa descarga, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. **Alcance real:** la consulta al catálogo CKAN tiene timeout de 20 s, pero no configura `redirect: 'error'` ni límite de bytes; no se le deben atribuir los controles del CSV. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
 - **Componente:** `backend/src/oij/oij.service.ts`, `backend/src/oij/oij.parser.ts`, `backend/src/osm/osm.service.ts`.
-- **Comprobación prevista:** ejecutar `npm run test:oij` en CI. Faltan una prueba equivalente para OSM (respuesta con forma inesperada), una para el host y las redirecciones del CSV del OIJ, y una comprobación separada del comportamiento del catálogo. Las pruebas del parser no verifican los controles de red.
+- **Comprobación:** `npm run test:oij` verifica el parser y que un CSV de un host distinto se rechaza antes de la descarga con 503, sin modificar el agregado anterior (F02-AC4). Queda ejecutar el comando en CI, comprobar las redirecciones del CSV y el comportamiento del catálogo por separado, y comprobar una respuesta inesperada de OSM. Las pruebas del parser por sí solas no verifican los controles de red; la prueba de host usa un servicio y una descarga simulados, no una BD real.
 - **Responsable / revisor:** José / Daniel.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** implementada; verificada solo en parte (el parser del OIJ).
+- **Estado:** implementada; verificados el parser y el rechazo de un host distinto en el OIJ. Falta completar las comprobaciones de OSM.
 
 ## T-08
 
@@ -146,7 +146,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`. **Límite:** CORS es una política del navegador para acceso entre orígenes; no autentica al cliente ni impide peticiones directas a la API. La autorización de escritura se comprueba por separado en T-01.
 - **Componente:** `backend/src/main.ts`, `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba que verifica las cabeceras de seguridad y que CORS no autoriza un origen no permitido mediante `Access-Control-Allow-Origin`; comprobar también un origen permitido. No asumir que la ausencia de esa cabecera equivale a un 401 o impide una escritura. Simular una falla de Overpass y comprobar que la respuesta no devuelve texto interno. ZAP (ítem 4.7), si se selecciona y ejecuta, complementa estas pruebas; no demuestra por sí solo el uso de migraciones, que requiere revisar la configuración y ejecutar el procedimiento en una BD de pruebas.
-- **Responsable / revisor:** Daniel / Frander.
+- **Responsable / revisor:** Pablo / Frander.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -159,7 +159,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Medida (propuesta):** mostrar en `/cobertura` la metodología, el denominador usado y la advertencia de que es un puntaje relativo y no causal. Reconciliar el README, que dice que no se calculan tasas poblacionales. Contenido definido en [Q-04](preguntas-abiertas.md#q-04): fórmula, denominador (electores), carácter relativo, no causalidad y fuente y fecha de cada componente. El README ya se corrigió.
 - **Componente:** `frontend/app/cobertura/page.tsx`, `frontend/components/viability-panel.tsx`, `README.md`.
 - **Comprobación prevista:** prueba E2E que verifica que el aviso es visible en `/cobertura`, y revisión del README por otro integrante.
-- **Responsable / revisor:** Frander / Daniel.
+- **Responsable / revisor:** Frander / Pablo.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -185,7 +185,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Medida (propuesta):** usar `npm` y un único lockfile por proyecto (eliminar `pnpm-lock.yaml`), ejecutar OSV-Scanner en CI y configurar Renovate para actualizaciones.
 - **Componente:** `backend/package.json`, `frontend/package.json` y sus lockfiles.
 - **Comprobación prevista:** OSV-Scanner sin hallazgos críticos o altos sin tratamiento, y un PR real de Renovate sujeto a los mismos controles.
-- **Responsable / revisor:** Daniel / Axel.
+- **Responsable / revisor:** Daniel / Pablo.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 

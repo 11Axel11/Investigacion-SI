@@ -1,4 +1,16 @@
+import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+export interface CantonProperties {
+  province: string;
+  canton: string;
+}
+
+export interface CantonBoundaries extends FeatureCollection<Polygon | MultiPolygon, CantonProperties> {
+  fetchedAt: string;
+  stale: boolean;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init);
@@ -245,6 +257,7 @@ export const api = {
       }>('/tse/overview'),
   },
   coverage: {
+    cantonBoundaries: () => request<CantonBoundaries>('/coverage/canton-boundaries'),
     health: (params: { province?: string; canton?: string }) =>
       request<HealthCoverageRow[]>(`/coverage/health?${queryString(params)}`),
     electoralSecurity: (params: { province?: string; canton?: string }) =>

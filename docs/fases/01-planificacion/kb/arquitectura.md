@@ -12,7 +12,7 @@ Estado: descripción del código al 2026-11-10 (commit `e5a1990`). No existe des
 | C-02 | API propia | NestJS 10, TypeORM | `backend/src/` |
 | C-03 | Base de datos | PostgreSQL (`embedded-postgres` en local, puerto 5433) | `backend/scripts/local-db.mjs` |
 | C-04 | Módulos de la API | `osm`, `tse`, `oij`, `coverage` | `backend/src/<módulo>/` |
-| C-05 | Capa geográfica estática | `cantones-cr.geojson` servido por el frontend | `frontend/public/cantones-cr.geojson` |
+| C-05 | Límites cantonales del IGN/SNIT | WFS normalizado a GeoJSON; caché en la API | `backend/src/coverage/canton-boundaries.service.ts` |
 
 ## Servicios externos
 
@@ -22,6 +22,7 @@ Estado: descripción del código al 2026-11-10 (commit `e5a1990`). No existe des
 | TP-02 | Catálogo CKAN y blob de Azure del Poder Judicial | Metadatos y CSV de estadísticas policiales | Backend (C-02) |
 | TP-03 | Portal de descarga del TSE | ZIP del padrón, descargado a mano por una persona | Operador, que luego lo sube al backend |
 | TP-04 | `tile.openstreetmap.org` | Teselas del mapa | Navegador del visitante |
+| TP-09 | IGN / SNIT (`geos.snitcr.go.cr`) | Límites cantonales mediante WFS | Backend (C-02) |
 
 Detalle de cada uno en [terceros-secretos.md](terceros-secretos.md).
 
@@ -44,6 +45,7 @@ flowchart LR
     TILES[TP-04 Teselas OSM]
   end
   TSE[TP-03 Portal TSE]
+    SNIT[TP-09 IGN/SNIT]
 
   V -->|1 HTTP| FE
   O -->|1 HTTP| FE
@@ -54,6 +56,7 @@ flowchart LR
   API -->|5 SQL| DB
   API -->|6 HTTPS Overpass QL| OVP
   API -->|7 HTTPS catálogo y CSV| OIJ
+  API -->|8 HTTPS WFS| SNIT
 ```
 
 ### Límites de confianza
@@ -67,6 +70,7 @@ Cruces señalados en el diagrama:
 5. API → base de datos. Con `DATABASE_URL`. TypeORM con `synchronize: true`.
 6. API → Overpass. Respuesta de un tercero que se almacena tras normalizarla.
 7. API → OIJ. Respuesta de un tercero; en la descarga del CSV se valida el host del recurso y se prohíben redirecciones. La consulta al catálogo CKAN no configura esa prohibición (ver T-07).
+8. API → IGN/SNIT. Consulta WFS fija, paginada y sin redirecciones. Se valida la capa completa antes de sustituir la caché de límites cantonales.
 
 ## Datos protegidos
 
@@ -95,6 +99,7 @@ Todos son públicos hoy (**[O]**). La columna "Aprobado" refleja las decisiones 
 | `POST /oij/sync` | Descarga y agrega el CSV de un año | Sí | Público | Operador |
 | `GET /oij/overview` | Indicadores y opciones de filtros | No | Público | Público |
 | `GET /coverage/health` | Cobertura de salud por cantón | No | Público | Público |
+| `GET /coverage/canton-boundaries` | GeoJSON de límites cantonales del IGN/SNIT | No | Público | Público |
 | `GET /coverage/electoral-security` | Seguridad electoral por distrito | No | Público | Público |
 | `GET /coverage/crime-rate` | Delitos por 1 000 electores | No | Público | Público |
 | `GET /coverage/viability-index` | Índice compuesto 0–100 por cantón | No | Público | Público |
@@ -108,6 +113,7 @@ Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es 
 |---|---|---|---|---|
 | Visitante anónimo | Páginas del frontend (`/`, `/mapa`, `/electoral`, `/oij`, `/cobertura`) | Ver | Sin condición | Sin condición |
 | Visitante anónimo | Agregados D-02, D-03, D-04 (lecturas `GET`) | Leer | Sin condición | Sin condición |
+| Visitante anónimo | Límites cantonales del IGN/SNIT (C-05) | Leer | Sin condición | Sin condición |
 | Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | **Sin condición** | Denegado (401) |
 | Visitante anónimo | Sincronización OIJ (D-03) | Escribir | **Sin condición** | Denegado (401) |
 | Visitante anónimo | Sincronización OSM (D-04) | Escribir | **Sin condición** | Denegado (401) |

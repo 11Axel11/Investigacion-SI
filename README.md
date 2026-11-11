@@ -1,6 +1,6 @@
 # Observatorio Territorial y Electoral de Costa Rica
 
-Sistema web académico que consume, transforma y visualiza tres fuentes OSINT relacionadas con Costa Rica. La aplicación permite explorar servicios cercanos publicados en OpenStreetMap y producir estadísticas territoriales agregadas a partir del Padrón Nacional Electoral del TSE.
+Sistema web académico que consume, transforma y visualiza cuatro fuentes OSINT relacionadas con Costa Rica. La aplicación permite explorar servicios de OpenStreetMap y estadísticas agregadas del TSE y del OIJ. El mapa de cobertura usa los límites cantonales del IGN/SNIT.
 
 ## Problema y objetivo
 
@@ -18,8 +18,11 @@ Los datos públicos suelen estar dispersos en APIs y archivos institucionales di
 | [OpenStreetMap / Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API) | Consulta POST en Overpass QL sobre límites administrativos; respuesta JSON | Normaliza nodos, vías y relaciones, almacena caché y dibuja resultados sobre teselas OSM | Frander |
 | [OIJ / Estadísticas Policiales](https://datosabiertospj.poder-judicial.go.cr/dataset/estadisticas-policiales) | Catálogo CKAN y descarga automatizada CSV | Agrupa por provincia, cantón, delito y mes; conserva procedencia en PostgreSQL | José |
 | [TSE / Padrón Nacional Electoral](https://www.tse.go.cr/descarga_padron.html) | Carga batch de ZIP con archivos TXT | Relaciona `CODELEC` con `DISTELEC.TXT` y genera conteos agregados por territorio | Axel |
+| [IGN / SNIT](https://geos.snitcr.go.cr/be/IGN_5_CO/wfs?service=WFS&request=GetCapabilities) | WFS 2.0, capa `IGN_5_CO:limitecantonal_5k` | Sirve los límites cantonales en GeoJSON (EPSG:4326) para el mapa de cobertura | Daniel |
 
-Fuente planificada: SNIT (límites cantonales por WFS, responsable Daniel), que reemplazará el GeoJSON estático. No se evade autenticación, CAPTCHA ni controles de acceso. Overpass se consulta por áreas administrativas, limita cada respuesta a 250 objetos y usa caché de 15 minutos.
+`GET /coverage/canton-boundaries` entrega los límites del IGN/SNIT con la fecha de descarga. La primera consulta espera a que el backend descargue la capa completa. La API la conserva en memoria durante 24 horas y, al actualizarla, sirve la última copia disponible. El mapa asocia los nombres oficiales León Cortés Castro, Sarchí y Quepos con agregados que usen León Cortés, Valverde Vega o Aguirre.
+
+No se evade autenticación, CAPTCHA ni controles de acceso. Overpass se consulta por áreas administrativas, limita cada respuesta a 250 objetos y usa caché de 15 minutos.
 
 ## Privacidad del padrón
 

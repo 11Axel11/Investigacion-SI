@@ -19,6 +19,9 @@
       },
       {
         "name": "José"
+      },
+      {
+        "name": "Pablo"
       }
     ],
     "diagrams": [
@@ -572,7 +575,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Tampering",
-                  "description": "Puntaje relativo min-max, electores no son habitantes y /cobertura no advierte las limitaciones. Responsable: Frander. Revisor: Daniel.",
+                  "description": "Puntaje relativo min-max, electores no son habitantes y /cobertura no advierte las limitaciones. Responsable: Frander. Revisor: Pablo.",
                   "mitigation": "M-10: mostrar metodología, denominador, fecha y fuente de cada componente y la advertencia de que no es causal (Q-04 resuelta). Comprobación: prueba E2E del aviso y revisión del README. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -718,7 +721,7 @@
                   "status": "Open",
                   "severity": "High",
                   "type": "Denial of service",
-                  "description": "Sin límite de peticiones, se recorren combinaciones distintas de las 7 provincias, 84 cantones y 22 categorías definidos en el código. Responsable: Frander. Revisor: Axel.",
+                  "description": "Sin límite de peticiones, se recorren combinaciones distintas de las 7 provincias, 84 cantones y 22 categorías definidos en el código. Responsable: Pablo. Revisor: Axel.",
                   "mitigation": "M-02: autenticación (T-01) más límite de peticiones por IP en endpoints de escritura. Comprobación: Artillery, respuesta 429 y cero llamadas extra a terceros. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -744,7 +747,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Tampering",
-                  "description": "multer 1.x por confirmar con OSV-Scanner; dos lockfiles por proyecto. Responsable: Daniel. Revisor: Axel.",
+                  "description": "multer 1.x por confirmar con OSV-Scanner; dos lockfiles por proyecto. Responsable: Daniel. Revisor: Pablo.",
                   "mitigation": "M-12: npm como gestor único (Q-05 resuelta), OSV-Scanner en CI y Renovate. Comprobación: sin hallazgos críticos o altos sin tratamiento y un PR real de Renovate. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -1461,7 +1464,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Information disclosure",
-                  "description": "enableCors() sin restricción, detalle interno en mensajes y synchronize: true. Responsable: Daniel. Revisor: Frander.",
+                  "description": "enableCors() sin restricción, detalle interno en mensajes y synchronize: true. Responsable: Pablo. Revisor: Frander.",
                   "mitigation": "M-09: CORS con lista blanca, mensajes genéricos al cliente, helmet y migraciones en lugar de synchronize. CORS no autentica ni bloquea clientes directos; la autorización corresponde a M-01. Comprobación: cabeceras de seguridad, origen permitido y no permitido en Access-Control-Allow-Origin, error genérico y procedimiento de migraciones en BD de pruebas. DAST, si se selecciona y ejecuta, es complementario. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -1904,7 +1907,7 @@
                   "severity": "Medium",
                   "type": "Spoofing",
                   "description": "Catálogo, CSV o respuesta de Overpass inesperados. Responsable: José. Revisor: Daniel.",
-                  "mitigation": "M-07: CSV OIJ con host permitido, https, sin redirecciones, 40 MB y 60 s y validación de estructura. Catálogo CKAN: timeout de 20 s, sin rechazo explícito de redirecciones ni límite de bytes. En OSM se validan las entradas contra listas fijas; no atribuirle los controles de red del OIJ. Comprobación: parser OIJ en CI, pruebas separadas del host y redirecciones del CSV, comportamiento del catálogo y respuesta inesperada de OSM. Estado: implementada; verificada solo en parte.",
+                  "mitigation": "M-07: CSV OIJ con host permitido, https, sin redirecciones, 40 MB y 60 s y validación de estructura. Catálogo CKAN: timeout de 20 s, sin rechazo explícito de redirecciones ni límite de bytes. En OSM se validan las entradas contra listas fijas; no atribuirle los controles de red del OIJ. Comprobación: npm run test:oij cubre el parser y el rechazo de otro host con servicio y descarga simulados, sin escribir en el repositorio simulado. Pendientes: CI, redirecciones del CSV, comportamiento del catálogo y respuesta inesperada de OSM. Estado: implementada; verificados el parser y el rechazo de otro host en OIJ.",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 8,
@@ -2001,7 +2004,7 @@
                   "severity": "Medium",
                   "type": "Spoofing",
                   "description": "Catálogo, CSV o respuesta de Overpass inesperados. Responsable: José. Revisor: Daniel.",
-                  "mitigation": "M-07: CSV OIJ con host permitido, https, sin redirecciones, 40 MB y 60 s y validación de estructura. Catálogo CKAN: timeout de 20 s, sin rechazo explícito de redirecciones ni límite de bytes. En OSM se validan las entradas contra listas fijas; no atribuirle los controles de red del OIJ. Comprobación: parser OIJ en CI, pruebas separadas del host y redirecciones del CSV, comportamiento del catálogo y respuesta inesperada de OSM. Estado: implementada; verificada solo en parte.",
+                  "mitigation": "M-07: CSV OIJ con host permitido, https, sin redirecciones, 40 MB y 60 s y validación de estructura. Catálogo CKAN: timeout de 20 s, sin rechazo explícito de redirecciones ni límite de bytes. En OSM se validan las entradas contra listas fijas; no atribuirle los controles de red del OIJ. Comprobación: npm run test:oij cubre el parser y el rechazo de otro host con servicio y descarga simulados, sin escribir en el repositorio simulado. Pendientes: CI, redirecciones del CSV, comportamiento del catálogo y respuesta inesperada de OSM. Estado: implementada; verificados el parser y el rechazo de otro host en OIJ.",
                   "modelType": "STRIDE",
                   "new": false,
                   "number": 7,

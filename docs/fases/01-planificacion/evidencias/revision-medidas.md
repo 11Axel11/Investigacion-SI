@@ -99,3 +99,11 @@ Las aserciones confirman el comportamiento inseguro del bucle actual. Que esta r
 **Título:** `docs: revisar medidas de seguridad y proponer T-14 en importación TSE`
 
 **IDs afectados:** T-01/M-01, T-02, T-05/M-05, T-07/M-07, T-09/M-09 y T-14/M-14; instrucciones de AGENTS.md (1.8). Los cambios de los ítems 1.4 y 1.8 requieren revisión de Axel y Frander, respectivamente. No se marca ninguna aprobación en nombre de ellos.
+
+## Integración posterior con `origin/main`
+
+Al integrar los cambios remotos se conservaron la integración SNIT, la nueva prueba OIJ de rechazo de un host distinto y el reparto propuesto con Pablo en Q-10. Se combinaron con las precisiones de esta revisión y T-14, sin sustituir los archivos por una sola de las versiones.
+
+La afirmación inicial de que faltaba la prueba del host OIJ corresponde a `cdc70e6`; la versión integrada ya incluye esa prueba en `backend/scripts/oij.test.cjs`. T-07 y el modelo se actualizaron para reflejarlo y mantener pendientes las comprobaciones de redirecciones, catálogo, OSM y CI.
+
+Q-10 sigue abierta: conservar su propuesta no equivale a ratificarla. En esa propuesta el ítem 1.8 pasa a Pablo y Daniel conserva el 1.4; este documento registra el aporte de revisión, no otorga a Daniel automáticamente la responsabilidad del 1.8. No se firmó ni aprobó ninguna revisión humana.

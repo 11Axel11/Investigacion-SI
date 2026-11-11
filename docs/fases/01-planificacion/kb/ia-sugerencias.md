@@ -16,7 +16,7 @@ Cómo se distinguen los tipos de información en esta base de conocimiento:
 2. Se registra la decisión en la columna de estado: `aceptada`, `rechazada` o `falso positivo`, con fecha y nombre.
 3. Si se acepta, se incorpora como criterio en [flujos.md](flujos.md), como amenaza en [amenazas.md](amenazas.md) o como pregunta en [preguntas-abiertas.md](preguntas-abiertas.md), en el mismo PR.
 
-Todas las sugerencias parten como **pendiente**. Validadores asignados el 2026-11-10 ([responsables.md](responsables.md#validadores-de-las-sugerencias-de-ia)): IA-01 a IA-04, Daniel; IA-05 a IA-08, José; IA-09 a IA-12, Axel. Cuando el asistente comprobó el hecho leyendo el código, la tabla lo indica; eso no sustituye la validación humana.
+Todas las sugerencias parten como **pendiente**. Validadores asignados el 2026-11-10 ([responsables.md](responsables.md#validadores-de-las-sugerencias-de-ia)): IA-01 y IA-02, Daniel; IA-03 y IA-04, Frander; IA-05 a IA-07, José; IA-08 e IA-12, Pablo; IA-09 a IA-11, Axel (reparto con Pablo propuesto en [Q-10](preguntas-abiertas.md#q-10)). Cuando el asistente comprobó el hecho leyendo el código, la tabla lo indica; eso no sustituye la validación humana.
 
 | ID | Flujo | Sugerencia | Estado |
 |---|---|---|---|

@@ -17,6 +17,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-07](#q-07) | ¿Qué pasa con más de 250 objetos de OSM? | Se mantiene el límite y se informa el truncamiento | resuelta |
 | [Q-08](#q-08) | ¿Tamaño del equipo y responsable de cada fuente? | 4 integrantes; SNIT como cuarta fuente | resuelta |
 | [Q-09](#q-09) | ¿Plataforma de despliegue y proveedor de IA? | VPS con Docker Compose y Caddy; Claude | resuelta |
+| [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo propuesto; sin fuente propia | abierta |
 
 ---
 
@@ -117,8 +118,9 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
   - **SNIT** es la cuarta fuente: los límites cantonales se consumirán por WFS y se normalizarán a GeoJSON, reemplazando el archivo estático `frontend/public/cantones-cr.geojson`. Aporta una capacidad demostrable (la capa territorial del mapa) y el backend ya cruza datos por cantón. BCCR queda descartada porque exige token de suscripción, y SICOP por el volumen de datos para el plazo.
   - El módulo de cobertura cruza las tres fuentes originales y no cuenta como fuente.
 - **Responsable de resolverla:** el equipo. **Revisor:** Frander.
-- **Afecta:** README (tabla de fuentes), reparto de ítems.
-- **Estado:** resuelta. La integración de SNIT está pendiente.
+- **Nota (Q-10):** Pablo se suma como quinto integrante; el número de integrantes y el reparto pasan a [Q-10](#q-10).
+- **Afecta:** README (fuentes), reparto de ítems, [C-05](arquitectura.md#componentes) y [TP-09](terceros-secretos.md#servicios-externos).
+- **Estado:** resuelta. La capa del IGN/SNIT se sirve por `GET /coverage/canton-boundaries`.
 
 ## Q-09
 
@@ -131,3 +133,19 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Responsable de resolverla:** Daniel. **Revisor:** José.
 - **Afecta:** TP-05 a TP-08, S-03 a S-05 y las fases 5 a 7.
 - **Estado:** resuelta.
+
+## Q-10
+
+**¿Cómo se reparte la fase 1 con Pablo como quinto integrante?**
+
+- **Contexto:** [Q-08](#q-08) fijó un equipo de 4 con las fuentes OSM, TSE, OIJ y SNIT. Pablo también forma parte del equipo y no figura en el historial de git. El responsable del repositorio indicó el 2026-11-11 que el reparto debe ser parejo y que Pablo no tiene fuente OSINT propia.
+- **Propuesta (2026-11-11), pendiente de ratificar por el equipo:**
+  - **Fuentes:** sin cambios (Frander OSM, Axel TSE, José OIJ, Daniel SNIT). Pablo no tiene fuente propia.
+  - **Ítems (responsable / revisor):** 1.1 Axel / Pablo; 1.2 Frander / José; 1.3 José / Pablo; 1.4 Daniel / Axel; 1.5 Frander / Daniel; 1.6 Axel / José; 1.7 Pablo / Axel; 1.8 Pablo / Frander. Los ítems 1.7 y 1.8 ya estaban redactados; Pablo los asume como responsable.
+  - **Amenazas:** Pablo asume T-02 y T-09 (antes Frander y Daniel) y revisa T-10 y T-12. Resto sin cambios.
+  - **Secretos:** S-02 pasa a Axel y S-04 a Pablo.
+  - **Validadores de IA:** IA-01 y IA-02 Daniel; IA-03 y IA-04 Frander; IA-05 a IA-07 José; IA-08 e IA-12 Pablo; IA-09 a IA-11 Axel.
+- **Alternativas:** dejar a Pablo sin ítems formales (solo contribuye) o repartir por afinidad técnica en vez de por conteo.
+- **Responsable de resolverla:** el equipo. **Revisor:** José.
+- **Afecta:** [responsables.md](responsables.md), [amenazas.md](amenazas.md) (responsable y revisor de T-02, T-09, T-10 y T-12), [terceros-secretos.md](terceros-secretos.md) (S-02 y S-04), [ia-sugerencias.md](ia-sugerencias.md), [observatorio.json](../threat-model/observatorio.json), [REVISION.md](../REVISION.md).
+- **Estado:** abierta. Si el equipo cambia algún punto, se corrige este archivo y los afectados en el mismo PR.
