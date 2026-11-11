@@ -2,7 +2,9 @@
 
 Documentación versionada de planificación segura del Observatorio Territorial y Electoral de Costa Rica. Orienta al equipo y al agente de IA durante el desarrollo y la revisión de cambios. Corresponde a la etapa 1 (Planificación) del proyecto final de desarrollo seguro.
 
-Estado: fase 1 completa a falta de la revisión cruzada humana. Contenido del 2026-11-10 sobre el commit `e5a1990`; responsables y revisores asignados en [responsables.md](responsables.md).
+Estado: documentación base redactada; pendientes la revisión cruzada humana y la validación de la nueva propuesta T-14. Contenido inicial del 2026-11-10 sobre el commit `e5a1990`; responsables y revisores asignados en [responsables.md](responsables.md).
+
+Actualización del 2026-11-11 sobre `cdc70e6`: [revisión de medidas](../evidencias/revision-medidas.md), precisiones del alcance de los controles y nueva amenaza propuesta T-14. Esta incorporación requiere validación humana de prioridad y tratamiento; no cambia el estado de las revisiones pendientes.
 
 ## Contenido
 
@@ -62,7 +64,8 @@ YAML, JSON o un grafo de contexto se agregarán solo si facilitan una consulta o
 La planificación se considera completa cuando:
 
 - [x] Los tres flujos tienen comportamiento y permisos definidos ([flujos.md](flujos.md), [matriz de acceso](arquitectura.md#matriz-de-acceso); Q-01 y Q-02 resueltas).
-- [x] Cada amenaza tiene decisión de tratamiento (mitigar), medida, comprobación prevista y responsable ([amenazas.md](amenazas.md), [responsables.md](responsables.md)).
+- [x] T-01 a T-13 tienen decisión de tratamiento (mitigar), medida, comprobación prevista y responsable ([amenazas.md](amenazas.md), [responsables.md](responsables.md)).
+- [ ] Validar la prioridad, el tratamiento y la asignación propuestos de T-14 (incorporada el 2026-11-11).
 - [x] Las dudas que impedían definir el comportamiento correcto están resueltas (Q-01 a Q-09).
-- [x] El diagrama de Threat Dragon existe y contiene los 13 IDs de [amenazas.md](amenazas.md) ([observatorio.json](../threat-model/observatorio.json)).
-- [ ] **Otro integrante revisó este contenido** y ratificó las decisiones delegadas ([preguntas-abiertas.md](preguntas-abiertas.md)). Es lo único pendiente; lo hace cada revisor en el PR.
+- [x] El diagrama de Threat Dragon existe y contiene los 14 IDs de [amenazas.md](amenazas.md), incluida la propuesta T-14 ([observatorio.json](../threat-model/observatorio.json)). La importación visual de la actualización aún está pendiente.
+- [ ] **Otro integrante revisó este contenido** y ratificó las decisiones delegadas ([preguntas-abiertas.md](preguntas-abiertas.md)); lo hace cada revisor en el PR.

@@ -66,7 +66,7 @@ Cruces señalados en el diagrama:
 4. Operador → API (ZIP con datos personales). Es el cruce con el dato más sensible.
 5. API → base de datos. Con `DATABASE_URL`. TypeORM con `synchronize: true`.
 6. API → Overpass. Respuesta de un tercero que se almacena tras normalizarla.
-7. API → OIJ. Respuesta de un tercero; se valida el host del recurso y se prohíben redirecciones.
+7. API → OIJ. Respuesta de un tercero; en la descarga del CSV se valida el host del recurso y se prohíben redirecciones. La consulta al catálogo CKAN no configura esa prohibición (ver T-07).
 
 ## Datos protegidos
 

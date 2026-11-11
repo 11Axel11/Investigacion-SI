@@ -6,9 +6,11 @@ Las medidas y sus comprobaciones se mantienen aquí, junto a cada amenaza. No ha
 
 **Estado de la medida:** `propuesta` (definida, con comprobación prevista), `implementada` (existe en el código, sin prueba que la demuestre) o `verificada` (existe y hay una prueba o evidencia reproducible).
 
-**Responsable y revisor:** asignados el 2026-11-10 (resumen en [responsables.md](responsables.md)). El revisor es siempre otro integrante y deja constancia de su revisión en el PR. Todas las amenazas tienen tratamiento decidido: mitigar. Ninguna se aplaza.
+**Responsable y revisor:** asignados el 2026-11-10 para T-01 a T-13 (resumen en [responsables.md](responsables.md)). El revisor es siempre otro integrante y deja constancia de su revisión en el PR. T-01 a T-13 tienen tratamiento decidido: mitigar. Ninguna se aplaza. T-14 se incorpora como propuesta en la revisión del 2026-11-11; su prioridad y tratamiento requieren validación humana.
 
 Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a código son orientativas; si el archivo cambió, vale lo que diga el código vigente.
+
+Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T-05, T-07 y T-09, y nueva propuesta T-14. Alcance, evidencia y limitaciones en [revision-medidas.md](../evidencias/revision-medidas.md). No se implementaron ni se verificaron las mitigaciones mediante esta revisión.
 
 ## Resumen
 
@@ -27,6 +29,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 | [T-11](#t-11) | Manipulación, Divulgación | Todos | Validación de entradas | Baja | propuesta |
 | [T-12](#t-12) | Manipulación (cadena de suministro) | Todos | Dependencias y CI | Media | propuesta |
 | [T-13](#t-13) | Divulgación de información | Todos | Secretos | Media | propuesta |
+| [T-14](#t-14) | Manipulación | F-01 | Persistencia de agregados TSE | Media (propuesta) | propuesta; pendiente de validación humana |
 
 ---
 
@@ -38,7 +41,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Prioridad:** Alta. Es la brecha de mayor alcance y la más simple de explotar; afecta los tres flujos críticos.
 - **Medida (propuesta):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
 - **Componente:** `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts`, `backend/src/oij/oij.controller.ts`.
-- **Comprobación prevista:** prueba de autorización por API. Sin credencial y con credencial incorrecta, los tres endpoints responden 401 o 403 y las filas de la BD no cambian. Con credencial válida responden como hoy. La prueba usa peticiones directas, no la interfaz.
+- **Comprobación prevista:** prueba de autorización por API. Sin credencial y con credencial incorrecta, los tres endpoints responden 401, conforme a Q-01, y las filas de la BD no cambian. Con credencial válida responden como hoy. La prueba usa peticiones directas, no la interfaz.
 - **Responsable / revisor:** Frander / José.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
@@ -48,7 +51,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Amenaza:** solicitudes repetidas de sincronización agotan la cuota de Overpass, provocan el bloqueo de la IP del servidor o saturan CPU, memoria y BD.
 - **Recurso afectado:** API, Overpass (TP-01) y catálogo del OIJ (TP-02).
 - **Impacto:** el servicio deja de poder sincronizar y puede ser vetado por el tercero.
-- **Prioridad:** Alta. Depende de T-01 y de la falta de límite de peticiones. La caché (15 min en OSM, 1 h en OIJ) limita la repetición de una misma combinación, pero no impide recorrer las combinaciones distintas: 7 provincias, más de cien cantones y 22 categorías.
+- **Prioridad:** Alta. Depende de T-01 y de la falta de límite de peticiones. La caché (15 min en OSM, 1 h en OIJ) limita la repetición de una misma combinación, pero no impide recorrer las combinaciones distintas: la lista `LOCATIONS` contiene 7 provincias y 84 cantones, y `CATEGORY_DEFS` define 22 categorías (código revisado el 2026-11-11).
 - **Medida (propuesta):** autenticación (T-01) más límite de peticiones por IP (por ejemplo `@nestjs/throttler`) en los endpoints de escritura, con un tope de sincronizaciones por hora.
 - **Componente:** módulos `osm` y `oij`; configuración global de `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba de carga con Artillery en el ambiente de pruebas. Al superar el límite el servidor responde 429 y no se generan llamadas adicionales a los terceros (se verifican con un servidor simulado).
@@ -88,9 +91,9 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** D-02.
 - **Impacto:** conteos falsos o mezclados presentados con la procedencia del TSE.
 - **Prioridad:** Media. La probabilidad depende de T-01.
-- **Medida (propuesta):** calcular y guardar el SHA-256 del ZIP importado junto a la procedencia, y mostrar la fecha de corte por cada distrito. Procedimiento: el operador compara el hash con el de su descarga oficial.
+- **Medida (propuesta):** calcular y guardar el SHA-256 del ZIP importado junto a la procedencia, y mostrar la fecha de corte por cada distrito. Procedimiento: el operador compara el hash con el de una copia obtenida directamente del sitio oficial por HTTPS. **Límite:** el hash permite identificar el archivo y detectar diferencias respecto de esa copia; por sí solo no autentica al TSE como emisor ni demuestra que el contenido sea correcto. Calcular dos veces el hash del mismo archivo no valida su procedencia.
 - **Componente:** `backend/src/tse/tse.service.ts`, `backend/src/tse/tse-electoral-summary.entity.ts`.
-- **Comprobación prevista:** prueba que importa un ZIP ficticio y confirma que el hash queda registrado; revisión manual del procedimiento por otro integrante.
+- **Comprobación prevista:** prueba que importa un ZIP ficticio y confirma que el hash queda registrado y cambia si cambia el contenido; revisión manual del procedimiento por otro integrante, sin presentar el hash como firma oficial.
 - **Responsable / revisor:** Axel / Daniel.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
@@ -114,9 +117,9 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** D-03 y D-04.
 - **Impacto:** datos corruptos o conexión a un destino no previsto.
 - **Prioridad:** Media.
-- **Medida (implementada):** en el OIJ se restringe el recurso a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
+- **Medida (implementada):** en el OIJ se restringe el recurso CSV a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones de esa descarga, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. **Alcance real:** la consulta al catálogo CKAN tiene timeout de 20 s, pero no configura `redirect: 'error'` ni límite de bytes; no se le deben atribuir los controles del CSV. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
 - **Componente:** `backend/src/oij/oij.service.ts`, `backend/src/oij/oij.parser.ts`, `backend/src/osm/osm.service.ts`.
-- **Comprobación prevista:** ejecutar `npm run test:oij` en CI. Falta una prueba equivalente para OSM (respuesta con forma inesperada) y una para el host del OIJ.
+- **Comprobación prevista:** ejecutar `npm run test:oij` en CI. Faltan una prueba equivalente para OSM (respuesta con forma inesperada), una para el host y las redirecciones del CSV del OIJ, y una comprobación separada del comportamiento del catálogo. Las pruebas del parser no verifican los controles de red.
 - **Responsable / revisor:** José / Daniel.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** implementada; verificada solo en parte (el parser del OIJ).
@@ -140,9 +143,9 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Recurso afectado:** API y base de datos (`backend/src/main.ts`, `backend/src/app.module.ts`).
 - **Impacto:** filtración de detalles internos, uso de la API desde sitios ajenos y cambios de esquema no controlados en producción.
 - **Prioridad:** Media.
-- **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`.
+- **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`. **Límite:** CORS es una política del navegador para acceso entre orígenes; no autentica al cliente ni impide peticiones directas a la API. La autorización de escritura se comprueba por separado en T-01.
 - **Componente:** `backend/src/main.ts`, `backend/src/app.module.ts`.
-- **Comprobación prevista:** prueba que verifica cabeceras y CORS con un origen no permitido, y que una falla simulada de Overpass no devuelve texto interno. El análisis DAST con ZAP (ítem 4.7) cubre el resto.
+- **Comprobación prevista:** prueba que verifica las cabeceras de seguridad y que CORS no autoriza un origen no permitido mediante `Access-Control-Allow-Origin`; comprobar también un origen permitido. No asumir que la ausencia de esa cabecera equivale a un 401 o impide una escritura. Simular una falla de Overpass y comprobar que la respuesta no devuelve texto interno. ZAP (ítem 4.7), si se selecciona y ejecuta, complementa estas pruebas; no demuestra por sí solo el uso de migraciones, que requiere revisar la configuración y ejecutar el procedimiento en una BD de pruebas.
 - **Responsable / revisor:** Daniel / Frander.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
@@ -201,10 +204,27 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 
 ---
 
+## T-14
+
+- **Amenaza propuesta (STRIDE: Manipulación):** una importación TSE queda aplicada parcialmente si falla la persistencia de un lote posterior. `importZip` ejecuta varios `summaries.upsert` de hasta 500 distritos, sin una transacción que abarque toda la importación. Una interrupción de la BD después del primer lote puede dejar parte de los conteos nuevos junto a los anteriores.
+- **Recurso y flujo afectados:** agregados electorales D-02, F-01 y cruce API → PostgreSQL (flujo 5 del modelo).
+- **Impacto:** aunque la petición termine con error, los resúmenes electorales y el índice de cobertura pueden utilizar un conjunto parcialmente actualizado. No implica exposición de datos personales.
+- **Prioridad propuesta:** Media. Afecta la integridad de un conjunto compartido y puede ocurrir por una falla operativa, incluso con un operador autorizado. Requiere más de un lote y un fallo durante la escritura; los datos son recuperables mediante una importación completa. No se afirma una explotación observada.
+- **Evidencia observada [O]:** bucle de persistencia en `backend/src/tse/tse.service.ts`, `importZip` (líneas 109–111 en `cdc70e6`). La reproducción aislada del bucle con un repositorio simulado confirma que, si falla el segundo lote de 501 distritos ficticios, ya se escribieron 500. Ver [revision-medidas.md](../evidencias/revision-medidas.md). No es una prueba de integración con PostgreSQL.
+- **Medida M-14 (propuesta, no implementada):** persistir todos los lotes en una sola transacción de TypeORM, usando el repositorio del administrador transaccional para cada `upsert`; confirmar solo al finalizar y revertir todos los lotes si alguno falla. Mantener la lectura y validación del ZIP antes de abrir la transacción para no prolongarla innecesariamente.
+- **Componente:** `backend/src/tse/tse.service.ts`, método `importZip`.
+- **Comprobación prevista:** prueba de integración con PostgreSQL aislado y un ZIP ficticio que produzca al menos 501 distritos. Precargar agregados conocidos, forzar una excepción en la escritura del segundo lote y consultar la BD después del error: todas las filas, incluidos los metadatos, deben conservar su estado anterior y no deben quedar filas nuevas. Repetir sin el fallo y comprobar la persistencia completa; repetir el mismo archivo y comprobar que no duplica filas. Limpiar la BD al terminar.
+- **Responsable / revisor propuestos:** Daniel / Axel (mismo revisor del ítem 1.4; asignación pendiente de ratificación).
+- **Tratamiento propuesto:** mitigar; pendiente de revisión humana. No se convierte en criterio [A] ni se declara corregida por añadir este texto.
+- **Estado de la medida:** propuesta, sin implementar ni verificar. La simulación reproduce el riesgo, no demuestra su mitigación.
+- **Diferencia respecto a otras amenazas:** T-05 trata procedencia y mezcla de fechas por importaciones parciales intencionales; T-06 trata el reemplazo de lugares OSM. T-14 trata fallos entre lotes de una misma importación TSE.
+
+---
+
 ## Aceptación o aplazamiento de riesgo
 
-Ninguna amenaza está aplazada ni aceptada. Si el equipo decide posponer una, debe registrarse aquí la justificación, quién acepta el riesgo y la fecha de revisión.
+Ninguna amenaza está aplazada ni aceptada. T-14 tiene una propuesta de mitigación pendiente de validación humana, no una aceptación de riesgo. Si el equipo decide posponer una amenaza, debe registrarse aquí la justificación, quién acepta el riesgo y la fecha de revisión.
 
 ## Modelo en Threat Dragon
 
-El diagrama y las amenazas están en [observatorio.json](../threat-model/observatorio.json). `T-07` aparece en los flujos 6 y 7, por lo que el archivo contiene 14 entradas para 13 amenazas.
+El diagrama y las amenazas están en [observatorio.json](../threat-model/observatorio.json). `T-07` aparece en los flujos 6 y 7, por lo que el archivo contiene 15 entradas para 14 amenazas (T-14 es una propuesta pendiente de validación humana).
