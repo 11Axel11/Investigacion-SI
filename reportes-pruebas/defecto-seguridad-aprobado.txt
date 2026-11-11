@@ -1,0 +1,56 @@
+✔ la cabecera y el mínimo son los de Q-01 (0.604292ms)
+✔ acepta la clave correcta (0.391583ms)
+✔ rechaza sin cabecera, con cabecera vacía y con una clave incorrecta (0.349125ms)
+✔ es sensible a mayúsculas y a una diferencia de un solo carácter (0.13125ms)
+✔ rechaza un prefijo, un sufijo y la clave con espacios (0.203875ms)
+✔ rechaza una cabecera repetida (llega como arreglo) (0.137667ms)
+✔ falla cerrada si ADMIN_API_KEY falta o está vacía, aunque la cabecera coincida (0.115875ms)
+✔ valor límite: 31 caracteres se rechazan y 32 se aceptan (0.152334ms)
+✔ R-02: espacios o salto de línea alrededor de la clave configurada no la invalidan (0.202167ms)
+✔ R-02: el mínimo de 32 caracteres se mide sin los espacios de los extremos (0.143667ms)
+✔ una clave muy larga o con caracteres no ASCII no rompe la comparación (0.419208ms)
+✔ el mensaje de rechazo es idéntico en todos los casos y no revela ninguna clave (0.149458ms)
+✔ HTTP: los tres endpoints de escritura responden 401 sin clave o con una incorrecta y no ejecutan nada (50.83125ms)
+✔ HTTP: con la clave correcta los tres endpoints responden como antes (12.687542ms)
+✔ HTTP: sin ADMIN_API_KEY los tres endpoints rechazan incluso con una cabecera (5.402417ms)
+✔ HTTP: las lecturas siguen siendo públicas (Q-02) (4.360083ms)
+✔ regla: todo handler POST de los controladores tiene AdminKeyGuard y ningún GET lo tiene (0.132875ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 357.143792
+✔ F01-AC7, F02-AC5, F03-AC7: sin clave o con clave incorrecta responde 401, no modifica la BD y no expone datos (140.901792ms)
+✔ T-01: la clave solo se acepta en la cabecera, no por la URL, el cuerpo ni una cabecera repetida (21.125042ms)
+✔ T-01: con la clave del operador las tres escrituras no responden 401 (acceso permitido) (579.94875ms)
+✔ T-01: el servidor falla cerrado sin ADMIN_API_KEY o con una de 31 caracteres, aunque la cabecera coincida (28.301458ms)
+✔ Q-02: las lecturas son públicas y no piden clave (41.363292ms)
+✔ Las rutas de lectura no escriben: una lectura repetida no cambia la BD (27.260625ms)
+✔ 4.6: variantes de la ruta de escritura (mayúsculas, barra final, doble barra, método alterno) no evaden la clave (42.932708ms)
+✔ 4.6: el padrón importado no sale por ninguna ruta de lectura ni por la búsqueda (F01-AC2) (35.699541ms)
+✔ 4.6: los filtros de las consultas tratan el texto como dato (inyección) y no devuelven más ni fallan (19.587292ms)
+✔ 4.6: no existe exportación, descarga ni operación masiva sin la clave (inventario de rutas) (10.017875ms)
+✔ F01-AC1 y F01-AC2: importa conteos por distrito y no persiste ningún dato personal (BD real) (134.186375ms)
+✔ F01-AC6: importar el mismo ZIP dos veces actualiza sin duplicar (restricción única real) (16.788291ms)
+✔ F01-AC3: un archivo inválido responde 400 y los datos anteriores no cambian (23.069292ms)
+✔ F01-AC5: una fecha de corte imposible responde 400 y no escribe (8.145958ms)
+✔ F02-AC1 y F02-AC2: sincroniza el año, guarda procedencia y la segunda llamada usa la caché (20.195209ms)
+✔ F02-AC3: año fuera de rango o no entero responde 400 sin descargar (6.455625ms)
+✔ F02-AC4: si el catálogo falla responde 503 y el dato previo se conserva (13.832333ms)
+✔ F02-AC4: un CSV que cambió de estructura responde 400 y no sustituye los datos (14.37425ms)
+✔ F03-AC1 y F03-AC2: sincroniza, guarda lugares normalizados y la segunda llamada usa la caché (17.4295ms)
+✔ F03-AC3: provincia, cantón o categoría inválidos responden 400 y no llegan a Overpass (6.883959ms)
+✔ F03-AC4: si Overpass falla responde 503 y los lugares previos siguen intactos (7.415666ms)
+✔ F03-AC6 (Q-02): cualquier visitante consulta los lugares guardados sin clave (13.639ms)
+✔ F03-AC5: si Overpass responde sin lugares, los lugares anteriores de esa combinación no se pierden (7.865833ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1809.948584
