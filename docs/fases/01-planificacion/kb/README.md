@@ -2,7 +2,7 @@
 
 Documentación versionada de planificación segura del Observatorio Territorial y Electoral de Costa Rica. Orienta al equipo y al agente de IA durante el desarrollo y la revisión de cambios. Corresponde a la etapa 1 (Planificación) del proyecto final de desarrollo seguro.
 
-Estado: documentación base redactada; pendientes la revisión cruzada humana y la validación de la nueva propuesta T-14. Contenido inicial del 2026-11-10 sobre el commit `e5a1990`; responsables y revisores asignados en [responsables.md](responsables.md).
+Estado: contenido de la fase 1 completo; falta únicamente la revisión cruzada presencial del equipo y la validación humana de la propuesta T-14. Contenido inicial del 2026-11-10 sobre el commit `e5a1990`, con las decisiones provisionales del 2026-11-11 (Q-10 e IA-01 a IA-12); responsables y revisores asignados en [responsables.md](responsables.md).
 
 Actualización del 2026-11-11 sobre `cdc70e6`: [revisión de medidas](../evidencias/revision-medidas.md), precisiones del alcance de los controles y nueva amenaza propuesta T-14. Esta incorporación requiere validación humana de prioridad y tratamiento; no cambia el estado de las revisiones pendientes.
 
@@ -29,6 +29,7 @@ Se usan IDs cortos para relacionar la información sin repetirla.
 |---|---|---|
 | `F-nn` | Flujo crítico | [flujos.md](flujos.md) |
 | `FnnACm` | Criterio de aceptación del flujo `F-nn` | [flujos.md](flujos.md) |
+| `COV-ACn` | Criterio de aceptación de las consultas de cobertura | [flujos.md](flujos.md) |
 | `C-nn` | Componente | [arquitectura.md](arquitectura.md) |
 | `D-nn` | Dato protegido | [arquitectura.md](arquitectura.md) |
 | `T-nn` | Amenaza (con su medida y comprobación) | [amenazas.md](amenazas.md) |
@@ -67,5 +68,8 @@ La planificación se considera completa cuando:
 - [x] T-01 a T-13 tienen decisión de tratamiento (mitigar), medida, comprobación prevista y responsable ([amenazas.md](amenazas.md), [responsables.md](responsables.md)).
 - [ ] Validar la prioridad, el tratamiento y la asignación propuestos de T-14 (incorporada el 2026-11-11).
 - [x] Las dudas que impedían definir el comportamiento correcto están resueltas (Q-01 a Q-09).
-- [x] El diagrama de Threat Dragon existe y contiene los 14 IDs de [amenazas.md](amenazas.md), incluida la propuesta T-14 ([observatorio.json](../threat-model/observatorio.json)). La importación visual de la actualización aún está pendiente.
-- [ ] **Otro integrante revisó este contenido** y ratificó las decisiones delegadas ([preguntas-abiertas.md](preguntas-abiertas.md)); lo hace cada revisor en el PR.
+- [x] El diagrama de Threat Dragon existe y contiene los 14 IDs de [amenazas.md](amenazas.md), incluida la propuesta T-14 ([observatorio.json](../threat-model/observatorio.json)). La versión actual se reimportó en Threat Dragon v2.6.2 el 2026-11-11 sin errores.
+- [x] El diagrama de Threat Dragon tiene su imagen exportada ([observatorio.png](../threat-model/observatorio.png)) y un diseño legible.
+- [x] Las decisiones pendientes están tomadas, de forma provisional: Q-10 y el estado de IA-01 a IA-12. Los criterios aceptados están en [flujos.md](flujos.md#casos-límite-aceptados-de-las-sugerencias-de-ia).
+- [ ] Validar la prioridad, el tratamiento y la asignación propuestos de T-14 (incorporada el 2026-11-11).
+- [ ] **Otro integrante revisó este contenido** y ratificó las decisiones delegadas ([preguntas-abiertas.md](preguntas-abiertas.md)). Es lo único pendiente además de T-14; lo hace cada revisor, en persona, firmando en [REVISION.md](../REVISION.md).

@@ -1,6 +1,6 @@
 # Responsables y reparto de la fase 1
 
-**Supuesto de partida.** El equipo se infiere del historial de git (cuatro autores: FranderCT, 11Axel11, Daniel y José Núñez Villalobos) y se confirma al ratificar el PR de la fase 1 ([Q-08](preguntas-abiertas.md#q-08)). Pablo se suma como quinto integrante y todavía no aparece en el historial; el reparto con él es una propuesta pendiente de ratificar ([Q-10](preguntas-abiertas.md#q-10)). Los nombres se escriben sin menciones de GitHub a propósito. Si alguien del equipo es distinto o la asignación no es equilibrada, se corrige este archivo y los que lo referencian en el mismo PR.
+**Supuesto de partida.** El equipo se infiere del historial de git (cuatro autores: FranderCT, 11Axel11, Daniel y José Núñez Villalobos) y se confirma al ratificar el PR de la fase 1 ([Q-08](preguntas-abiertas.md#q-08)). Pablo se suma como quinto integrante y todavía no aparece en el historial; el reparto con él se decidió de forma provisional el 2026-11-11 y el equipo lo ratifica en la revisión presencial ([Q-10](preguntas-abiertas.md#q-10)). Los nombres se escriben sin menciones de GitHub a propósito. Si alguien del equipo es distinto o la asignación no es equilibrada, se corrige este archivo y los que lo referencian en el mismo PR.
 
 **Regla.** Cada ítem y cada amenaza tiene un responsable y un revisor distinto. Quien revisa no escribió lo que revisa. La columna "Revisión" se actualiza cuando la persona revisora deja constancia en el PR.
 
@@ -12,7 +12,7 @@
 | Axel | TSE (padrón electoral) | Integrada |
 | José | OIJ (estadísticas policiales) | Integrada |
 | Daniel | SNIT (límites cantonales por WFS) | Integrada en cobertura ([Q-08](preguntas-abiertas.md#q-08)) |
-| Pablo | Sin fuente propia | Propuesta pendiente de ratificar ([Q-10](preguntas-abiertas.md#q-10)) |
+| Pablo | Sin fuente propia | Decisión provisional, pendiente de ratificar ([Q-10](preguntas-abiertas.md#q-10)) |
 
 ## Ítems de la fase 1
 

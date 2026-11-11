@@ -39,8 +39,8 @@
               "y": 60
             },
             "size": {
-              "width": 280,
-              "height": 330
+              "width": 380,
+              "height": 260
             },
             "attrs": {
               "label": {
@@ -60,12 +60,12 @@
           },
           {
             "position": {
-              "x": 660,
+              "x": 720,
               "y": 60
             },
             "size": {
               "width": 340,
-              "height": 640
+              "height": 650
             },
             "attrs": {
               "label": {
@@ -85,12 +85,12 @@
           },
           {
             "position": {
-              "x": 1080,
+              "x": 1220,
               "y": 60
             },
             "size": {
               "width": 280,
-              "height": 640
+              "height": 650
             },
             "attrs": {
               "label": {
@@ -111,7 +111,7 @@
           {
             "position": {
               "x": 60,
-              "y": 140
+              "y": 160
             },
             "size": {
               "width": 160,
@@ -227,7 +227,7 @@
           {
             "position": {
               "x": 60,
-              "y": 330
+              "y": 380
             },
             "size": {
               "width": 160,
@@ -458,12 +458,12 @@
           },
           {
             "position": {
-              "x": 370,
-              "y": 160
+              "x": 420,
+              "y": 100
             },
             "size": {
-              "width": 140,
-              "height": 130
+              "width": 200,
+              "height": 200
             },
             "attrs": {
               "text": {
@@ -591,12 +591,12 @@
           },
           {
             "position": {
-              "x": 760,
-              "y": 180
+              "x": 820,
+              "y": 350
             },
             "size": {
               "width": 140,
-              "height": 130
+              "height": 140
             },
             "attrs": {
               "text": {
@@ -763,8 +763,8 @@
           },
           {
             "position": {
-              "x": 750,
-              "y": 520
+              "x": 810,
+              "y": 570
             },
             "size": {
               "width": 160,
@@ -888,11 +888,11 @@
           },
           {
             "position": {
-              "x": 1140,
-              "y": 130
+              "x": 1250,
+              "y": 330
             },
             "size": {
-              "width": 160,
+              "width": 220,
               "height": 80
             },
             "attrs": {
@@ -1004,11 +1004,11 @@
           },
           {
             "position": {
-              "x": 1140,
-              "y": 330
+              "x": 1250,
+              "y": 540
             },
             "size": {
-              "width": 160,
+              "width": 220,
               "height": 80
             },
             "attrs": {
@@ -1120,11 +1120,11 @@
           },
           {
             "position": {
-              "x": 1140,
-              "y": 540
+              "x": 1250,
+              "y": 110
             },
             "size": {
-              "width": 160,
+              "width": 220,
               "height": 80
             },
             "attrs": {
@@ -1278,7 +1278,7 @@
                   }
                 },
                 "position": {
-                  "distance": 0.5,
+                  "distance": 0.72,
                   "args": {
                     "keepGradient": true,
                     "ensureLegibility": true
@@ -1286,7 +1286,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Visitante a frontend",
@@ -1354,7 +1354,7 @@
                   }
                 },
                 "position": {
-                  "distance": 0.5,
+                  "distance": 0.55,
                   "args": {
                     "keepGradient": true,
                     "ensureLegibility": true
@@ -1362,7 +1362,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Operador a frontend",
@@ -1383,12 +1383,16 @@
             },
             "target": {
               "cell": "2a05740a-7fcf-44da-9018-b42725d93249",
-              "port": "27ac5e7d-f6bd-498f-8870-dc7a218c8db1"
+              "port": "09e71b3c-5979-44eb-8de4-d70177f5a528"
             },
             "vertices": [
               {
-                "x": 260,
-                "y": 300
+                "x": 140,
+                "y": 345
+              },
+              {
+                "x": 520,
+                "y": 345
               }
             ]
           },
@@ -1445,7 +1449,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Frontend a API",
@@ -1493,8 +1497,14 @@
             },
             "target": {
               "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
-              "port": "d6827ace-5435-4ac3-b2c9-b206df920010"
-            }
+              "port": "91f6b6f2-d4ef-4076-af20-a40be15221bf"
+            },
+            "vertices": [
+              {
+                "x": 890,
+                "y": 200
+              }
+            ]
           },
           {
             "shape": "flow",
@@ -1548,7 +1558,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Frontend a teselas OSM",
@@ -1569,20 +1579,16 @@
             },
             "target": {
               "cell": "9ddc5ba3-848d-4ce0-9dce-bc8bc41957c2",
-              "port": "9af2d314-8209-47fb-9e8a-90b5f2b84922"
+              "port": "b0b80342-6201-4b0f-9bae-e22b780cdc55"
             },
             "vertices": [
               {
-                "x": 620,
-                "y": 100
+                "x": 520,
+                "y": 20
               },
               {
-                "x": 1000,
-                "y": 100
-              },
-              {
-                "x": 1000,
-                "y": 580
+                "x": 1360,
+                "y": 20
               }
             ]
           },
@@ -1639,7 +1645,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Operador a API (ZIP del padrón)",
@@ -1701,21 +1707,7 @@
             "target": {
               "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
               "port": "d6827ace-5435-4ac3-b2c9-b206df920010"
-            },
-            "vertices": [
-              {
-                "x": 140,
-                "y": 450
-              },
-              {
-                "x": 620,
-                "y": 450
-              },
-              {
-                "x": 830,
-                "y": 330
-              }
-            ]
+            }
           },
           {
             "shape": "flow",
@@ -1770,7 +1762,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "API a PostgreSQL",
@@ -1827,7 +1819,7 @@
             "id": "c7d98dbc-9651-4638-9d6d-4f3cb2bc1650",
             "source": {
               "cell": "019aa03c-b0ff-4336-8153-7936f3531859",
-              "port": "42fda876-73be-4599-bdde-d64d6398f47d"
+              "port": "a07e4f77-fb92-4fff-8c79-209ff94f072f"
             },
             "target": {
               "cell": "3f9f6a9e-048c-4a82-9c9c-222d327a35c6",
@@ -1879,7 +1871,7 @@
                   }
                 },
                 "position": {
-                  "distance": 0.5,
+                  "distance": 0.79,
                   "args": {
                     "keepGradient": true,
                     "ensureLegibility": true
@@ -1887,7 +1879,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "API a Overpass",
@@ -1926,8 +1918,12 @@
             },
             "vertices": [
               {
-                "x": 960,
-                "y": 160
+                "x": 1140,
+                "y": 420
+              },
+              {
+                "x": 1140,
+                "y": 370
               }
             ]
           },
@@ -1976,7 +1972,7 @@
                   }
                 },
                 "position": {
-                  "distance": 0.5,
+                  "distance": 0.84,
                   "args": {
                     "keepGradient": true,
                     "ensureLegibility": true
@@ -1984,7 +1980,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "API a OIJ",
@@ -2023,8 +2019,12 @@
             },
             "vertices": [
               {
-                "x": 960,
-                "y": 370
+                "x": 1140,
+                "y": 420
+              },
+              {
+                "x": 1140,
+                "y": 580
               }
             ]
           },
@@ -2080,7 +2080,7 @@
                 }
               }
             ],
-            "connector": "smooth",
+            "connector": "normal",
             "data": {
               "type": "tm.Flow",
               "name": "Descarga manual del padrón",
@@ -2101,7 +2101,7 @@
             },
             "target": {
               "cell": "efc25d1b-b017-40fa-99be-d0049bff6fee",
-              "port": "9c8d883d-3516-4416-85a1-c150b02e140d"
+              "port": "4d0fc176-09f1-4402-afdd-f063256d9f0b"
             }
           }
         ]
