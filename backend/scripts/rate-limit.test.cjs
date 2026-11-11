@@ -3,9 +3,8 @@ const assert = require('node:assert/strict');
 require('reflect-metadata');
 
 const { Module } = require('@nestjs/common');
-const { APP_GUARD } = require('@nestjs/core');
 const { NestFactory } = require('@nestjs/core');
-const { ThrottlerGuard, ThrottlerModule } = require('@nestjs/throttler');
+const { ThrottlerModule } = require('@nestjs/throttler');
 
 const { OsmController } = require('../dist/osm/osm.controller');
 const { OsmService } = require('../dist/osm/osm.service');
@@ -28,18 +27,14 @@ async function startApp() {
   Module({
     imports: [
       ThrottlerModule.forRoot([
-        { name: 'osmMinute', ttl: 60 * 1000, limit: 1 },
-        { name: 'osmHour', ttl: 60 * 60 * 1000, limit: 5 },
-        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 1 },
-        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 3 },
+        { name: 'osmMinute', ttl: 60 * 1000, limit: 20 },
+        { name: 'osmHour', ttl: 60 * 60 * 1000, limit: 20 },
+        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 5 },
+        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 5 },
       ]),
     ],
     controllers: [OsmController, OijController],
     providers: [
-      {
-        provide: APP_GUARD,
-        useClass: ThrottlerGuard,
-      },
       {
         provide: OsmService,
         useValue: {
@@ -83,37 +78,41 @@ test('T-02: limita sincronizaciones y conserva públicas las lecturas', async ()
       'x-admin-key': ADMIN_KEY,
     };
 
-    const osmFirst = await fetch(`${base}/osm/sync`, {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const response = await fetch(`${base}/osm/sync`, {
+        method: 'POST',
+        headers,
+        body: '{}',
+      });
+      assert.ok(response.status < 300, `OSM intento ${attempt + 1}`);
+    }
+
+    const osmBlocked = await fetch(`${base}/osm/sync`, {
       method: 'POST',
       headers,
       body: '{}',
     });
 
-    const osmSecond = await fetch(`${base}/osm/sync`, {
-      method: 'POST',
-      headers,
-      body: '{}',
-    });
+    assert.equal(osmBlocked.status, 429);
+    assert.equal(calls.osm, 20);
 
-    assert.ok(osmFirst.status < 300, 'la primera sincronización OSM debe funcionar');
-    assert.equal(osmSecond.status, 429, 'la segunda sincronización OSM debe limitarse');
-    assert.equal(calls.osm, 1, 'OSM no debe ejecutarse después del límite');
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const response = await fetch(`${base}/oij/sync`, {
+        method: 'POST',
+        headers,
+        body: '{"year":2026}',
+      });
+      assert.ok(response.status < 300, `OIJ intento ${attempt + 1}`);
+    }
 
-    const oijFirst = await fetch(`${base}/oij/sync`, {
-      method: 'POST',
-      headers,
-      body: '{"year":2026}',
-    });
-
-    const oijSecond = await fetch(`${base}/oij/sync`, {
+    const oijBlocked = await fetch(`${base}/oij/sync`, {
       method: 'POST',
       headers,
       body: '{"year":2026}',
     });
 
-    assert.ok(oijFirst.status < 300, 'la primera sincronización OIJ debe funcionar');
-    assert.equal(oijSecond.status, 429, 'la segunda sincronización OIJ debe limitarse');
-    assert.equal(calls.oij, 1, 'OIJ no debe ejecutarse después del límite');
+    assert.equal(oijBlocked.status, 429);
+    assert.equal(calls.oij, 5);
 
     assert.equal((await fetch(`${base}/osm/locations`)).status, 200);
     assert.equal((await fetch(`${base}/oij/overview`)).status, 200);

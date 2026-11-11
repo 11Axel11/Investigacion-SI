@@ -1,14 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { CoverageService } from './coverage.service';
 import { CantonBoundariesService } from './canton-boundaries.service';
-import { SkipThrottle } from '@nestjs/throttler';
 
-@SkipThrottle({
-  osmMinute: true,
-  osmHour: true,
-  oijFiveMinutes: true,
-  oijHour: true,
-})
 
 @Controller('coverage')
 export class CoverageController {
