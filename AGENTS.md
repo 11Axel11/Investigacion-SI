@@ -63,6 +63,8 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Pruebas del módulo OIJ | `backend/` | `npm run test:oij` |
 | Pruebas de la clave de administración (T-01) | `backend/` | `npm run test:admin` |
 | Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |
+| Semgrep CE y Gitleaks (requiere `brew install semgrep gitleaks`) | raíz | `scripts/seguridad.sh` |
+| Todas las verificaciones (las ejecuta el hook `Stop`) | raíz | `scripts/verificar.sh` (`--rapido` omite la compilación del frontend) |
 | Linting del frontend | `frontend/` | `npm run lint` |
 | Compilar el frontend y comprobar tipos | `frontend/` | `npm run build` |
 

@@ -1,0 +1,78 @@
+# Reglas propias de Semgrep CE para el Observatorio (ítem 2.3). Solo reglas locales: no se consultan
+# registros externos ni se envían métricas. Cada regla indica la amenaza de la KB que protege.
+rules:
+  - id: observatorio-post-sin-admin-guard
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Handler @Post sin @UseGuards(AdminKeyGuard). Toda escritura exige X-Admin-Key (Q-01, T-01, M-01).
+    metadata: { kb: [T-01, Q-01] }
+    patterns:
+      - pattern: |
+          @Post(...)
+          $METHOD(...) { ... }
+      - pattern-not: |
+          @Post(...)
+          @UseGuards(AdminKeyGuard)
+          $METHOD(...) { ... }
+      - pattern-not: |
+          @UseGuards(AdminKeyGuard)
+          @Post(...)
+          $METHOD(...) { ... }
+    paths:
+      include: ["backend/src/**"]
+
+  - id: observatorio-secreto-en-variable-publica
+    languages: [generic]
+    severity: ERROR
+    message: >-
+      Variable NEXT_PUBLIC_* con nombre de secreto (KEY, SECRET, TOKEN, PASSWORD). Se incrustaría en el
+      JavaScript del navegador (Q-02, T-01, S-02).
+    metadata: { kb: [T-01, Q-02, S-02] }
+    pattern-regex: NEXT_PUBLIC_[A-Z0-9_]*(KEY|SECRET|TOKEN|PASSWORD)
+    paths:
+      include: ["frontend/**", "backend/**"]
+      exclude: ["frontend/scripts/**", "node_modules", ".next"]
+
+  - id: observatorio-comparacion-clave-no-constante
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Comparación de la clave de administración con ===, !==, == o !=. Usa timingSafeEqual sobre los
+      SHA-256 de ambas (Q-01, T-01).
+    metadata: { kb: [T-01, Q-01] }
+    pattern-either:
+      - pattern: $X === process.env.ADMIN_API_KEY
+      - pattern: $X !== process.env.ADMIN_API_KEY
+      - pattern: process.env.ADMIN_API_KEY === $X
+      - pattern: process.env.ADMIN_API_KEY !== $X
+      - pattern: $X == process.env.ADMIN_API_KEY
+      - pattern: $X != process.env.ADMIN_API_KEY
+    paths:
+      include: ["backend/src/**"]
+
+  - id: observatorio-sql-con-interpolacion
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Consulta SQL cruda con texto interpolado. Usa parámetros ($1, :nombre) para evitar inyección SQL (T-13).
+    metadata: { kb: [T-13] }
+    pattern-either:
+      - pattern: $O.query(`...${...}...`)
+      - pattern: $O.query("..." + $X)
+    paths:
+      include: ["backend/src/**"]
+
+  - id: observatorio-clave-admin-en-almacenamiento-del-navegador
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: >-
+      La clave de administración no debe guardarse en localStorage, sessionStorage ni cookies (Q-02).
+    metadata: { kb: [T-01, Q-02] }
+    pattern-either:
+      - pattern: localStorage.setItem(..., adminKey)
+      - pattern: sessionStorage.setItem(..., adminKey)
+      - pattern: document.cookie = ... + adminKey
+    paths:
+      include: ["frontend/**"]
+      exclude: [".next", "node_modules"]
