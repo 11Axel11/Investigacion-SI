@@ -7,7 +7,9 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "db:local": "node scripts/local-db.mjs",
-    "test:oij": "npm run build && node --test scripts/oij.test.cjs"
+    "lint": "eslint .",
+    "test:oij": "npm run build && node --test scripts/oij.test.cjs",
+    "test:admin": "npm run build && node --test scripts/admin-key.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",
@@ -25,12 +27,16 @@
     "unzipper": "^0.12.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@nestjs/cli": "^10.4.5",
     "@types/express": "^4.17.21",
     "@types/multer": "^1.4.12",
     "@types/node": "^20.16.0",
     "@types/unzipper": "^0.10.11",
     "embedded-postgres": "^18.4.0-beta.17",
-    "typescript": "^5.5.4"
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.72.2"
   }
 }

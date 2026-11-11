@@ -23,7 +23,7 @@ Se demuestra un PR bloqueado por un fallo, su corrección y su integración post
 
 ## Pendientes derivados de la fase 1
 
-- Eliminar `pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml`; comprobar `npm ci` ([Q-05](../01-planificacion/kb/preguntas-abiertas.md#q-05), [T-12](../01-planificacion/kb/amenazas.md#t-12)).
+- ~~Eliminar `pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml`; comprobar `npm ci`~~ Hecho en la fase 2 ([Q-05](../01-planificacion/kb/preguntas-abiertas.md#q-05), [T-12](../01-planificacion/kb/amenazas.md#t-12)).
 - Dockerfiles de backend y frontend (hoy no existen). Los necesitan 3.3, 3.4 y la fase 5.
 - Gitleaks, OSV-Scanner y Renovate ([M-12, M-13](../01-planificacion/kb/amenazas.md#t-12)).
 

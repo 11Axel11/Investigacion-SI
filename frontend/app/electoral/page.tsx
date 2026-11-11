@@ -20,6 +20,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { api } from '@/lib/api';
+import { useOperatorMode } from '@/lib/operator';
 
 export default function ElectoralPage() {
   const queryClient = useQueryClient();
@@ -33,6 +34,7 @@ export default function ElectoralPage() {
     queryKey: ['tse-districts', filters],
     queryFn: () => api.tse.districts(filters),
   });
+  const operator = useOperatorMode();
   const importMutation = useMutation({
     mutationFn: ({ zip, date }: { zip: File; date?: string }) => api.tse.importZip(zip, date),
     onSuccess: async () => {
@@ -163,11 +165,16 @@ export default function ElectoralPage() {
               />
             </div>
             <div className="flex items-end">
-              <Button className="w-full" disabled={!file || importMutation.isPending}>
+              <Button className="w-full" disabled={!operator || !file || importMutation.isPending} title={operator ? undefined : 'Requiere el modo operador'}>
                 {importMutation.isPending ? 'Procesando…' : 'Procesar y agregar'}
               </Button>
             </div>
           </form>
+          {!operator && (
+            <p className="text-xs text-muted-foreground">
+              Importar el padrón es una acción del operador. Activa el modo operador en el encabezado.
+            </p>
+          )}
 
           {importMutation.isError && (
             <Alert variant="destructive">

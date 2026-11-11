@@ -18,6 +18,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-08](#q-08) | ¿Tamaño del equipo y responsable de cada fuente? | 4 integrantes; SNIT como cuarta fuente | resuelta |
 | [Q-09](#q-09) | ¿Plataforma de despliegue y proveedor de IA? | VPS con Docker Compose y Caddy; Claude | resuelta |
 | [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo; Pablo sin fuente propia | resuelta (provisional) |
+| [Q-11](#q-11) | ¿Quién revisa los cambios a scripts, reglas y permisos del agente, y quién valida la revisión de código asistida por IA? | Sin decidir | **abierta** |
 
 ---
 
@@ -47,7 +48,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
   - Las acciones de importar y sincronizar de la interfaz solo se habilitan en una vista de operador, que pide la clave. La clave se mantiene únicamente en la memoria del navegador (no en `localStorage`, ni en cookies, ni en variables `NEXT_PUBLIC_*`). Ocultar los botones no sustituye la validación del backend.
 - **Responsable de resolverla:** Axel. **Revisor:** Daniel.
 - **Afecta:** matriz de acceso de [arquitectura.md](arquitectura.md#matriz-de-acceso), F03-AC6, [IA-12](ia-sugerencias.md#ia-12).
-- **Estado:** resuelta. Implementación pendiente (la vista de operador en el frontend).
+- **Estado:** resuelta e implementada (modo operador en el frontend, rama `docs/fase-2-inicio`).
 
 ## Q-03
 
@@ -87,7 +88,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Decisión (2026-11-10): `npm`.** Es lo que documenta el README y permite `npm ci` en CI con un único lockfile. Se eliminarán `pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml` al configurar los comandos reproducibles (ítem 2.2), comprobando antes que `npm ci` funcione en ambos proyectos.
 - **Responsable de resolverla:** Daniel. **Revisor:** Axel.
 - **Afecta:** [T-12](amenazas.md#t-12) y la instalación en CI.
-- **Estado:** resuelta. La limpieza de lockfiles está pendiente.
+- **Estado:** resuelta y aplicada (2026-11-11, rama `docs/fase-2-inicio`): se eliminaron `backend/pnpm-lock.yaml`, `frontend/pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml`. Se comprobó `npm ci` en copias aisladas de ambos proyectos y las pruebas y el build pasan con las dependencias reinstaladas con npm.
 
 ## Q-06
 
@@ -149,3 +150,16 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Responsable de resolverla:** el equipo. **Revisor:** José.
 - **Afecta:** [responsables.md](responsables.md), [amenazas.md](amenazas.md) (responsable y revisor de T-02, T-09, T-10 y T-12), [terceros-secretos.md](terceros-secretos.md) (S-02 y S-04), [ia-sugerencias.md](ia-sugerencias.md), [observatorio.json](../threat-model/observatorio.json), [REVISION.md](../REVISION.md).
 - **Estado:** resuelta (provisional). La ratificación presencial del equipo está pendiente. Si cambia algún punto, se corrige este archivo y los afectados en el mismo PR.
+
+---
+
+## Q-11
+
+**¿Qué integrante revisa los cambios a las pruebas, reglas de Semgrep, `.gitleaks.toml`, `scripts/` y `.claude/settings.json`, y quién valida las observaciones de la revisión de código asistida por IA (ítems 2.5 y 2.6)?**
+
+- **Contexto:** la fase 2 exige que esos cambios los revise un integrante distinto del autor y que otra persona valide la revisión de IA ([docs/fases/02-desarrollo/README.md](../../02-desarrollo/README.md)). Los escribió el asistente por indicación de Frander, el único integrante disponible; el reparto de la fase 2 no está definido en [responsables.md](responsables.md).
+- **Qué se necesita decidir:** una persona (o rotación) que revise esos archivos en cada PR, y una persona que valide cada observación de [la revisión 2.6](../../02-desarrollo/evidencias/2.6-revision-ia.md). No puede ser quien pidió o integró el cambio.
+- **Por qué no se asumió:** las reglas del proyecto prohíben suponer una respuesta ([AGENTS.md](../../../../AGENTS.md)). Mientras tanto, las observaciones quedan en `pendiente` y los cambios en el PR sin aprobar.
+- **Responsable de resolverla:** el equipo. **Revisor:** por asignar.
+- **Afecta:** ítems 2.5 y 2.6; sin cambios en flujos, amenazas ni permisos.
+- **Estado:** abierta.

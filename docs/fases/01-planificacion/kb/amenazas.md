@@ -16,7 +16,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 | ID | STRIDE | Flujo | Componente | Prioridad | Estado de la medida |
 |---|---|---|---|---|---|
-| [T-01](#t-01) | Elevación de privilegios, Manipulación | F-01, F-02, F-03 | API (endpoints de escritura) | Alta | propuesta |
+| [T-01](#t-01) | Elevación de privilegios, Manipulación | F-01, F-02, F-03 | API (endpoints de escritura) | Alta | verificada (backend e interfaz) |
 | [T-02](#t-02) | Denegación de servicio | F-02, F-03 | API, Overpass, OIJ | Alta | propuesta |
 | [T-03](#t-03) | Denegación de servicio | F-01 | Importador del TSE | Media | propuesta |
 | [T-04](#t-04) | Divulgación de información | F-01 | Importador del TSE | Alta | implementada |
@@ -39,12 +39,12 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Recurso afectado:** agregados D-02, D-03 y D-04.
 - **Impacto:** un atacante reemplaza o falsea los datos que el sistema presenta como oficiales. El índice de viabilidad y los conteos pasan a ser incorrectos sin que nadie lo note.
 - **Prioridad:** Alta. Es la brecha de mayor alcance y la más simple de explotar; afecta los tres flujos críticos.
-- **Medida (propuesta):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
-- **Componente:** `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts`, `backend/src/oij/oij.controller.ts`.
+- **Medida (implementada en el backend):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
+- **Componente:** `backend/src/common/admin-key.guard.ts` (`AdminKeyGuard`), aplicado en `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts` y `backend/src/oij/oij.controller.ts`.
 - **Comprobación prevista:** prueba de autorización por API. Sin credencial y con credencial incorrecta, los tres endpoints responden 401, conforme a Q-01, y las filas de la BD no cambian. Con credencial válida responden como hoy. La prueba usa peticiones directas, no la interfaz.
 - **Responsable / revisor:** Frander / José.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Estado:** verificada en el backend y en la interfaz (rama `docs/fase-2-inicio`, ítem 2.7). **Evidencia:** `cd backend && npm run test:admin` (15 casos: valores límite de 31 y 32 caracteres, cabecera ausente, vacía, repetida, con espacios y con prefijo, variable ausente o vacía, mensaje idéntico sin filtrar claves, y los tres `POST` por HTTP con servicios simulados que responden 401 y no ejecutan nada). Una prueba falla si se agrega un `POST` sin guard o si una lectura lo exige. Se comprobó con cuatro defectos introducidos a propósito (guard quitado, sin falla cerrada, prefijo aceptado, mínimo de 16) que las pruebas los detectan. **Interfaz ([Q-02](preguntas-abiertas.md#q-02)):** `frontend/lib/operator.ts`, `frontend/components/operator-mode.tsx` y `writeRequest` en `frontend/lib/api.ts`. La clave vive solo en memoria; `cd frontend && npm run test:operator` (9 casos) comprueba que las tres escrituras fallan sin clave antes de salir a la red, que la envían con ella, que un 401 la descarta, que las lecturas nunca la envían y que ningún archivo que la maneja usa almacenamiento del navegador ni `NEXT_PUBLIC_*`; se verificó con tres defectos introducidos a propósito. También se comprobó en el navegador con el backend real (PostgreSQL temporal en Docker): modo desactivado con el botón de sincronizar deshabilitado, una clave incorrecta devuelve el aviso y sale del modo, una correcta atraviesa CORS (preflight con `X-Admin-Key`) y el guard, y al recargar la clave se pierde. No cubre T-02 (límite de peticiones) ni T-08 (registro de accesos denegados).
 
 ## T-02
 
@@ -178,7 +178,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 ## T-12
 
-- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tienen a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)).
+- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tenían a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)) y los de pnpm ya se eliminaron.
 - **Recurso afectado:** cadena de suministro del backend y del frontend.
 - **Impacto:** ejecución de código no confiable o vulnerabilidades heredadas.
 - **Prioridad:** Media. Por confirmar con un análisis: no se ha ejecutado ningún escáner todavía.

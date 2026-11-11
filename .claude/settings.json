@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Read(./backend/.env)",
+      "Read(./backend/.env.*.local)",
+      "Read(./frontend/.env)",
+      "Read(./frontend/.env.local)",
+      "Read(./frontend/.env.*.local)",
+      "Edit(./backend/.env)",
+      "Edit(./frontend/.env)",
+      "Edit(./frontend/.env.local)",
+      "Bash(cat *.env)",
+      "Bash(cat *.env.local)",
+      "Bash(printenv*)",
+      "Bash(env)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * main)",
+      "Bash(git push origin main*)",
+      "Bash(git reset --hard*)",
+      "Bash(git commit --no-verify*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr review*--approve*)",
+      "Bash(rm -rf*)",
+      "Bash(curl*X-Admin-Key*)",
+      "Bash(gh pr review*-a)",
+      "Bash(gh pr review* -a *)",
+      "Bash(git push*:main*)",
+      "Bash(git push*refs/heads/main*)"
+    ],
+    "ask": [
+      "Edit(./AGENTS.md)",
+      "Edit(./.claude/**)",
+      "Edit(./scripts/**)",
+      "Edit(./backend/scripts/**)",
+      "Edit(./frontend/scripts/**)",
+      "Edit(./**/eslint.config.mjs)",
+      "Edit(./.semgrep/**)",
+      "Edit(./.gitleaks.toml)",
+      "Edit(./**/package.json)",
+      "Edit(./**/package-lock.json)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(gh pr create*)",
+      "Bash(docker *)",
+      "Bash(npm install*)",
+      "Bash(npm i *)",
+      "Bash(npm uninstall*)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/hook-stop.sh",
+            "timeout": 240,
+            "statusMessage": "Ejecutando verificaciones del proyecto..."
+          }
+        ]
+      }
+    ]
+  }
+}

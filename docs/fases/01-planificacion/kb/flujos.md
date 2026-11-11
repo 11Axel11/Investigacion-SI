@@ -20,7 +20,7 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 
 ## F-01 Importar el padrón del TSE
 
-- **Actor:** operador ([Q-01](preguntas-abiertas.md#q-01)). Hoy cualquier visitante puede ejecutarlo (**[O]**).
+- **Actor:** operador ([Q-01](preguntas-abiertas.md#q-01)). El backend exige `X-Admin-Key` (**[O]**) y la interfaz la envía solo desde el modo operador ([Q-02](preguntas-abiertas.md#q-02)).
 - **Objetivo:** cargar el ZIP oficial del padrón y obtener conteos de electores y juntas por distrito electoral.
 - **Resultado esperado:** una fila por `electoralCode` con `electors`, `pollingStations`, `sourceFile`, `sourceDate` e `importedAt`. Ningún dato personal queda guardado.
 - **Entradas:** archivo ZIP (`multipart/form-data`, campo `file`) y `sourceDate` opcional (`AAAA-MM-DD`).
@@ -35,14 +35,14 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 | F01-AC4 | [A] Límites | un padrón de más de 5 000 000 de filas, una línea de más de 2 000 caracteres o un archivo de más de 80 MB | se importa | se rechaza y los datos anteriores no cambian |
 | F01-AC5 | [A] Error | `sourceDate` que no cumple `AAAA-MM-DD` | se importa | responde 400 |
 | F01-AC6 | [A] Idempotencia | el mismo ZIP importado dos veces | se repite la importación | los conteos se actualizan por `electoralCode` sin duplicar filas |
-| F01-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /tse/import` | responde 401 y la BD no cambia. **Brecha actual: hoy se acepta (M-01, [T-01](amenazas.md#t-01)).** |
+| F01-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /tse/import` | responde 401 y la BD no cambia. **Implementado** (`AdminKeyGuard`, verificado con `npm run test:admin`; [T-01](amenazas.md#t-01)). La interfaz envía la clave solo desde el modo operador ([Q-02](preguntas-abiertas.md#q-02)). |
 | F01-AC8 | [A] Uso indebido | un ZIP con archivos `.txt` adicionales o con descompresión desproporcionada | se importa | se rechaza sin alterar los conteos. **Brecha actual: no se valida (M-03, [T-03](amenazas.md#t-03), [IA-01](ia-sugerencias.md#ia-01)).** |
 
 ---
 
 ## F-02 Sincronizar el OIJ por año
 
-- **Actor:** operador ([Q-01](preguntas-abiertas.md#q-01)). Hoy cualquier visitante (**[O]**).
+- **Actor:** operador ([Q-01](preguntas-abiertas.md#q-01)). El backend ya exige `X-Admin-Key` (**[O]**).
 - **Objetivo:** obtener las estadísticas policiales de un año y dejarlas agregadas por territorio, delito y mes.
 - **Resultado esperado:** un registro `OijDataset` por año con agregados JSONB y procedencia (`sourceUrl`, `fetchedAt`, fechas del archivo). Reimportar reemplaza ese año.
 - **Entradas:** `{ "year": 2026 }` en el cuerpo JSON.
@@ -55,14 +55,14 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 | F02-AC2 | [A] Caché | el mismo año consultado en menos de una hora | se ejecuta `POST /oij/sync` | responde con `cache: true` sin descargar; las solicitudes simultáneas del mismo año comparten una sola descarga |
 | F02-AC3 | [A] Error | un año fuera de rango, no entero, o sin CSV en el catálogo | se ejecuta `POST /oij/sync` | responde 400 |
 | F02-AC4 | [A] Fuente | el catálogo falla, el recurso apunta a otro host, redirige, supera 40 MB o 60 s, o el CSV cambia de estructura | se ejecuta `POST /oij/sync` | responde 503 (o 400 si cambió la estructura) y se conservan los datos previos |
-| F02-AC5 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /oij/sync` | responde 401 y no se hace ninguna descarga. **Brecha actual: hoy se acepta (M-01, [T-01](amenazas.md#t-01)).** |
+| F02-AC5 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /oij/sync` | responde 401 y no se hace ninguna descarga. **Implementado** (`AdminKeyGuard`, verificado con `npm run test:admin`; [T-01](amenazas.md#t-01)). La interfaz envía la clave solo desde el modo operador ([Q-02](preguntas-abiertas.md#q-02)). |
 | F02-AC6 | [A] Datos ([Q-06](preguntas-abiertas.md#q-06)) | el CSV incluye modalidad, categoría y tipo de objetivo | se guarda el agregado | se guardan solo conteos por delito, modalidad, categoría y tipo de objetivo, distrito y mes; nunca registros individuales, edad, sexo, nacionalidad ni fechas exactas. El código ya lo cumple |
 
 ---
 
 ## F-03 Sincronizar y consultar lugares de OpenStreetMap
 
-- **Actor:** operador para sincronizar; visitante para consultar ([Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02)). Hoy ambos son anónimos (**[O]**).
+- **Actor:** operador para sincronizar; visitante para consultar ([Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02)). Hoy el visitante consulta sin clave y la sincronización exige `X-Admin-Key` (**[O]**).
 - **Objetivo:** obtener lugares (hospitales, farmacias, comercios y otros) por provincia, cantón y categoría, y mostrarlos en el mapa.
 - **Resultado esperado:** filas `OsmPlace` normalizadas (máximo 250 por consulta), una entrada de caché por combinación y respuesta con `fetchedAt` y `sourceUpdatedAt`.
 - **Entradas:** `{ province, canton?, category }`.
@@ -77,7 +77,7 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 | F03-AC4 | [A] Fuente | Overpass no responde, tarda más de 35 s o responde con error | se ejecuta `POST /osm/sync` | responde 503 con mensaje comprensible y los datos previos siguen intactos |
 | F03-AC5 | [A] Integridad | Overpass responde sin lugares, o falla entre borrar e insertar | se ejecuta `POST /osm/sync` | los lugares anteriores de esa combinación no se pierden. **Brecha actual: se borran antes de insertar, sin transacción (M-06, [T-06](amenazas.md#t-06)).** |
 | F03-AC6 | [A] Consulta ([Q-02](preguntas-abiertas.md#q-02)) | cualquier visitante | consulta `GET /osm/places` o `GET /osm/by-category` | recibe los lugares guardados, sin autenticación |
-| F03-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /osm/sync` | responde 401 y no se llama a Overpass. **Brecha actual: hoy se acepta (M-01, [T-01](amenazas.md#t-01)).** |
+| F03-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /osm/sync` | responde 401 y no se llama a Overpass. **Implementado** (`AdminKeyGuard`, verificado con `npm run test:admin`; [T-01](amenazas.md#t-01)). La interfaz envía la clave solo desde el modo operador ([Q-02](preguntas-abiertas.md#q-02)). |
 | F03-AC8 | [A] Límite ([Q-07](preguntas-abiertas.md#q-07)) | más de 250 objetos en la respuesta | se sincroniza | la respuesta incluye `truncated: true` y la interfaz avisa que el conteo puede ser menor al real. **Brecha actual: se trunca sin avisar.** |
 
 ---

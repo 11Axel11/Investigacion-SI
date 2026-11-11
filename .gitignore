@@ -16,3 +16,6 @@ __MACOSX/
 !backend/.env.example
 
 *.tsbuildinfo
+.claude/.intentos
+.claude/verificaciones.log
+.claude/settings.local.json

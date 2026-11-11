@@ -54,15 +54,21 @@ Todo cambio de **comportamiento, datos, arquitectura o permisos** actualiza el c
 
 ## Comandos de comprobación
 
-Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05)); no regeneres ni edites `pnpm-lock.yaml`. Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
+Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05)); el único lockfile es `package-lock.json` de cada proyecto (los de pnpm se eliminaron); instala con `npm ci`, no con `pnpm`. Detalle de ejecución en [README.md](README.md#configuración-y-ejecución).
 
 | Qué | Dónde | Comando |
 |---|---|---|
+| Linting del backend | `backend/` | `npm run lint` |
 | Compilar el backend | `backend/` | `npm run build` |
 | Pruebas del módulo OIJ | `backend/` | `npm run test:oij` |
+| Pruebas de la clave de administración (T-01) | `backend/` | `npm run test:admin` |
+| Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |
+| Semgrep CE y Gitleaks (requiere `brew install semgrep gitleaks`) | raíz | `scripts/seguridad.sh` |
+| Todas las verificaciones (las ejecuta el hook `Stop`) | raíz | `scripts/verificar.sh` (`--rapido` omite la compilación del frontend) |
+| Linting del frontend | `frontend/` | `npm run lint` |
 | Compilar el frontend y comprobar tipos | `frontend/` | `npm run build` |
 
-Aún no existen comandos de linting, pruebas unitarias generales ni análisis de seguridad. Se agregarán en las etapas de Desarrollo y Construcción; cuando existan se listarán aquí, sin duplicar sus instrucciones.
+Aún no existen pruebas unitarias generales ni análisis de seguridad. Se agregarán en las etapas de Desarrollo y Construcción; cuando existan se listarán aquí, sin duplicar sus instrucciones.
 
 ## Alcance de esta versión
 

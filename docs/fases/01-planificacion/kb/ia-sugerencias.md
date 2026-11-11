@@ -114,4 +114,4 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 - **Observación:** el frontend público incluye las acciones de sincronizar e importar (`frontend/lib/api.ts`). Aunque se protejan en el backend, un visitante vería botones que no puede usar.
 - **Comprobación sugerida:** verificar la vista de operador decidida en [Q-02](preguntas-abiertas.md#q-02): las acciones solo se habilitan con la clave, que no se persiste.
 - **Relacionada con:** [T-01](amenazas.md#t-01).
-- **Decisión provisional (2026-11-11):** **aceptada.** Cubierta por la decisión de [Q-02](preguntas-abiertas.md#q-02) (vista de operador, clave solo en memoria). La implementación queda para la fase 2.
+- **Decisión provisional (2026-11-11):** **aceptada.** Cubierta por la decisión de [Q-02](preguntas-abiertas.md#q-02) (vista de operador, clave solo en memoria). Ya implementada y verificada (ver T-01).

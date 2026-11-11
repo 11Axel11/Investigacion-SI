@@ -4,9 +4,11 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AdminKeyGuard } from '../common/admin-key.guard';
 import { TseService } from './tse.service';
 
 @Controller('tse')
@@ -14,6 +16,7 @@ export class TseController {
   constructor(private readonly tseService: TseService) {}
 
   @Post('import')
+  @UseGuards(AdminKeyGuard)
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 80 * 1024 * 1024 } }))
   importZip(
     @UploadedFile() file: Express.Multer.File | undefined,

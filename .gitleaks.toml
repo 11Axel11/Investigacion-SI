@@ -1,0 +1,19 @@
+# Configuración de Gitleaks (ítem 2.3). Extiende las reglas por defecto y agrega la clave de administración.
+title = "Observatorio: Gitleaks"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "observatorio-admin-api-key"
+description = "Valor asignado a ADMIN_API_KEY (Q-01, T-01, S-02)"
+regex = '''(?i)ADMIN_API_KEY\s*[:=]\s*["']?([A-Za-z0-9_\-+/=.]{32,})'''
+secretGroup = 1
+keywords = ["admin_api_key"]
+
+[allowlist]
+description = "Claves ficticias de las pruebas (no son secretos reales)"
+regexes = ['''clave-ficticia-de-prueba-0123456789''', '''incorrecta-sentinela-1234567890abcdef''']
+# Salida de compilación y dependencias: generadas, ignoradas por git (.gitignore). Sus "claves" son
+# identificadores de Next.js, no secretos. El historial (gitleaks git) sí se analiza completo.
+paths = ['''package-lock\.json$''', '''(^|/)\.next/''', '''(^|/)node_modules/''', '''(^|/)dist/''']

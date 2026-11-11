@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { AppSidebar, Brand } from "@/components/app-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import { OperatorMode } from "@/components/operator-mode";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +18,7 @@ function AppHeader() {
         <Brand className="flex items-center gap-2" />
       </Link>
 
-      <div className="size-9 md:hidden" aria-hidden />
+      <OperatorMode />
     </header>
   );
 }
