@@ -23,6 +23,8 @@ Los flujos tienen comportamiento y permisos definidos; los riesgos principales t
 
 ## Estado
 
+**Cada integrante debe revisar sus ítems y firmar en [REVISION.md](REVISION.md).**
+
 Todo escrito y fusionado (PR #2). **Pendiente: revisión cruzada humana.**
 
 | Revisor | Revisa | Debe ratificar |
