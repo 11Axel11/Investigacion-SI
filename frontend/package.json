@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:operator": "node --test scripts/operator.test.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",

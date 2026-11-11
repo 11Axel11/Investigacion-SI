@@ -47,7 +47,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
   - Las acciones de importar y sincronizar de la interfaz solo se habilitan en una vista de operador, que pide la clave. La clave se mantiene únicamente en la memoria del navegador (no en `localStorage`, ni en cookies, ni en variables `NEXT_PUBLIC_*`). Ocultar los botones no sustituye la validación del backend.
 - **Responsable de resolverla:** Axel. **Revisor:** Daniel.
 - **Afecta:** matriz de acceso de [arquitectura.md](arquitectura.md#matriz-de-acceso), F03-AC6, [IA-12](ia-sugerencias.md#ia-12).
-- **Estado:** resuelta. Implementación pendiente (la vista de operador en el frontend).
+- **Estado:** resuelta e implementada (modo operador en el frontend, rama `docs/fase-2-inicio`).
 
 ## Q-03
 

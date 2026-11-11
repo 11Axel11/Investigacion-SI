@@ -125,7 +125,7 @@ Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es 
 
 **Propiedad del recurso:** no aplica. No hay cuentas de usuario ni recursos con dueño; todo dato es del conjunto compartido.
 
-**Acceso sin sesión:** solo permite lecturas. La escritura exige `X-Admin-Key` en el backend ([T-01](amenazas.md#t-01), verificada). La brecha que queda es de la interfaz: todavía no hay vista de operador que envíe la clave ([Q-02](preguntas-abiertas.md#q-02)), así que los botones de importar y sincronizar reciben 401.
+**Acceso sin sesión:** solo permite lecturas. La escritura exige `X-Admin-Key` en el backend ([T-01](amenazas.md#t-01), verificada) y la interfaz solo habilita importar y sincronizar en el modo operador, con la clave en memoria ([Q-02](preguntas-abiertas.md#q-02)).
 
 ## Dónde deben comprobarse los permisos
 

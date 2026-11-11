@@ -1,5 +1,7 @@
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 
+import { adminHeaders, clearAdminKey } from './operator.ts';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 export interface CantonProperties {
@@ -12,14 +14,41 @@ export interface CantonBoundaries extends FeatureCollection<Polygon | MultiPolyg
   stale: boolean;
 }
 
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init);
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     const message = Array.isArray(body.message) ? body.message.join(', ') : body.message;
-    throw new Error(message || `Error ${response.status}`);
+    throw new ApiError(message || `Error ${response.status}`, response.status);
   }
   return response.json();
+}
+
+/**
+ * Petición de escritura (POST /osm/sync, /oij/sync, /tse/import). Agrega la cabecera X-Admin-Key
+ * con la clave del modo operador (solo en memoria, Q-02). Sin clave falla antes de salir a la red.
+ * Si el backend responde 401, la clave guardada no sirve: se descarta para no reintentarla.
+ */
+async function writeRequest<T>(path: string, init: RequestInit): Promise<T> {
+  const headers = { ...(init.headers as Record<string, string> | undefined), ...adminHeaders() };
+  try {
+    return await request<T>(path, { ...init, headers });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) {
+      clearAdminKey();
+      throw new ApiError('La clave de administración no es válida. Ingresa la clave del operador de nuevo.', 401);
+    }
+    throw error;
+  }
 }
 
 export interface OsmSearch {
@@ -205,7 +234,7 @@ const queryString = (params: Record<string, string | number | undefined>) =>
 export const api = {
   osm: {
     sync: (body: OsmSearch) =>
-      request<{
+      writeRequest<{
         guardados: number;
         encontrados: number;
         cache: boolean;
@@ -239,7 +268,7 @@ export const api = {
     importZip: (file: File, sourceDate?: string) => {
       const form = new FormData();
       form.append('file', file);
-      return request<{
+      return writeRequest<{
         importedDistricts: number;
         processedElectors: number;
         discardedPersonalFields: boolean;
@@ -294,5 +323,5 @@ export const oijApi = {
     year: number; province: string; canton: string; district: string; crime: string; modality: string;
     targetCategory: string; targetType: string;
   }) => request<OijOverview>(`/oij/overview?${queryString(params)}`),
-  sync: (year: number) => request<{ total: number; cache: boolean }>('/oij/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year }) }),
+  sync: (year: number) => writeRequest<{ total: number; cache: boolean }>('/oij/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ year }) }),
 };

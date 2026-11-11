@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { oijApi } from '@/lib/api';
+import { useOperatorMode } from '@/lib/operator';
 
 const number = (n: number) => n.toLocaleString('es-CR');
 const selectClass = 'field-select';
@@ -63,6 +64,7 @@ export default function OijPage() {
     queryFn: () => oijApi.overview({ year, ...filters }),
     retry: 1,
   });
+  const operator = useOperatorMode();
   const sync = useMutation({
     mutationFn: () => oijApi.sync(year),
     onSuccess: () => client.invalidateQueries({ queryKey: ['oij'] }),
@@ -109,10 +111,11 @@ export default function OijPage() {
             )}
           </select>
         </div>
-        <Button disabled={sync.isPending} onClick={() => sync.mutate()}>
+        <Button disabled={!operator || sync.isPending} onClick={() => sync.mutate()} title={operator ? undefined : 'Requiere el modo operador'}>
           <Download className="size-4" />
           {sync.isPending ? 'Descargando y procesando…' : 'Sincronizar con OIJ'}
         </Button>
+        {!operator && <span className="text-xs text-muted-foreground">Requiere el modo operador</span>}
         <a
           className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline"
           href="https://datosabiertospj.poder-judicial.go.cr/dataset/estadisticas-policiales"

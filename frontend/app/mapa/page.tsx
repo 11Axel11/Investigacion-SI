@@ -25,6 +25,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { api, OsmSearch } from '@/lib/api';
+import { useOperatorMode } from '@/lib/operator';
 
 const ALL_CANTONS = '__all__';
 
@@ -61,6 +62,7 @@ const CATEGORIES = [
 
 export default function MapaPage() {
   const queryClient = useQueryClient();
+  const operator = useOperatorMode();
   const [draft, setDraft] = useState(DEFAULT_SEARCH);
   const [search, setSearch] = useState(DEFAULT_SEARCH);
 
@@ -82,7 +84,8 @@ export default function MapaPage() {
     event.preventDefault();
     const next = { ...draft };
     setSearch(next);
-    syncMutation.mutate(next);
+    // Consultar lo guardado es público; sincronizar con Overpass es una escritura del operador (Q-02).
+    if (operator) syncMutation.mutate(next);
   };
 
   const changeProvince = (province: string) => {
@@ -163,7 +166,7 @@ export default function MapaPage() {
             type="submit"
             disabled={syncMutation.isPending || locationsQuery.isLoading}
           >
-            {syncMutation.isPending ? 'Consultando Overpass…' : 'Consultar y guardar'}
+            {syncMutation.isPending ? 'Consultando Overpass…' : operator ? 'Consultar y guardar' : 'Consultar'}
           </Button>
         </div>
       </form>

@@ -61,6 +61,7 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Compilar el backend | `backend/` | `npm run build` |
 | Pruebas del módulo OIJ | `backend/` | `npm run test:oij` |
 | Pruebas de la clave de administración (T-01) | `backend/` | `npm run test:admin` |
+| Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |
 | Compilar el frontend y comprobar tipos | `frontend/` | `npm run build` |
 
 Aún no existen comandos de linting, pruebas unitarias generales ni análisis de seguridad. Se agregarán en las etapas de Desarrollo y Construcción; cuando existan se listarán aquí, sin duplicar sus instrucciones.

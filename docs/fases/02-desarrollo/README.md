@@ -9,12 +9,12 @@
 | Ítem | Qué se espera | Estado hoy |
 |---|---|---|
 | 2.1 | `AGENTS.md` con dónde consultar requisitos, permisos, amenazas, convenciones y comandos. Demostrar que el agente consulta lo pertinente y señala dudas que requieren decisión humana | Parcial: `AGENTS.md` existe; falta la demostración |
-| 2.2 | Comandos reproducibles de compilación, **linting** y pruebas unitarias; pruebas de una regla de negocio con errores y valores límite; README y `AGENTS.md` los referencian | Parcial: hay `build`, `test:oij` y `test:admin` (regla de la clave de administración con valores límite y errores); falta linting |
+| 2.2 | Comandos reproducibles de compilación, **linting** y pruebas unitarias; pruebas de una regla de negocio con errores y valores límite; README y `AGENTS.md` los referencian | Parcial: hay `build`, `test:oij`, `test:admin` y `test:operator` (reglas de la clave de administración con valores límite y errores); falta linting |
 | 2.3 | Semgrep CE (o equivalente) y Gitleaks; alcance documentado; demostración con un defecto controlado y un secreto ficticio | No iniciado |
 | 2.4 | Hook o wrapper que ejecuta las verificaciones al terminar la tarea y devuelve resultados al agente; reintentos con límite; si persiste, se detiene y reporta | No iniciado |
 | 2.5 | Límites del agente respaldados por permisos y mecanismos (no solo texto): archivos y herramientas permitidos, acciones con aprobación humana, no exponer secretos, no aprobar su propio trabajo ni desactivar controles; cambios en pruebas, reglas y scripts de verificación los revisa otro integrante | No iniciado |
 | 2.6 | Revisión de código asistida por IA con requisitos y riesgos; cada observación con ubicación, justificación y comprobación sugerida; otro integrante la valida | No iniciado |
-| 2.7 | Flujo completo con un cambio acotado: el agente consulta contexto, implementa, recibe resultados, corrige un fallo. Se conservan diff, comandos, resultados y revisión humana; se explica qué cubrió cada mecanismo y qué quedó fuera | En curso: el guard `X-Admin-Key` (M-01) está implementado y probado en el backend; falta el flujo con hook (2.4), Semgrep y Gitleaks (2.3) y la revisión humana |
+| 2.7 | Flujo completo con un cambio acotado: el agente consulta contexto, implementa, recibe resultados, corrige un fallo. Se conservan diff, comandos, resultados y revisión humana; se explica qué cubrió cada mecanismo y qué quedó fuera | En curso: el guard `X-Admin-Key` (M-01) y el modo operador (Q-02) están implementados y probados, también de extremo a extremo; falta el flujo con hook (2.4), Semgrep y Gitleaks (2.3) y la revisión humana |
 
 ## Criterio de cierre
 
