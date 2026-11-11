@@ -36,7 +36,7 @@
 
 1. Crear el secreto `DEEPSEEK_API_KEY` (o `ANTHROPIC_API_KEY`) en *Settings → Secrets and variables → Actions*, tras revisar la política de datos del proveedor (TP-12).
 2. Instalar la aplicación Renovate en el repositorio.
-3. Decidir [Q-12](../01-planificacion/kb/preguntas-abiertas.md#q-12) y [Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13) y, según Q-13, ejecutar `scripts/ci/proteger-ramas.sh --aplicar`.
+3. Decidir [Q-12](../01-planificacion/kb/preguntas-abiertas.md#q-12). [Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13) está **decidida** (0 aprobaciones, administradores exentos) pero la debe **aplicar el dueño del repositorio o un administrador** (la cuenta que usó el agente solo tiene WRITE): `APROBACIONES=0 ENFORCE_ADMINS=false scripts/ci/proteger-ramas.sh --aplicar`.
 4. Validar las observaciones de la revisión de IA y revisar los cambios a scripts, reglas y políticas ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
 
 ## Criterio de cierre

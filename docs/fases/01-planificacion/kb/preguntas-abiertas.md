@@ -20,7 +20,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo; Pablo sin fuente propia | resuelta (provisional) |
 | [Q-11](#q-11) | ¿Quién revisa los cambios a scripts, reglas y permisos del agente, y quién valida la revisión de código asistida por IA? | Sin revisor asignado; revisión humana diferida por Frander (2026-11-11) | **abierta** |
 | [Q-12](#q-12) | ¿Qué avisos de OSV-Scanner pueden exceptuarse de la compuerta de CI y por cuánto tiempo? | Propuesta: bloquear CVSS ≥ 7.0; 4 excepciones temporales hasta 2026-12-31 | **abierta** |
-| [Q-13](#q-13) | ¿Existe la rama `development` y cómo se protege `main` con un solo integrante disponible? | Sin decidir | **abierta** |
+| [Q-13](#q-13) | ¿Existe la rama `development` y cómo se protege `main` con un solo integrante disponible? | Decidida (2026-11-11); falta aplicarla | **decidida, pendiente de aplicar** |
 
 ---
 
@@ -190,7 +190,9 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 
 - **Contexto:** el documento del proyecto habla de PR hacia `development` o `main`, pero el repositorio solo tiene `main` y esta **no está protegida** (verificado con `gh api` el 2026-11-11). El ítem 3.5 pide aprobación de otro integrante; con una sola persona disponible, `APROBACIONES=1` con administradores sujetos a las reglas impide fusionar (GitHub no deja aprobar un PR propio).
 - **Qué se necesita decidir:** (1) si se crea `development` o se trabaja solo con `main` (los workflows ya cubren ambas); (2) cómo proteger `main` hoy: esperar a otro integrante, o aplicar las reglas con `ENFORCE_ADMINS=false` dejando constancia; (3) quién aplica `scripts/ci/proteger-ramas.sh --aplicar`.
-- **Por qué no se asumió:** cambiar la protección de ramas modifica el repositorio remoto y define quién puede fusionar; no es una decisión del agente. **Mientras tanto** el script está listo (simulacro por defecto) y no se aplicó.
+- **Por qué no se asumió:** cambiar la protección de ramas modifica el repositorio remoto y define quién puede fusionar; no es una decisión del agente.
+- **Decisión (2026-11-11, Frander):** (1) se trabaja solo con `main`; `development` no se crea por ahora; (2) proteger `main` con PR obligatorio, check `resultado` obligatorio, **0 aprobaciones** y administradores **no** sujetos a las reglas (`APROBACIONES=0 ENFORCE_ADMINS=false`), porque hoy solo hay una persona disponible; (3) queda como **deuda**: subir a 1 aprobación y `ENFORCE_ADMINS=true` cuando haya otro integrante (Q-11).
+- **Intento de aplicación (2026-11-11):** `scripts/ci/proteger-ramas.sh --aplicar` falló con HTTP 404 (protección de `main`) y 403 (permisos de Actions): la cuenta `FranderCT` tiene permiso **WRITE** sobre `11Axel11/Investigacion-SI`, no ADMIN. **Debe aplicarlo el dueño o un administrador del repositorio**, o concederle ADMIN a quien lo aplique.
 - **Responsable de resolverla:** el equipo. **Revisor:** por asignar (ligada a [Q-11](#q-11)).
 - **Afecta:** ítems 3.5 y 3.6; [R-04 de 2.6](../../02-desarrollo/evidencias/2.6-revision-ia.md); `scripts/ci/proteger-ramas.sh`.
-- **Estado:** abierta.
+- **Estado:** decidida; **pendiente de aplicar** por una cuenta con ADMIN: `APROBACIONES=0 ENFORCE_ADMINS=false scripts/ci/proteger-ramas.sh --aplicar`.
