@@ -1,0 +1,33 @@
+{
+  "descripcion": "Excepciones TEMPORALES de la compuerta OSV (scripts/ci/osv-gate.mjs). Cada una necesita motivo, decisión (Q-nn) y fecha de vencimiento: al vencer deja de proteger y el aviso vuelve a bloquear. Las acepta una persona del equipo (Q-12); mientras Q-12 siga abierta son propuestas.",
+  "excepciones": [
+    {
+      "id": "GHSA-5j98-mcp5-4vw2",
+      "paquete": "glob@10.4.5",
+      "motivo": "Solo en desarrollo: llega por @nestjs/cli (herramienta de compilación); no está en la imagen (npm prune --omit=dev). La corrección exige @nestjs/cli 12 (salto mayor).",
+      "decision": "Q-12",
+      "hasta": "2026-12-31"
+    },
+    {
+      "id": "GHSA-c2c7-rcm5-vvqj",
+      "paquete": "picomatch@4.0.1",
+      "motivo": "Solo en desarrollo: llega por @nestjs/cli > @angular-devkit/core; no está en la imagen. La corrección exige @nestjs/cli 12 (salto mayor).",
+      "decision": "Q-12",
+      "hasta": "2026-12-31"
+    },
+    {
+      "id": "GHSA-ph9p-34f9-6g65",
+      "paquete": "tmp@0.0.33",
+      "motivo": "Solo en desarrollo: llega por @nestjs/cli > inquirer > external-editor; no está en la imagen. La corrección exige @nestjs/cli 12 (salto mayor).",
+      "decision": "Q-12",
+      "hasta": "2026-12-31"
+    },
+    {
+      "id": "GHSA-w5hq-g745-h8pq",
+      "paquete": "uuid@9.0.1",
+      "motivo": "Producción, pero no alcanzable: el aviso afecta a uuid v3/v5/v6 con el argumento buf, y @nestjs/typeorm solo llama a v4() sin buf (typeorm.utils.js: generateString). La corrección exige uuid 14 (salto mayor) y @nestjs/typeorm 11.",
+      "decision": "Q-12",
+      "hasta": "2026-12-31"
+    }
+  ]
+}
