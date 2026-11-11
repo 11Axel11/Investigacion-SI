@@ -19,7 +19,7 @@
 
 ## Estado (2026-11-11)
 
-**Construido, probado en local y ejecutado en GitHub (PR #11 en verde; PR #12 de demostración en rojo y luego en verde).** Falta lo que solo hace una persona sobre el repositorio remoto: aplicar la protección de ramas, fusionar #11 y ver la ejecución de la fusión. Revisión humana de todo lo de esta fase: **diferida** ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
+**Construido, probado en local y ejecutado en GitHub (PR #11 en verde; PR #12 de demostración en rojo y luego en verde).** PR #11 **fusionado** en `main` (`984698b`) y su ejecución de fusión en verde. Falta lo que solo hace una persona con permisos de administrador: aplicar la protección de ramas (Q-13). Revisión humana de todo lo de esta fase: **diferida** ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
 
 | Ítem | Estado | Evidencia |
 |---|---|---|
@@ -30,11 +30,11 @@
 | 3.5 | Script `proteger-ramas.sh` (simulacro) y permisos mínimos y SHA ya aplicados en los workflows. **Protección de ramas NO aplicada**: `main` sigue sin protección y `development` no existe ([Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13)) | [3.5](evidencias/3.5-proteccion-ramas.md) |
 | 3.6 | `resultado` falla si algo falló, se omitió o se canceló; **demostrado en GitHub rojo → corrección → verde** (PR #12). **No se probó el bloqueo efectivo de la fusión**: sin protección de ramas el botón seguía habilitado | [3.6](evidencias/3.6-bloqueo-demostrado.md) |
 | 3.7 | Workflow y script informativos con DeepSeek (único proveedor); **llamada real a DeepSeek probada y comentario publicado en el PR #11** con una clave temporal que se rota el 2026-11-12; sin la clave informa "NO ejecutada" | [3.7](evidencias/3.7-revision-ia.md) |
-| 3.8 | Job `fusion` y artefactos por commit definidos; artefactos verificados en PR; **falta la ejecución tras fusionar** | [3.8](evidencias/3.8-commit-fusionado.md) |
+| 3.8 | Job `fusion` y artefactos por commit definidos; **ejecución real tras fusionar #11 en verde** (corrida 43073457652, artefactos `seguridad-`, `imagenes-` y `fusion-984698b…`) | [3.8](evidencias/3.8-commit-fusionado.md) |
 
 ## Acciones que solo puede hacer una persona
 
-1. Crear el secreto `DEEPSEEK_API_KEY` en *Settings → Secrets and variables → Actions*, tras revisar la política de datos del proveedor (TP-12).
+1. Revisar la política de datos de DeepSeek (TP-12) y **rotar el secreto `DEEPSEEK_API_KEY`** (la clave temporal se rota el 2026-11-12).
 2. Instalar la aplicación Renovate en el repositorio.
 3. Decidir [Q-12](../01-planificacion/kb/preguntas-abiertas.md#q-12). [Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13) está **decidida** (0 aprobaciones, administradores exentos) pero la debe **aplicar el dueño del repositorio o un administrador** (la cuenta que usó el agente solo tiene WRITE): `APROBACIONES=0 ENFORCE_ADMINS=false scripts/ci/proteger-ramas.sh --aplicar`.
 4. Validar las observaciones de la revisión de IA y revisar los cambios a scripts, reglas y políticas ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
