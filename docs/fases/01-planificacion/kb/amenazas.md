@@ -178,16 +178,17 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 ## T-12
 
-- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usa `multer` en la rama 1.x. Backend y frontend tenían a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)) y los de pnpm ya se eliminaron.
+- **Amenaza:** dependencias vulnerables o comprometidas, y manejo ambiguo de versiones. `backend/package.json` usaba `multer` en la rama 1.x (actualizado a 2.5.0 en la fase 3). Backend y frontend tenían a la vez `package-lock.json` y `pnpm-lock.yaml`; se decidió usar solo npm ([Q-05](preguntas-abiertas.md#q-05)) y los de pnpm ya se eliminaron.
 - **Recurso afectado:** cadena de suministro del backend y del frontend.
 - **Impacto:** ejecución de código no confiable o vulnerabilidades heredadas.
-- **Prioridad:** Media. Por confirmar con un análisis: no se ha ejecutado ningún escáner todavía.
+- **Prioridad:** Media. El primer análisis (2026-11-11) encontró 71 avisos, 35 de gravedad alta o crítica; tras actualizar quedan 4 con excepción temporal ([Q-12](preguntas-abiertas.md#q-12)).
 - **Medida (propuesta):** usar `npm` y un único lockfile por proyecto (eliminar `pnpm-lock.yaml`), ejecutar OSV-Scanner en CI y configurar Renovate para actualizaciones.
 - **Componente:** `backend/package.json`, `frontend/package.json` y sus lockfiles.
 - **Comprobación prevista:** OSV-Scanner sin hallazgos críticos o altos sin tratamiento, y un PR real de Renovate sujeto a los mismos controles.
 - **Responsable / revisor:** Daniel / Pablo.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Medidas aplicadas en la fase 3:** OSV-Scanner en CI con compuerta (CVSS ≥ 7.0 bloquea; excepciones con motivo y vencimiento), `npm ci` con lockfile, acciones fijadas por SHA, herramientas con versión y checksum, imágenes base por digest, `renovate.json` (**falta instalar la aplicación Renovate**: no se ha visto ningún PR real de Renovate).
+- **Estado:** parcialmente implementada. **Evidencia:** [3.2](../../03-construccion-integracion/evidencias/3.2-seguridad-ci.md). **Pendiente:** primera ejecución real en GitHub, Renovate instalado, aceptación de Q-12.
 
 ## T-13
 

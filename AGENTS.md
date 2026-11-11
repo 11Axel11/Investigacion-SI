@@ -63,14 +63,23 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Pruebas del módulo OIJ | `backend/` | `npm run test:oij` |
 | Pruebas de la clave de administración (T-01) | `backend/` | `npm run test:admin` |
 | Pruebas del importador del padrón (F-01, ZIP ficticios) | `backend/` | `npm run test:tse` |
+| Políticas de contenedores (Conftest/OPA, ítem 3.4) | raíz | `scripts/politicas.sh` |
+| Seguridad como en CI (Semgrep, Gitleaks y OSV-Scanner con compuerta) | raíz | `scripts/ci/seguridad-ci.sh` |
+| Imágenes candidatas, Trivy y SBOM (requiere Docker y `brew install trivy`) | raíz | `scripts/ci/imagenes-ci.sh` |
 | Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |
 | Semgrep CE y Gitleaks (requiere `brew install semgrep gitleaks`) | raíz | `scripts/seguridad.sh` |
 | Todas las verificaciones (las ejecuta el hook `Stop`) | raíz | `scripts/verificar.sh` (`--rapido` omite la compilación del frontend) |
 | Linting del frontend | `frontend/` | `npm run lint` |
 | Compilar el frontend y comprobar tipos | `frontend/` | `npm run build` |
 
-Aún no existen pruebas unitarias generales ni análisis de seguridad. Se agregarán en las etapas de Desarrollo y Construcción; cuando existan se listarán aquí, sin duplicar sus instrucciones.
+La integración continua vive en `.github/workflows/` (`ci.yml` y `revision-ia.yml`); el único check obligatorio es `resultado`. Decisiones y evidencias en [docs/fases/03-construccion-integracion/](docs/fases/03-construccion-integracion/README.md). Reglas para el agente en CI:
+
+- No fijes una acción de terceros por etiqueta: va por SHA de commit. No agregues acciones ajenas a GitHub sin justificarlo en el PR.
+- No amplíes `permissions:` de un workflow ni uses `pull_request_target`.
+- No agregues excepciones a `osv-excepciones.json` ni cambies el umbral de la compuerta: es una decisión humana ([Q-12](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-12)).
+- No apliques `scripts/ci/proteger-ramas.sh --aplicar` ni cambies la protección de ramas ([Q-13](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-13)).
+- Un análisis que no se pudo ejecutar es incompleto y bloquea; nunca lo reportes como aprobado.
 
 ## Alcance de esta versión
 
-Este archivo corresponde a la etapa de Planificación. Los hooks, scripts, límites de ejecución del agente y checks de CI se definirán en las etapas posteriores y se referenciarán aquí.
+Este archivo cubre Planificación (fase 1), Desarrollo (fase 2) y Construcción e integración (fase 3). El despliegue y la operación se agregarán en las fases 6 y 7.

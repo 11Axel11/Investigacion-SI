@@ -19,6 +19,8 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-09](#q-09) | ¿Plataforma de despliegue y proveedor de IA? | VPS con Docker Compose y Caddy; Claude | resuelta |
 | [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo; Pablo sin fuente propia | resuelta (provisional) |
 | [Q-11](#q-11) | ¿Quién revisa los cambios a scripts, reglas y permisos del agente, y quién valida la revisión de código asistida por IA? | Sin revisor asignado; revisión humana diferida por Frander (2026-11-11) | **abierta** |
+| [Q-12](#q-12) | ¿Qué avisos de OSV-Scanner pueden exceptuarse de la compuerta de CI y por cuánto tiempo? | Propuesta: bloquear CVSS ≥ 7.0; 4 excepciones temporales hasta 2026-12-31 | **abierta** |
+| [Q-13](#q-13) | ¿Existe la rama `development` y cómo se protege `main` con un solo integrante disponible? | Sin decidir | **abierta** |
 
 ---
 
@@ -134,6 +136,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Responsable de resolverla:** Daniel. **Revisor:** José.
 - **Afecta:** TP-05 a TP-08, S-03 a S-05 y las fases 5 a 7.
 - **Estado:** resuelta.
+- **Actualización (2026-11-11):** Frander indicó que se puede usar una clave de DeepSeek (`DEEPSEEK_API_KEY`) para la revisión de IA de la fase 3. El script `scripts/ci/revision-ia.mjs` admite ambos proveedores. Esto **cambia el proveedor de IA decidido aquí (Claude) para ese uso**: queda como alternativa autorizada por una persona y **pendiente de ratificar por el equipo**. Antes de activarla hay que revisar la política de datos de DeepSeek (TP-12): el diff del PR saldría hacia otro proveedor y otra jurisdicción.
 
 ## Q-10
 
@@ -165,3 +168,29 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Actualización (2026-11-11):** Frander, único integrante disponible hoy, indicó **dejar de lado la revisión humana** para cerrar el trabajo técnico de la fase 2. Eso **no designa revisor ni valida nada**: es solo el aplazamiento de la revisión. Consecuencias aplicadas: las observaciones de [2.6](../../02-desarrollo/evidencias/2.6-revision-ia.md) quedan con validación humana `Diferida` (no `Validada`), la fase 2 se declara cerrada **en lo técnico** y no en lo humano, y no se falsifican firmas ni aprobaciones.
 - **Qué sigue pendiente:** designar la persona que revisa los cambios a pruebas, reglas de Semgrep, `.gitleaks.toml`, `scripts/` y `.claude/settings.json`, y la que valida R-01 a R-09 de 2.6. Debe hacerlo antes de integrar a `main` o, a más tardar, en la revisión presencial del equipo.
 - **Estado:** abierta (revisión humana diferida por decisión de Frander; sin revisor asignado).
+
+---
+
+## Q-12
+
+**¿Qué avisos de OSV-Scanner pueden exceptuarse de la compuerta de CI (ítem 3.2) y hasta cuándo?**
+
+- **Contexto:** el primer escaneo del 2026-11-11 dio 71 avisos, 35 de gravedad alta o crítica. Se corrigieron con actualizaciones compatibles (`npm audit fix`, `multer` ^2.5.0 y `overrides` de `multer`, `body-parser` y `lodash`) hasta dejar 4 que exigen saltos mayores de NestJS/TypeORM: `glob`, `picomatch` y `tmp` (solo desarrollo, vía `@nestjs/cli`) y `uuid` (producción, no alcanzable según el análisis de [3.2](../../03-construccion-integracion/evidencias/3.2-seguridad-ci.md)).
+- **Qué se necesita decidir:** (1) si el umbral de bloqueo es CVSS ≥ 7.0 (alta y crítica) como se propuso; (2) si se aceptan esas 4 excepciones y su vencimiento (propuesto: 2026-12-31); (3) quién las revisa al vencer.
+- **Por qué no se asumió:** aceptar un riesgo de seguridad es una decisión humana y [AGENTS.md](../../../../AGENTS.md) prohíbe suponer la respuesta. **Mientras tanto** las excepciones están en `osv-excepciones.json` como **propuestas**, con motivo y fecha; al vencer vuelven a bloquear.
+- **Responsable de resolverla:** Daniel (T-12). **Revisor:** Pablo.
+- **Afecta:** ítem 3.2; [T-12](amenazas.md#t-12); `osv-excepciones.json`.
+- **Estado:** abierta.
+
+---
+
+## Q-13
+
+**¿Existe la rama `development` y cómo se protege `main` mientras solo haya un integrante disponible (ítem 3.5)?**
+
+- **Contexto:** el documento del proyecto habla de PR hacia `development` o `main`, pero el repositorio solo tiene `main` y esta **no está protegida** (verificado con `gh api` el 2026-11-11). El ítem 3.5 pide aprobación de otro integrante; con una sola persona disponible, `APROBACIONES=1` con administradores sujetos a las reglas impide fusionar (GitHub no deja aprobar un PR propio).
+- **Qué se necesita decidir:** (1) si se crea `development` o se trabaja solo con `main` (los workflows ya cubren ambas); (2) cómo proteger `main` hoy: esperar a otro integrante, o aplicar las reglas con `ENFORCE_ADMINS=false` dejando constancia; (3) quién aplica `scripts/ci/proteger-ramas.sh --aplicar`.
+- **Por qué no se asumió:** cambiar la protección de ramas modifica el repositorio remoto y define quién puede fusionar; no es una decisión del agente. **Mientras tanto** el script está listo (simulacro por defecto) y no se aplicó.
+- **Responsable de resolverla:** el equipo. **Revisor:** por asignar (ligada a [Q-11](#q-11)).
+- **Afecta:** ítems 3.5 y 3.6; [R-04 de 2.6](../../02-desarrollo/evidencias/2.6-revision-ia.md); `scripts/ci/proteger-ramas.sh`.
+- **Estado:** abierta.
