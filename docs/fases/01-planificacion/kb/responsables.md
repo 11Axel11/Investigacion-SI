@@ -48,8 +48,11 @@ Resumen; el detalle de cada medida y su comprobación está en [amenazas.md](ame
 | [T-11](amenazas.md#t-11) | José | Axel | Mitigar |
 | [T-12](amenazas.md#t-12) | Daniel | Pablo | Mitigar |
 | [T-13](amenazas.md#t-13) | Daniel | Frander | Mitigar |
+| [T-14](amenazas.md#t-14) | Daniel (propuesto) | Axel (propuesto) | Mitigación propuesta; pendiente de validación humana |
 
 No se aplaza ninguna amenaza ni se acepta ningún riesgo sin tratamiento.
+
+T-14 se propuso durante la [revisión de medidas del 2026-11-11](../evidencias/revision-medidas.md). No se registra como revisión humana realizada ni como medida implementada. Daniel y Axel deben ratificar la asignación, prioridad y tratamiento en el PR.
 
 ## Responsables de los secretos
 

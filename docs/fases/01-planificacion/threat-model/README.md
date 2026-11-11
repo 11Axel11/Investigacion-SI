@@ -2,9 +2,11 @@
 
 El modelo de Threat Dragon es el mapa de arquitectura y el modelo de amenazas del proyecto. Se reutiliza como el mapa del ítem 1.2 para no duplicar trabajo. El contenido textual equivalente está en [arquitectura.md](../kb/arquitectura.md) y [amenazas.md](../kb/amenazas.md), que son la fuente de verdad del texto.
 
-**Estado:** creado. [observatorio.json](observatorio.json) tiene 21 elementos (3 límites de confianza, 9 actores y procesos, 9 flujos) y 14 entradas de amenaza que cubren las 13 amenazas `T-01` a `T-13`. `T-07` aparece en dos flujos (OIJ y Overpass).
+**Estado:** creado y actualizado el 2026-11-11. [observatorio.json](observatorio.json) tiene 21 elementos (3 límites de confianza, 9 actores y procesos, 9 flujos) y 15 entradas de amenaza que cubren las 14 amenazas `T-01` a `T-14`. `T-07` aparece en dos flujos (OIJ y Overpass). T-14 es una propuesta pendiente de validación humana.
 
 **Verificación (2026-11-10):** el archivo se importó en Threat Dragon web v2.6.2, en sesión local, sin errores. Se comprobó que se dibujan los 21 elementos y que los 13 IDs están presentes. Falta una revisión visual del diseño por parte de la persona revisora: las posiciones y los trazos de los flujos se fijaron por coordenadas y conviene ajustarlos a mano.
+
+**Actualización (2026-11-11):** se mantienen los elementos y se agrega T-14 al flujo 5; se precisan los textos de T-01, T-02, T-05, T-07 y T-09 y el estado del rol operador. Se comprueban la sintaxis JSON y la correspondencia de IDs con Markdown; **no se ha vuelto a importar esta versión en la interfaz de Threat Dragon**. Evidencia y reproducción aislada de T-14 en [revision-medidas.md](../evidencias/revision-medidas.md).
 
 ## Cómo abrirlo y editarlo
 
@@ -42,7 +44,7 @@ El modelo de Threat Dragon es el mapa de arquitectura y el modelo de amenazas de
 | 2 | Frontend → API | JSON por HTTP, CORS abierto | T-09, T-11 |
 | 3 | Frontend → Teselas OSM | Teselas por HTTPS | — (ver TP-04) |
 | 4 | Operador → API | ZIP del padrón (datos personales) | T-03, T-04, T-05 |
-| 5 | API → PostgreSQL | SQL con `DATABASE_URL` | T-06, T-13 |
+| 5 | API → PostgreSQL | SQL con `DATABASE_URL` | T-06, T-13, T-14 (propuesta) |
 | 6 | API → Overpass | Overpass QL por HTTPS | T-07 |
 | 7 | API → OIJ | Catálogo y CSV por HTTPS | T-07 |
 | 0 | Portal TSE → Operador | Descarga manual del ZIP | — |
