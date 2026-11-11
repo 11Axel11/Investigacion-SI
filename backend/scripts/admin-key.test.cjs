@@ -82,6 +82,24 @@ test('valor límite: 31 caracteres se rechazan y 32 se aceptan', () => {
   rejected({ [ADMIN_KEY_HEADER]: k31 });
 });
 
+test('R-02: espacios o salto de línea alrededor de la clave configurada no la invalidan', () => {
+  for (const configured of [` ${KEY}`, `${KEY} `, `${KEY}\n`, `\t${KEY}\r\n`]) {
+    process.env.ADMIN_API_KEY = configured;
+    assert.equal(run({ [ADMIN_KEY_HEADER]: KEY }), true, JSON.stringify(configured));
+    rejected({ [ADMIN_KEY_HEADER]: configured }); // la recibida no se recorta
+  }
+});
+
+test('R-02: el mínimo de 32 caracteres se mide sin los espacios de los extremos', () => {
+  const k31 = 'a'.repeat(ADMIN_KEY_MIN_LENGTH - 1);
+  process.env.ADMIN_API_KEY = `${k31} `; // 32 caracteres con el espacio, 31 reales
+  rejected({ [ADMIN_KEY_HEADER]: k31 });
+  rejected({ [ADMIN_KEY_HEADER]: `${k31} ` });
+  process.env.ADMIN_API_KEY = '   '.padEnd(40, ' '); // solo espacios
+  rejected({ [ADMIN_KEY_HEADER]: ' '.repeat(40) });
+  rejected({ [ADMIN_KEY_HEADER]: '' });
+});
+
 test('una clave muy larga o con caracteres no ASCII no rompe la comparación', () => {
   const long = 'ñ'.repeat(10_000);
   process.env.ADMIN_API_KEY = long;

@@ -45,7 +45,12 @@ async function writeRequest<T>(path: string, init: RequestInit): Promise<T> {
   } catch (error) {
     if (error instanceof ApiError && error.status === 401) {
       clearAdminKey();
-      throw new ApiError('La clave de administración no es válida. Ingresa la clave del operador de nuevo.', 401);
+      // El backend responde 401 igual cuando la clave es incorrecta y cuando no tiene ADMIN_API_KEY
+      // configurada (a propósito, para no revelar su configuración): el mensaje cubre ambos casos (R-03).
+      throw new ApiError(
+        'La clave de administración no es válida, o el servidor no tiene una clave configurada. Ingresa la clave del operador de nuevo; si persiste, avisa a quien administra el servidor.',
+        401,
+      );
     }
     throw error;
   }
