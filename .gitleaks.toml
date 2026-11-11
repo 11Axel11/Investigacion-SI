@@ -16,4 +16,8 @@ description = "Claves ficticias de las pruebas (no son secretos reales)"
 regexes = ['''clave-ficticia-de-prueba-0123456789''', '''incorrecta-sentinela-1234567890abcdef''']
 # Salida de compilación y dependencias: generadas, ignoradas por git (.gitignore). Sus "claves" son
 # identificadores de Next.js, no secretos. El historial (gitleaks git) sí se analiza completo.
-paths = ['''package-lock\.json$''', '''(^|/)\.next/''', '''(^|/)node_modules/''', '''(^|/)dist/''']
+paths = ['''package-lock\.json$''', '''(^|/)\.next/''', '''(^|/)node_modules/''', '''(^|/)dist/''',
+  # `.env` locales: contienen la clave real del operador y están en .gitignore (no se suben).
+  # `gitleaks dir` no respeta .gitignore. Compensación: scripts/seguridad.sh falla si alguno está
+  # versionado, y `gitleaks git` analiza todo el historial sin esta exclusión de rutas.
+  '''(^|/)\.env$''', '''(^|/)\.env\.local$''', '''(^|/)\.env\.[a-z]+\.local$''']
