@@ -12,6 +12,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminKeyGuard } from '../common/admin-key.guard';
 import { MulterErrorFilter } from '../common/multer-error.filter';
 import { TseService } from './tse.service';
+import { SkipThrottle } from '@nestjs/throttler';
+
+@SkipThrottle({
+  osmMinute: true,
+  osmHour: true,
+  oijFiveMinutes: true,
+  oijHour: true,
+})
 
 @Controller('tse')
 export class TseController {
