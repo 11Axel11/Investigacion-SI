@@ -1,0 +1,73 @@
+# Plan del ZAP Automation Framework (ítem 4.7). Se ejecuta con scripts/pruebas/zap.sh contra las IMÁGENES CANDIDATAS
+# (docker-compose.yml) y datos ficticios. No sale a internet: las rutas que llamarían a Overpass o al OIJ solo se
+# ejercitan con entradas inválidas (400) para no ampliar el consumo de esas fuentes (AGENTS.md).
+env:
+  contexts:
+    - name: observatorio
+      urls:
+        - http://backend:3001
+        - http://frontend:3000
+      includePaths:
+        - http://backend:3001.*
+        - http://frontend:3000.*
+  parameters:
+    failOnError: true
+    failOnWarning: false
+    progressToStdout: true
+
+jobs:
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+      scanOnlyInScope: true
+
+  # Rutas autenticadas y rechazos: el operador (X-Admin-Key) y el visitante, contra los tres POST protegidos.
+  # Solo entradas inválidas o vacías: ejercen la autenticación y la validación, no las fuentes externas.
+  - type: requestor
+    name: rutas-con-y-sin-clave
+    requests:
+      - { url: "http://backend:3001/health", method: GET, responseCode: 200 }
+      - { url: "http://backend:3001/tse/overview", method: GET, responseCode: 200 }
+      - { url: "http://backend:3001/oij/overview", method: GET, responseCode: 200 }
+      - { url: "http://backend:3001/osm/locations", method: GET, responseCode: 200 }
+      - { url: "http://backend:3001/coverage/viability-index", method: GET, responseCode: 200 }
+      - { url: "http://backend:3001/osm/sync", method: POST, headers: ["Content-Type: application/json"], data: '{"province":"San José","category":"hospital"}', responseCode: 401 }
+      - { url: "http://backend:3001/oij/sync", method: POST, headers: ["Content-Type: application/json"], data: '{"year":2026}', responseCode: 401 }
+      - { url: "http://backend:3001/tse/import", method: POST, responseCode: 401 }
+      - { url: "http://backend:3001/osm/sync", method: POST, headers: ["Content-Type: application/json", "X-Admin-Key: incorrecta"], data: '{}', responseCode: 401 }
+      - { url: "http://backend:3001/osm/sync", method: POST, headers: ["Content-Type: application/json", "X-Admin-Key: ${ZAP_ADMIN_KEY}"], data: '{"province":"Atlantis","category":"hospital"}', responseCode: 400 }
+      - { url: "http://backend:3001/oij/sync", method: POST, headers: ["Content-Type: application/json", "X-Admin-Key: ${ZAP_ADMIN_KEY}"], data: '{"year":1900}', responseCode: 400 }
+      - { url: "http://backend:3001/tse/import", method: POST, headers: ["X-Admin-Key: ${ZAP_ADMIN_KEY}"], responseCode: 400 }
+
+  - type: spider
+    parameters:
+      context: observatorio
+      maxDuration: 3
+      maxDepth: 5
+  - type: passiveScan-wait
+    parameters:
+      maxDuration: 3
+
+  # Análisis activo ACOTADO: política por defecto, umbral medio, fuerza baja, con tope de tiempo por regla y total.
+  - type: activeScan
+    parameters:
+      context: observatorio
+      maxScanDurationInMins: 8
+      maxRuleDurationInMins: 1
+      policy: Default Policy
+    policyDefinition:
+      defaultStrength: Low
+      defaultThreshold: Medium
+
+  - type: report
+    parameters:
+      template: traditional-json
+      reportDir: /zap/wrk
+      reportFile: zap-informe
+      reportTitle: Observatorio DAST
+  - type: report
+    parameters:
+      template: traditional-html
+      reportDir: /zap/wrk
+      reportFile: zap-informe
+      reportTitle: Observatorio DAST

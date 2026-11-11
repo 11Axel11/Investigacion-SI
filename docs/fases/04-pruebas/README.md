@@ -19,6 +19,35 @@
 | 4.9 | Demostrar que las pruebas detectan fallos: un defecto funcional y uno de seguridad, con evidencia de fallo, corrección y aprobación |
 | 4.10 | Experimento de resiliencia con Toxiproxy (latencia o corte de una dependencia crítica): comportamiento esperado, duración, recuperación, timeouts y consistencia; Artillery puede generar carga |
 
+## Estado
+
+**Construida y ejecutada en local (2026-11-11); falta ejecutarla en GitHub y la revisión de otro integrante.** Sin Docker, la parte con BD, E2E, DAST y resiliencia queda **incompleta** (salida 2), nunca aprobada. Los jobs `pruebas`, `e2e`, `dast` y `resiliencia` ya están en `ci.yml` y `resultado` los exige, pero **no se han corrido en GitHub**: la primera ejecución real puede pedir ajustes (por ejemplo `host.docker.internal` en Linux o la instalación de Chromium).
+
+| Ítem | Estado | Evidencia |
+|---|---|---|
+| 4.1 | Hecho: BD efímera en Docker, datos ficticios, `up/seed/limpiar/down`, reutilizado por CI | [4.1](evidencias/4.1-ambiente.md) |
+| 4.2 | Hecho: 14 pruebas de reglas de `/coverage` (12 pasan, 2 `todo`) y las 25 del importador | [4.2 a 4.6](evidencias/4.2-4.6-pruebas.md) |
+| 4.3 | Hecho: 13 pruebas con la aplicación y PostgreSQL reales, terceros simulados | [4.2 a 4.6](evidencias/4.2-4.6-pruebas.md) |
+| 4.4 | Hecho: 9 pruebas de Playwright (éxito y rechazo de F-01, F-02 y F-03) | [4.4](evidencias/4.4-e2e.md) |
+| 4.5 | Hecho: matriz de acceso directo a la API, 10 pruebas | [4.2 a 4.6](evidencias/4.2-4.6-pruebas.md) |
+| 4.6 | Hecho: variantes de ruta, inventario de rutas, privacidad y filtros | [4.2 a 4.6](evidencias/4.2-4.6-pruebas.md) |
+| 4.7 | Ejecutado: sin riesgos altos, 3 medios y 3 bajos (IA-14); el análisis activo fue muy corto | [4.7](evidencias/4.7-dast-zap.md) |
+| 4.8 | Elaborado por IA; **pendiente de revisión humana** | [4.8](evidencias/4.8-ia-escenarios.md) |
+| 4.9 | Demostrado: un defecto real (F03-AC5, corregido) y dos controlados (funcional y de seguridad) | [4.9](evidencias/4.9-defectos-controlados.md) |
+| 4.10 | Ejecutado: 7 de 7 hipótesis; hallazgo F03-AC9 | [4.10](evidencias/4.10-resiliencia.md) |
+
+**Hallazgos de esta fase:** F03-AC5 (pérdida de datos de OSM, **corregido**), F03-AC9 (consultas duplicadas a Overpass, medido), cabeceras de seguridad y CORS ([IA-14](../01-planificacion/kb/ia-sugerencias.md#ia-14)), y la clave única de `OsmPlace` sin categoría ([IA-13](../01-planificacion/kb/ia-sugerencias.md#ia-13)). Siguen sin pruebas los criterios que son brecha conocida (`todo`), logs, T-02 y T-08 ([4.8](evidencias/4.8-ia-escenarios.md)).
+
+## Cómo reproducirlo
+
+```bash
+scripts/pruebas/ejecutar.sh          # 4.1, 4.2, 4.3, 4.5, 4.6 (necesita Docker)
+scripts/pruebas/e2e.sh               # 4.4 (la primera vez: cd e2e && npm ci && npx playwright install chromium)
+scripts/pruebas/zap.sh               # 4.7
+scripts/pruebas/resiliencia.sh       # 4.10
+scripts/pruebas/defecto-controlado.sh funcional   # 4.9 (también: seguridad)
+```
+
 ## Criterio de cierre
 
 Otro integrante reproduce las pruebas, identifica qué requisitos y riesgos cubren y observa la detección y corrección de los fallos demostrados. Una prueba omitida, una sesión inválida o un análisis que no corrió se reportan como **incompletos**.

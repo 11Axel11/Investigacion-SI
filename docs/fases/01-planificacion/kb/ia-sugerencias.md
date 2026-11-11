@@ -34,6 +34,8 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 | [IA-10](#ia-10) | Cobertura | Datos de fuentes con fechas distintas en un mismo índice | aceptada (provisional); cubierta por Q-04 y M-10 |
 | [IA-11](#ia-11) | Cobertura | Alias de cantones incompletos | aceptada (provisional); incorporada como COV-AC2 |
 | [IA-12](#ia-12) | Frontend | Visitantes pueden iniciar importaciones desde la interfaz | aceptada (provisional); cubierta por Q-02 |
+| [IA-13](#ia-13) | F-03 | La clave única de `OsmPlace` no incluye la categoría | pendiente (fase 4, sin validar) |
+| [IA-14](#ia-14) | Todos | Cabeceras de seguridad y CORS abierto (hallazgo de ZAP) | pendiente (fase 4, sin validar) |
 
 ---
 
@@ -115,3 +117,17 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 - **Comprobación sugerida:** verificar la vista de operador decidida en [Q-02](preguntas-abiertas.md#q-02): las acciones solo se habilitan con la clave, que no se persiste.
 - **Relacionada con:** [T-01](amenazas.md#t-01).
 - **Decisión provisional (2026-11-11):** **aceptada.** Cubierta por la decisión de [Q-02](preguntas-abiertas.md#q-02) (vista de operador, clave solo en memoria). Ya implementada y verificada (ver T-01).
+
+## IA-13
+
+- **Observación (fase 4, 2026-11-11):** `OsmPlace` es único por `(osmType, osmId, province, canton)` y `sync` hace `upsert` con esa clave, sin la categoría. Un mismo objeto de OSM que coincida con dos categorías de la lista (por ejemplo una etiqueta `amenity` y otra `shop`) se sobrescribe: la sincronización de una categoría cambia la categoría de la fila de la otra. Salió en el experimento 4.10 cuando el Overpass falso reutilizó ids entre categorías (no con datos reales).
+- **Comprobación sugerida:** prueba de integración con un objeto que cumple dos categorías y sincronizar ambas; las dos deben conservar su fila.
+- **Relacionada con:** [F-03](flujos.md#f-03-sincronizar-y-consultar-lugares-de-openstreetmap), [T-06](amenazas.md#t-06).
+- **Estado:** pendiente de validación humana. No es un requisito ni se implementó nada.
+
+## IA-14
+
+- **Observación (fase 4, 2026-11-11):** el análisis DAST ([4.7](../../04-pruebas/evidencias/4.7-dast-zap.md)) contra las imágenes candidatas no halló riesgos altos, pero sí 3 medios (sin `Content-Security-Policy`, sin cabecera anticlickjacking en el frontend, y *Cross-Domain Misconfiguration* por `app.enableCors()` sin restricciones en el backend) y 3 bajos (`X-Content-Type-Options` ausente, `X-Powered-By` expuesto).
+- **Comprobación sugerida:** decidir qué origen puede llamar a la API (relacionado con [Q-09](preguntas-abiertas.md#q-09)) y qué cabeceras añadir; repetir el DAST y comprobar que las alertas desaparecen.
+- **Relacionada con:** [T-09](amenazas.md#t-09), [T-11](amenazas.md#t-11).
+- **Estado:** pendiente de validación humana. No se cambió ninguna cabecera ni la política CORS.

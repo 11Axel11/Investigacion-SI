@@ -1,0 +1,75 @@
+✖ F01-AC1 y F01-AC2: importa conteos por distrito y no persiste ningún dato personal (BD real) (0.391709ms)
+✖ F01-AC6: importar el mismo ZIP dos veces actualiza sin duplicar (restricción única real) (0.036333ms)
+✖ F01-AC3: un archivo inválido responde 400 y los datos anteriores no cambian (0.02825ms)
+✖ F01-AC5: una fecha de corte imposible responde 400 y no escribe (0.023083ms)
+✖ F02-AC1 y F02-AC2: sincroniza el año, guarda procedencia y la segunda llamada usa la caché (0.037791ms)
+✖ F02-AC3: año fuera de rango o no entero responde 400 sin descargar (0.028625ms)
+✖ F02-AC4: si el catálogo falla responde 503 y el dato previo se conserva (0.02725ms)
+✖ F02-AC4: un CSV que cambió de estructura responde 400 y no sustituye los datos (0.029ms)
+✖ F03-AC1 y F03-AC2: sincroniza, guarda lugares normalizados y la segunda llamada usa la caché (0.047125ms)
+✖ F03-AC3: provincia, cantón o categoría inválidos responden 400 y no llegan a Overpass (0.048417ms)
+✖ F03-AC4: si Overpass falla responde 503 y los lugares previos siguen intactos (0.04025ms)
+✖ F03-AC6 (Q-02): cualquier visitante consulta los lugares guardados sin clave (0.023458ms)
+✖ F03-AC5: si Overpass responde sin lugares, los lugares anteriores de esa combinación no se pierden (0.017542ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 0
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 237.5155
+
+✖ failing tests:
+
+test at scripts/pruebas/integracion.test.cjs:82:1
+✖ F01-AC1 y F01-AC2: importa conteos por distrito y no persiste ningún dato personal (BD real) (0.391709ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:98:1
+✖ F01-AC6: importar el mismo ZIP dos veces actualiza sin duplicar (restricción única real) (0.036333ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:105:1
+✖ F01-AC3: un archivo inválido responde 400 y los datos anteriores no cambian (0.02825ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:116:1
+✖ F01-AC5: una fecha de corte imposible responde 400 y no escribe (0.023083ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:130:1
+✖ F02-AC1 y F02-AC2: sincroniza el año, guarda procedencia y la segunda llamada usa la caché (0.037791ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:144:1
+✖ F02-AC3: año fuera de rango o no entero responde 400 sin descargar (0.028625ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:152:1
+✖ F02-AC4: si el catálogo falla responde 503 y el dato previo se conserva (0.02725ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:162:1
+✖ F02-AC4: un CSV que cambió de estructura responde 400 y no sustituye los datos (0.029ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:177:1
+✖ F03-AC1 y F03-AC2: sincroniza, guarda lugares normalizados y la segunda llamada usa la caché (0.047125ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:189:1
+✖ F03-AC3: provincia, cantón o categoría inválidos responden 400 y no llegan a Overpass (0.048417ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:197:1
+✖ F03-AC4: si Overpass falla responde 503 y los lugares previos siguen intactos (0.04025ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:204:1
+✖ F03-AC6 (Q-02): cualquier visitante consulta los lugares guardados sin clave (0.023458ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.
+
+test at scripts/pruebas/integracion.test.cjs:211:1
+✖ F03-AC5: si Overpass responde sin lugares, los lugares anteriores de esa combinación no se pierden (0.017542ms)
+  Error: TEST_DATABASE_URL no está definida: ejecuta `scripts/pruebas/ambiente.sh up` y exporta su `url`. Prueba INCOMPLETA.

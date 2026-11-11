@@ -1,0 +1,101 @@
+✔ F01-AC1: importa conteos por distrito y declara que descartó los datos personales (12.568042ms)
+✔ F01-AC1: decodifica Windows-1252 (tildes y Ñ de los nombres territoriales) (1.529375ms)
+✔ F01-AC2: ni la BD ni la respuesta contienen cédula, nombre ni vencimiento (1.710792ms)
+✔ F01-AC2: los mensajes de error tampoco filtran datos personales (2.508625ms)
+✔ F01-AC3: rechaza sin archivo, sin extensión .zip y sin firma ZIP (0.372708ms)
+✔ F01-AC3: acepta la extensión .ZIP en mayúsculas (1.334167ms)
+✔ F01-AC3: rechaza un ZIP sin DISTELEC.TXT, sin padrón o sin registros válidos (2.48025ms)
+✔ F01-AC3: un ZIP corrupto responde 400, no 500 (0.661666ms)
+✔ F01-AC3: los datos anteriores no cambian cuando la importación falla (1.696916ms)
+✔ F01-AC4: valor límite de la longitud de línea (2 000 válida, 2 001 rechazada) (1.945917ms)
+✖ F01-AC5: valida AAAA-MM-DD con valores límite (7.295042ms)
+✔ F01-AC5: la fecha de corte es opcional (1.798041ms)
+✔ F01-AC6: importar dos veces el mismo ZIP actualiza por electoralCode sin duplicar (1.659458ms)
+✔ F01-AC6: un segundo ZIP con otros conteos reemplaza los del mismo distrito (1.508291ms)
+✔ descarta filas con código de distrito que no tiene exactamente 6 dígitos (0.900791ms)
+✔ ignora LEAME.txt y archivos que no son .txt, y acepta rutas con carpetas (1.292125ms)
+✔ guarda en lotes de 500 distritos (valores límite 500 y 501) (15.632ms)
+✔ el nombre del archivo de origen se sanea y se limita a 255 caracteres (0.926917ms)
+✔ HTTP F01-AC1: una subida multipart real con la clave importa y responde sin datos personales (43.647708ms)
+✔ HTTP F01-AC7: sin clave o con una incorrecta responde 401 y no se importa nada, aunque el archivo sea válido (9.393958ms)
+✔ HTTP F01-AC3: archivo que no es ZIP, sin archivo y con otro nombre de campo responden 400 sin escribir (9.810042ms)
+✖ HTTP F01-AC5: una fecha de corte inexistente responde 400 (8.29375ms)
+✔ HTTP F01-AC4: el límite de 80 MB del archivo (79 MB pasa a multer, 81 MB se rechaza con 413) (301.684541ms)
+⚠ F01-AC8: rechaza un ZIP con .txt adicionales o descompresión desproporcionada (2.6885ms) # brecha T-03 / M-03
+⚠ F01-AC9: informa unknownDistricts y excluye distritos sin nombre territorial (1.67775ms) # brecha IA-03
+ℹ tests 25
+ℹ suites 0
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 2
+ℹ duration_ms 890.759542
+
+✖ failing tests:
+
+test at scripts/tse.test.cjs:156:1
+✖ F01-AC5: valida AAAA-MM-DD con valores límite (7.295042ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async rejects400 (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:45:3)
+      at async TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:165:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scripts/tse.test.cjs:296:1
+✖ HTTP F01-AC5: una fecha de corte inexistente responde 400 (8.29375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  201 !== 400
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:299:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 201,
+    expected: 400,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/tse.test.cjs:321:1
+⚠ F01-AC8: rechaza un ZIP con .txt adicionales o descompresión desproporcionada (2.6885ms) # brecha T-03 / M-03
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async rejects400 (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:45:3)
+      at async TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:324:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scripts/tse.test.cjs:326:1
+⚠ F01-AC9: informa unknownDistricts y excluye distritos sin nombre territorial (1.67775ms) # brecha IA-03
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 1
+  
+      at TestContext.<anonymous> (/Users/frandercarrillo/Documents/ciclo-ll-2026/alex/Investigacion-SI/backend/scripts/tse.test.cjs:329:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

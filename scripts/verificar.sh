@@ -31,6 +31,7 @@ paso "backend: test:admin"      backend  npm run test:admin --silent
 paso "backend: test:oij"        backend  npm run test:oij --silent
 paso "backend: test:tse"        backend  npm run test:tse --silent
 paso "backend: test:health"     backend  npm run test:health --silent
+paso "backend: test:coverage"   backend  npm run test:coverage --silent   # reglas de /coverage (4.2); las pruebas con BD van en scripts/pruebas/ejecutar.sh
 paso "frontend: lint"           frontend npm run lint --silent
 paso "frontend: tipos (tsc)"    frontend npx --no-install tsc --noEmit   # rápido: el hook detecta errores de tipos sin compilar (R-07)
 paso "frontend: test:operator"  frontend npm run test:operator --silent

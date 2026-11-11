@@ -21,7 +21,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 | [T-03](#t-03) | Denegación de servicio | F-01 | Importador del TSE | Media | propuesta |
 | [T-04](#t-04) | Divulgación de información | F-01 | Importador del TSE | Alta | implementada |
 | [T-05](#t-05) | Manipulación | F-01 | Datos del TSE | Media | propuesta |
-| [T-06](#t-06) | Manipulación | F-03 | Sincronización OSM | Media | propuesta |
+| [T-06](#t-06) | Manipulación | F-03 | Sincronización OSM | Media | implementada (cero elementos verificado) |
 | [T-07](#t-07) | Suplantación, Manipulación | F-02, F-03 | Consumo de fuentes externas | Media | implementada |
 | [T-08](#t-08) | Repudio | F-01, F-02, F-03 | API | Media | propuesta |
 | [T-09](#t-09) | Divulgación de información | Todos | API y configuración | Media | propuesta |
@@ -109,7 +109,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Comprobación prevista:** prueba de integración con Overpass simulado que devuelve cero elementos y otra que fuerza un error de inserción. En ambas los datos previos permanecen.
 - **Responsable / revisor:** Frander / Axel.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Estado:** implementada (2026-11-11, fase 4): transacción y sin borrado ante respuesta vacía en `osm.service.ts`; verificada con `npm run test:integracion` (Overpass sin elementos conserva los datos previos). Falta la comprobación de un error de inserción forzado.
 
 ## T-07
 

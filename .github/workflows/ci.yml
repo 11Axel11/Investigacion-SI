@@ -4,6 +4,7 @@
 #   3.2  seguridad           : Semgrep CE, Gitleaks y OSV-Scanner. Un análisis que no se ejecutó es INCOMPLETO y bloquea.
 #   3.3  imagenes            : imagen candidata de cada servicio, Trivy (imagen, Dockerfile e IaC) y SBOM CycloneDX.
 #   3.4  politicas           : Conftest/OPA (sin contenedores privilegiados y usuario no root explícito).
+#   4.x  pruebas             : BD efímera con datos ficticios; unitarias, integración y autorización (fase 4).
 #   3.6  resultado           : ÚNICO check obligatorio. Falla si cualquier job falló, se omitió o se canceló.
 #   3.8  fusion              : al fusionar (push a main o development) se verifica el commit resultante y se
 #                              conservan sus reportes e identidad de imágenes; la versión (fase 5) los reutiliza.
@@ -149,12 +150,107 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+  # 4.1, 4.3, 4.5, 4.6: BD efímera en Docker con datos ficticios (scripts/pruebas/ambiente.sh), pruebas de reglas de
+  # negocio, integración API + BD y autorización. Sin Docker o sin BD la prueba FALLA (incompleta, nunca aprobada).
+  pruebas:
+    name: pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+        working-directory: backend
+      - name: Pruebas con la BD de pruebas (unitarias, integración y autorización)
+        run: scripts/pruebas/ejecutar.sh
+
+  # 4.4: E2E con Playwright de F-01, F-02 y F-03 (éxito y rechazo) contra la interfaz real, el backend y la BD de pruebas.
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+        working-directory: backend
+      - run: npm ci
+        working-directory: frontend
+      - run: npm ci
+        working-directory: e2e
+      - name: Instalar Chromium de Playwright
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+      - name: E2E de los flujos críticos
+        run: scripts/pruebas/e2e.sh
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: e2e-${{ github.event.pull_request.head.sha || github.sha }}
+          path: e2e/informe/
+          if-no-files-found: warn
+          retention-days: 30
+
+  # 4.7: DAST con ZAP Automation Framework contra las imágenes candidatas (compose), datos ficticios. Bloquea con alertas
+  # de riesgo ALTO; si ZAP no pudo ejecutarse es INCOMPLETO y también bloquea.
+  dast:
+    name: dast
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: DAST (ZAP Automation Framework)
+        run: scripts/pruebas/zap.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: dast-${{ github.event.pull_request.head.sha || github.sha }}
+          path: reportes-pruebas/zap/
+          if-no-files-found: warn
+          retention-days: 90
+
+  # 4.10: experimento de resiliencia con Toxiproxy entre el backend y un Overpass local falso (latencia, corte, recuperación).
+  resiliencia:
+    name: resiliencia
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+        working-directory: backend
+      - name: Experimento de resiliencia (Toxiproxy)
+        run: scripts/pruebas/resiliencia.sh
+
   # 3.6: este es el único check que se marca como obligatorio en la protección de ramas. Con `if: always()` se
   # ejecuta aunque otro job falle; un job omitido, cancelado o que no terminó NO cuenta como aprobado.
   resultado:
     name: resultado
     if: always()
-    needs: [backend, frontend, seguridad, politicas, imagenes]
+    needs: [backend, frontend, seguridad, politicas, imagenes, pruebas, e2e, dast, resiliencia]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
@@ -163,11 +259,15 @@ jobs:
       R_SEGURIDAD: ${{ needs.seguridad.result }}
       R_POLITICAS: ${{ needs.politicas.result }}
       R_IMAGENES: ${{ needs.imagenes.result }}
+      R_PRUEBAS: ${{ needs.pruebas.result }}
+      R_E2E: ${{ needs.e2e.result }}
+      R_DAST: ${{ needs.dast.result }}
+      R_RESILIENCIA: ${{ needs.resiliencia.result }}
     steps:
       - name: Todos los checks deben haber terminado en success
         run: |
           estado=0
-          for par in "backend=$R_BACKEND" "frontend=$R_FRONTEND" "seguridad=$R_SEGURIDAD" "politicas=$R_POLITICAS" "imagenes=$R_IMAGENES"; do
+          for par in "backend=$R_BACKEND" "frontend=$R_FRONTEND" "seguridad=$R_SEGURIDAD" "politicas=$R_POLITICAS" "imagenes=$R_IMAGENES" "pruebas=$R_PRUEBAS" "e2e=$R_E2E" "dast=$R_DAST" "resiliencia=$R_RESILIENCIA"; do
             echo "${par%%=*}: ${par#*=}"
             [ "${par#*=}" = "success" ] || estado=1
           done

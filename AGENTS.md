@@ -68,6 +68,12 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Seguridad como en CI (Semgrep, Gitleaks y OSV-Scanner con compuerta) | raíz | `scripts/ci/seguridad-ci.sh` |
 | Imágenes candidatas, Trivy y SBOM (requiere Docker y `brew install trivy`) | raíz | `scripts/ci/imagenes-ci.sh` |
 | Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |
+| Reglas de negocio de `/coverage` (4.2) | `backend/` | `npm run test:coverage` |
+| Pruebas con BD de pruebas: unitarias, integración y autorización (4.1 a 4.6; Docker) | raíz | `scripts/pruebas/ejecutar.sh` |
+| E2E con Playwright de F-01, F-02 y F-03 (4.4; Docker) | raíz | `scripts/pruebas/e2e.sh` |
+| DAST con ZAP contra las imágenes candidatas (4.7; Docker) | raíz | `scripts/pruebas/zap.sh` |
+| Resiliencia con Toxiproxy (4.10; Docker) | raíz | `scripts/pruebas/resiliencia.sh` |
+| Defecto controlado: las pruebas deben detectarlo (4.9) | raíz | `scripts/pruebas/defecto-controlado.sh funcional\|seguridad` |
 | Semgrep CE y Gitleaks (requiere `brew install semgrep gitleaks`) | raíz | `scripts/seguridad.sh` |
 | Todas las verificaciones (las ejecuta el hook `Stop`) | raíz | `scripts/verificar.sh` (`--rapido` omite la compilación del frontend) |
 | Linting del frontend | `frontend/` | `npm run lint` |
@@ -83,4 +89,4 @@ La integración continua vive en `.github/workflows/` (`ci.yml` y `revision-ia.y
 
 ## Alcance de esta versión
 
-Este archivo cubre Planificación (fase 1), Desarrollo (fase 2) y Construcción e integración (fase 3). El despliegue y la operación se agregarán en las fases 6 y 7.
+Este archivo cubre Planificación (fase 1), Desarrollo (fase 2), Construcción e integración (fase 3) y Pruebas (fase 4). La preparación de la versión, el despliegue y la operación se agregarán en las fases 5 a 7.

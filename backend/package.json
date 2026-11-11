@@ -11,7 +11,9 @@
     "test:oij": "npm run build && node --test scripts/oij.test.cjs",
     "test:admin": "npm run build && node --test scripts/admin-key.test.cjs",
     "test:tse": "npm run build && node --test scripts/tse.test.cjs",
-    "test:health": "npm run build && node --test scripts/health.test.cjs"
+    "test:health": "npm run build && node --test scripts/health.test.cjs",
+    "test:coverage": "npm run build && node --test scripts/coverage.test.cjs",
+    "test:integracion": "npm run build && node --test --test-concurrency=1 scripts/pruebas/integracion.test.cjs scripts/pruebas/autorizacion.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",

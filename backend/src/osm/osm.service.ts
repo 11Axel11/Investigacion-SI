@@ -156,27 +156,33 @@ out center tags 251;`;
       .map((element) => this.normalize(element, params, sourceUpdatedAt, fetchedAt))
       .filter((place) => place !== undefined);
 
-    await this.places.delete({
-      province: params.province,
-      canton: params.canton,
-      category: params.category,
-    });
+    // F03-AC5 / M-06: si Overpass respondió sin lugares, se conservan los anteriores y no se registra la caché
+    // (el operador puede reintentar). Si hay lugares, borrar, insertar y registrar la caché van en UNA transacción:
+    // un fallo a medias no deja la combinación vacía.
     if (normalized.length > 0) {
-      await this.places.upsert(normalized, ['osmType', 'osmId', 'province', 'canton']);
+      await this.places.manager.transaction(async (manager) => {
+        await manager.delete(OsmPlace, {
+          province: params.province,
+          canton: params.canton,
+          category: params.category,
+        });
+        await manager.upsert(OsmPlace, normalized, ['osmType', 'osmId', 'province', 'canton']);
+        await manager.upsert(
+          OsmQueryCache,
+          {
+            queryKey,
+            category: params.category,
+            province: params.province,
+            canton: params.canton,
+            centerLatitude: center.latitude,
+            centerLongitude: center.longitude,
+            sourceUpdatedAt,
+            fetchedAt,
+          },
+          ['queryKey'],
+        );
+      });
     }
-    await this.cache.upsert(
-      {
-        queryKey,
-        category: params.category,
-        province: params.province,
-        canton: params.canton,
-        centerLatitude: center.latitude,
-        centerLongitude: center.longitude,
-        sourceUpdatedAt,
-        fetchedAt,
-      },
-      ['queryKey'],
-    );
 
     return {
       guardados: normalized.length,

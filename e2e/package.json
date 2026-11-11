@@ -1,0 +1,12 @@
+{
+  "name": "e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pruebas E2E con Playwright de los flujos críticos F-01, F-02 y F-03 (fase 4, ítem 4.4).",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0"
+  }
+}

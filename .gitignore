@@ -21,3 +21,8 @@ __MACOSX/
 .claude/settings.local.json
 reportes/
 reportes-imagenes/
+
+# Pruebas (fase 4)
+e2e/informe/
+e2e/test-results/
+reportes-pruebas/
