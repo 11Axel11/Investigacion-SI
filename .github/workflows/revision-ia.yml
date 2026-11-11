@@ -1,0 +1,44 @@
+# Revisión de código asistida por IA sobre cada PR (ítem 3.7). INFORMATIVA: publica un comentario; no aprueba,
+# no es un check obligatorio y no bloquea. Reutiliza las instrucciones de la fase 2 (.github/revision-ia.md).
+# Requiere el secreto DEEPSEEK_API_KEY o ANTHROPIC_API_KEY (S-05; si están las dos, se usa DeepSeek). Sin ninguno, o en
+# PR desde forks, se informa que NO se ejecutó.
+# Riesgo conocido (T-12): un PR de la misma rama puede cambiar este workflow y leer el secreto; se acepta mientras
+# el equipo sea de confianza y la protección de ramas exija revisión de otro integrante (ítem 3.5).
+name: Revisión de IA
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main, development]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: revision-ia-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  revision:
+    name: revision-ia
+    if: github.event.pull_request.draft == false && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Revisión asistida por IA (informativa)
+        run: node scripts/ci/revision-ia.mjs
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}

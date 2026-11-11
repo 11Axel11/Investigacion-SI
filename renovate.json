@@ -1,0 +1,16 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests", "docker:pinDigests"],
+  "timezone": "America/Costa_Rica",
+  "schedule": ["before 6am on monday"],
+  "baseBranches": ["main"],
+  "labels": ["dependencias"],
+  "prConcurrentLimit": 5,
+  "vulnerabilityAlerts": { "labels": ["seguridad"], "schedule": ["at any time"] },
+  "packageRules": [
+    { "matchManagers": ["npm"], "matchUpdateTypes": ["minor", "patch"], "groupName": "npm (menores y parches)" },
+    { "matchManagers": ["npm"], "matchUpdateTypes": ["major"], "dependencyDashboardApproval": true },
+    { "matchManagers": ["github-actions"], "groupName": "GitHub Actions" },
+    { "matchManagers": ["dockerfile", "docker-compose"], "groupName": "imágenes base" }
+  ]
+}

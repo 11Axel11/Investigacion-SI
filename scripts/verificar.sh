@@ -49,6 +49,13 @@ else
   omitidas+=("seguridad: scripts/seguridad.sh no existe")
 fi
 
+# Políticas de contenedores (3.4). Sin conftest NO se da por aprobado: se informa como omitida.
+if command -v conftest >/dev/null; then
+  paso "políticas (Conftest/OPA)" . scripts/politicas.sh
+else
+  omitidas+=("políticas: falta conftest (brew install conftest)")
+fi
+
 echo
 [ "${#omitidas[@]}" -gt 0 ] && printf 'OMITIDA: %s\n' "${omitidas[@]}"
 if [ "${#fallos[@]}" -gt 0 ]; then
