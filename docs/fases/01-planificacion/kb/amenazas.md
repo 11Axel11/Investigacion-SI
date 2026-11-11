@@ -116,10 +116,10 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Prioridad:** Media.
 - **Medida (implementada):** en el OIJ se restringe el recurso a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
 - **Componente:** `backend/src/oij/oij.service.ts`, `backend/src/oij/oij.parser.ts`, `backend/src/osm/osm.service.ts`.
-- **Comprobación prevista:** ejecutar `npm run test:oij` en CI. Falta una prueba equivalente para OSM (respuesta con forma inesperada) y una para el host del OIJ.
+- **Comprobación:** `npm run test:oij` verifica el parser y que un CSV de un host distinto se rechaza antes de la descarga con 503, sin modificar el agregado anterior (F02-AC4). Queda ejecutar el comando en CI y comprobar una respuesta inesperada de OSM.
 - **Responsable / revisor:** José / Daniel.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** implementada; verificada solo en parte (el parser del OIJ).
+- **Estado:** implementada; verificados el parser y el rechazo de un host distinto en el OIJ. Falta completar las comprobaciones de OSM.
 
 ## T-08
 
