@@ -22,9 +22,12 @@
       "Bash(git commit --no-verify*)",
       "Bash(gh pr merge*)",
       "Bash(gh pr review*--approve*)",
-      "Bash(gh pr review*-a*)",
       "Bash(rm -rf*)",
-      "Bash(curl*X-Admin-Key*)"
+      "Bash(curl*X-Admin-Key*)",
+      "Bash(gh pr review*-a)",
+      "Bash(gh pr review* -a *)",
+      "Bash(git push*:main*)",
+      "Bash(git push*refs/heads/main*)"
     ],
     "ask": [
       "Edit(./AGENTS.md)",
