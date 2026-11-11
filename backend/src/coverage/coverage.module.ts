@@ -5,10 +5,11 @@ import { OsmPlace } from '../osm/osm-place.entity';
 import { TseElectoralSummary } from '../tse/tse-electoral-summary.entity';
 import { CoverageController } from './coverage.controller';
 import { CoverageService } from './coverage.service';
+import { CantonBoundariesService } from './canton-boundaries.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TseElectoralSummary, OsmPlace, OijDataset])],
   controllers: [CoverageController],
-  providers: [CoverageService],
+  providers: [CoverageService, CantonBoundariesService],
 })
 export class CoverageModule {}
