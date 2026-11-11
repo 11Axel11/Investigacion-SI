@@ -4,8 +4,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { deflateRawSync } = require('node:zlib');
-const { BadRequestException } = require('@nestjs/common');
+require('reflect-metadata');
+const { BadRequestException, Module } = require('@nestjs/common');
+const { NestFactory } = require('@nestjs/core');
 const { TseService } = require('../dist/tse/tse.service');
+const { TseController } = require('../dist/tse/tse.controller');
 
 // ---------- ZIP mínimo (método "deflate"; suficiente para unzipper) ----------
 const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
@@ -278,6 +281,88 @@ test('el nombre del archivo de origen se sanea y se limita a 255 caracteres', as
   assert.match(result.sourceFile, /^[a-zA-Z0-9._-]+$/);
   assert.ok(result.sourceFile.length <= 255);
   assert.equal(repo.store.get('101001').sourceFile, result.sourceFile);
+});
+
+// ---------- HTTP real: multipart con multer 2.x, guard, servicio real y repositorio simulado ----------
+// Cierra la observación 4 de la revisión de IA del PR de la fase 3: antes `test:admin` solo probaba
+// POST /tse/import sin archivo y con el servicio simulado, es decir, multer nunca recibía una subida.
+const ADMIN_KEY = 'clave-ficticia-de-prueba-0123456789'; // no es un secreto real
+const ORIGINAL_KEY = process.env.ADMIN_API_KEY;
+test.after(() => {
+  if (ORIGINAL_KEY === undefined) delete process.env.ADMIN_API_KEY;
+  else process.env.ADMIN_API_KEY = ORIGINAL_KEY;
+});
+
+async function startHttp() {
+  process.env.ADMIN_API_KEY = ADMIN_KEY;
+  const repo = fakeRepo();
+  class HttpTestModule {}
+  Module({ controllers: [TseController], providers: [{ provide: TseService, useValue: new TseService(repo) }] })(HttpTestModule);
+  const app = await NestFactory.create(HttpTestModule, { logger: false });
+  await app.listen(0, '127.0.0.1');
+  return { app, repo, base: await app.getUrl() };
+}
+const upload = (base, { buffer = goodZip(), filename = 'padron-ficticio.zip', field = 'file', query = '', key = ADMIN_KEY } = {}) => {
+  const form = new FormData();
+  form.append(field, new Blob([buffer], { type: 'application/zip' }), filename);
+  return fetch(`${base}/tse/import${query}`, { method: 'POST', headers: key ? { 'X-Admin-Key': key } : {}, body: form });
+};
+
+test('HTTP F01-AC1: una subida multipart real con la clave importa y responde sin datos personales', async () => {
+  const { app, repo, base } = await startHttp();
+  try {
+    const response = await upload(base, { query: '?sourceDate=2026-02-28' });
+    assert.equal(response.status, 201);
+    const text = await response.text();
+    const body = JSON.parse(text);
+    assert.equal(body.importedDistricts, 3);
+    assert.equal(body.processedElectors, 5);
+    assert.equal(body.discardedPersonalFields, true);
+    assert.equal(repo.store.size, 3);
+    for (const secret of [SECRET_ID, SECRET_NAME, SECRET_EXPIRY]) assert.equal(text.includes(secret), false);
+  } finally { await app.close(); }
+});
+
+test('HTTP F01-AC7: sin clave o con una incorrecta responde 401 y no se importa nada, aunque el archivo sea válido', async () => {
+  const { app, repo, base } = await startHttp();
+  try {
+    for (const key of [null, 'incorrecta']) assert.equal((await upload(base, { key })).status, 401); // null = sin cabecera
+    assert.equal(repo.calls.length, 0);
+  } finally { await app.close(); }
+});
+
+test('HTTP F01-AC3: archivo que no es ZIP, sin archivo y con otro nombre de campo responden 400 sin escribir', async () => {
+  const { app, repo, base } = await startHttp();
+  try {
+    assert.equal((await upload(base, { buffer: Buffer.from('esto no es un zip'), filename: 'padron.zip' })).status, 400);
+    assert.equal((await upload(base, { filename: 'padron.txt' })).status, 400);
+    assert.equal((await upload(base, { field: 'archivo' })).status, 400, 'multer rechaza el campo inesperado');
+    const sinArchivo = await fetch(`${base}/tse/import`, { method: 'POST', headers: { 'X-Admin-Key': ADMIN_KEY }, body: new FormData() });
+    assert.equal(sinArchivo.status, 400);
+    assert.equal(repo.calls.length, 0);
+  } finally { await app.close(); }
+});
+
+test('HTTP F01-AC5: una fecha de corte inexistente responde 400', async () => {
+  const { app, repo, base } = await startHttp();
+  try {
+    assert.equal((await upload(base, { query: '?sourceDate=2026-02-30' })).status, 400);
+    assert.equal(repo.calls.length, 0);
+  } finally { await app.close(); }
+});
+
+test('HTTP F01-AC4: el límite de 80 MB del archivo (79 MB pasa a multer, 81 MB se rechaza con 413)', async () => {
+  const { app, repo, base } = await startHttp();
+  try {
+    const grande = Buffer.concat([Buffer.from('PK'), Buffer.alloc(81 * 1024 * 1024)]);
+    const response = await upload(base, { buffer: grande });
+    assert.equal(response.status, 413);
+    assert.equal(repo.calls.length, 0);
+    // Un archivo de 79 MB lo recibe multer: el ZIP es inválido, así que el servicio responde 400 (no 413).
+    const casiGrande = Buffer.concat([Buffer.from('PK'), Buffer.alloc(79 * 1024 * 1024)]);
+    assert.equal((await upload(base, { buffer: casiGrande })).status, 400);
+    assert.equal(repo.calls.length, 0);
+  } finally { await app.close(); }
 });
 
 // ---------- Brechas conocidas (reglas [A] que el código aún no cumple) ----------

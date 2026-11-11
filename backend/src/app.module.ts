@@ -2,6 +2,7 @@ import { OijModule } from './oij/oij.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HealthController } from './common/health.controller';
 import { CoverageModule } from './coverage/coverage.module';
 import { OsmModule } from './osm/osm.module';
 import { TseModule } from './tse/tse.module';
@@ -23,6 +24,7 @@ import { TseModule } from './tse/tse.module';
     CoverageModule,
     OijModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
 

@@ -62,7 +62,8 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Compilar el backend | `backend/` | `npm run build` |
 | Pruebas del módulo OIJ | `backend/` | `npm run test:oij` |
 | Pruebas de la clave de administración (T-01) | `backend/` | `npm run test:admin` |
-| Pruebas del importador del padrón (F-01, ZIP ficticios) | `backend/` | `npm run test:tse` |
+| Pruebas del importador del padrón (F-01, ZIP ficticios; incluye multipart HTTP) | `backend/` | `npm run test:tse` |
+| Pruebas de `GET /health` (healthcheck del contenedor) | `backend/` | `npm run test:health` |
 | Políticas de contenedores (Conftest/OPA, ítem 3.4) | raíz | `scripts/politicas.sh` |
 | Seguridad como en CI (Semgrep, Gitleaks y OSV-Scanner con compuerta) | raíz | `scripts/ci/seguridad-ci.sh` |
 | Imágenes candidatas, Trivy y SBOM (requiere Docker y `brew install trivy`) | raíz | `scripts/ci/imagenes-ci.sh` |

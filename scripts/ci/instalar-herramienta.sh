@@ -3,8 +3,9 @@
 # Uso: scripts/ci/instalar-herramienta.sh <semgrep|gitleaks|osv-scanner|conftest|trivy>
 # Instala en $HERRAMIENTAS_BIN (por defecto ~/.local/bin). Si el checksum no coincide, falla: no se ejecuta
 # nada descargado que no sea exactamente el binario publicado. Para actualizar una versión, cambia la
-# versión y el checksum de abajo en el mismo PR (los obtiene Renovate o se copian del archivo de checksums
-# de la release). Nota: el checksum viene de la misma release; protege contra descargas corruptas o
+# versión (en la URL, dos veces) y el checksum de abajo en el mismo PR; el checksum se copia del archivo de
+# checksums de la release. Renovate NO actualiza este archivo: la actualización es manual (ver
+# docs/fases/03-construccion-integracion/evidencias/3.2-seguridad-ci.md). Nota: el checksum viene de la misma release; protege contra descargas corruptas o
 # alteradas en tránsito, no contra una release comprometida en origen.
 set -euo pipefail
 DEST="${HERRAMIENTAS_BIN:-$HOME/.local/bin}"

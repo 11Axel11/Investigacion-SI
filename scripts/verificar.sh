@@ -30,6 +30,7 @@ paso "backend: build"           backend  npm run build --silent
 paso "backend: test:admin"      backend  npm run test:admin --silent
 paso "backend: test:oij"        backend  npm run test:oij --silent
 paso "backend: test:tse"        backend  npm run test:tse --silent
+paso "backend: test:health"     backend  npm run test:health --silent
 paso "frontend: lint"           frontend npm run lint --silent
 paso "frontend: tipos (tsc)"    frontend npx --no-install tsc --noEmit   # rápido: el hook detecta errores de tipos sin compilar (R-07)
 paso "frontend: test:operator"  frontend npm run test:operator --silent

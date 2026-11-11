@@ -114,6 +114,7 @@ Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es 
 | Visitante anónimo | Páginas del frontend (`/`, `/mapa`, `/electoral`, `/oij`, `/cobertura`) | Ver | Sin condición | Sin condición |
 | Visitante anónimo | Agregados D-02, D-03, D-04 (lecturas `GET`) | Leer | Sin condición | Sin condición |
 | Visitante anónimo | Límites cantonales del IGN/SNIT (C-05) | Leer | Sin condición | Sin condición |
+| Visitante anónimo, healthcheck del contenedor | `GET /health` (200 `{status: ok}` o 503 `{status: error}`; ejecuta `SELECT 1`, sin datos ni detalles de error) | Leer | Sin condición | Sin condición |
 | Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | Denegado (401) | Denegado (401) |
 | Visitante anónimo | Sincronización OIJ (D-03) | Escribir | Denegado (401) | Denegado (401) |
 | Visitante anónimo | Sincronización OSM (D-04) | Escribir | Denegado (401) | Denegado (401) |

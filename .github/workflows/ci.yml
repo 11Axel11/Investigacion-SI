@@ -53,6 +53,7 @@ jobs:
       - run: npm run build
       - run: node --test scripts/admin-key.test.cjs
       - run: node --test scripts/tse.test.cjs
+      - run: node --test scripts/health.test.cjs
       - run: node --test scripts/oij.test.cjs
 
   frontend:
