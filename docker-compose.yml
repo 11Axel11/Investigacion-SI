@@ -1,0 +1,76 @@
+# Definición de contenedores del Observatorio (IaC que escanea Trivy en CI, ítem 3.3, y que valida
+# Conftest/OPA, ítem 3.4: sin contenedores privilegiados y con usuario no root explícito).
+# Sin secretos: los valores llegan de variables de entorno o de un .env local (ignorado por git).
+# Uso local:  ADMIN_API_KEY=<32+ caracteres> POSTGRES_PASSWORD=<valor> docker compose up --build
+# Caddy y el despliegue en el VPS son de la fase 6 (Q-09).
+services:
+  db:
+    image: postgres:17-alpine@sha256:e5d2edd28b1f8d40a0a6c0c9cdc545b19b56a0d5d88f94bc11a97d970d4700d0
+    user: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: osint
+      POSTGRES_USER: observatorio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U observatorio -d osint"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    user: node
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://observatorio:${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD}@db:5432/osint
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?define ADMIN_API_KEY (32 caracteres o más)}
+      PORT: "3001"
+    ports:
+      - "127.0.0.1:3001:3001"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+    user: node
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:3000:3000"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  dbdata:

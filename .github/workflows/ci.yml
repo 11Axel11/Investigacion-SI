@@ -1,0 +1,202 @@
+# Integración continua del Observatorio (fase 3). Documentación y decisiones: docs/fases/03-construccion-integracion/.
+#
+#   3.1  backend / frontend  : instala con lockfiles (npm ci), lint, build y las suites obligatorias.
+#   3.2  seguridad           : Semgrep CE, Gitleaks y OSV-Scanner. Un análisis que no se ejecutó es INCOMPLETO y bloquea.
+#   3.3  imagenes            : imagen candidata de cada servicio, Trivy (imagen, Dockerfile e IaC) y SBOM CycloneDX.
+#   3.4  politicas           : Conftest/OPA (sin contenedores privilegiados y usuario no root explícito).
+#   3.6  resultado           : ÚNICO check obligatorio. Falla si cualquier job falló, se omitió o se canceló.
+#   3.8  fusion              : al fusionar (push a main o development) se verifica el commit resultante y se
+#                              conservan sus reportes e identidad de imágenes; la versión (fase 5) los reutiliza.
+#
+# Seguridad del pipeline (T-12): permisos mínimos (contents: read), acciones de terceros fijadas por SHA de
+# commit, herramientas con versión y checksum fijados (scripts/ci/instalar-herramienta.sh), sin secretos en este
+# archivo y sin `pull_request_target`. Los datos de prueba son ficticios y no hay base de datos real.
+name: CI
+
+on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main, development]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Commit evaluado: en un PR es la punta de la rama (no el commit de fusión temporal de GitHub).
+  COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: node --test scripts/admin-key.test.cjs
+      - run: node --test scripts/tse.test.cjs
+      - run: node --test scripts/health.test.cjs
+      - run: node --test scripts/oij.test.cjs
+
+  frontend:
+    name: frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npx --no-install tsc --noEmit
+      - run: npm run test:operator
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+  seguridad:
+    name: seguridad
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # Gitleaks escanea todo el historial
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Instalar herramientas (versión y checksum fijados)
+        run: |
+          for herramienta in semgrep gitleaks osv-scanner; do scripts/ci/instalar-herramienta.sh "$herramienta"; done
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Semgrep, Gitleaks y OSV-Scanner
+        run: scripts/ci/seguridad-ci.sh
+      - name: Identificar el commit de los reportes
+        if: always()
+        run: |
+          mkdir -p reportes
+          printf '{"commit":"%s","evento":"%s","ejecucion":"%s/%s/actions/runs/%s"}\n' \
+            "$COMMIT_SHA" "$GITHUB_EVENT_NAME" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > reportes/commit.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: seguridad-${{ github.event.pull_request.head.sha || github.sha }}
+          path: reportes/
+          if-no-files-found: error
+          retention-days: 90
+
+  politicas:
+    name: politicas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Instalar Conftest (versión y checksum fijados)
+        run: |
+          scripts/ci/instalar-herramienta.sh conftest
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Políticas de contenedores (Conftest/OPA)
+        run: scripts/politicas.sh
+
+  imagenes:
+    name: imagenes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Instalar Trivy (versión y checksum fijados)
+        run: |
+          scripts/ci/instalar-herramienta.sh trivy
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Construir las imágenes candidatas y analizarlas
+        run: scripts/ci/imagenes-ci.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: imagenes-${{ github.event.pull_request.head.sha || github.sha }}
+          path: reportes-imagenes/
+          if-no-files-found: error
+          retention-days: 90
+
+  # 3.6: este es el único check que se marca como obligatorio en la protección de ramas. Con `if: always()` se
+  # ejecuta aunque otro job falle; un job omitido, cancelado o que no terminó NO cuenta como aprobado.
+  resultado:
+    name: resultado
+    if: always()
+    needs: [backend, frontend, seguridad, politicas, imagenes]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      R_BACKEND: ${{ needs.backend.result }}
+      R_FRONTEND: ${{ needs.frontend.result }}
+      R_SEGURIDAD: ${{ needs.seguridad.result }}
+      R_POLITICAS: ${{ needs.politicas.result }}
+      R_IMAGENES: ${{ needs.imagenes.result }}
+    steps:
+      - name: Todos los checks deben haber terminado en success
+        run: |
+          estado=0
+          for par in "backend=$R_BACKEND" "frontend=$R_FRONTEND" "seguridad=$R_SEGURIDAD" "politicas=$R_POLITICAS" "imagenes=$R_IMAGENES"; do
+            echo "${par%%=*}: ${par#*=}"
+            [ "${par#*=}" = "success" ] || estado=1
+          done
+          [ "$estado" -eq 0 ] && echo "CI aprobado para el commit $COMMIT_SHA" || echo "CI NO aprobado: algún check falló, se omitió o se canceló."
+          exit "$estado"
+
+  # 3.8: solo tras fusionar. Deja constancia del commit resultante, del PR de origen y de la ejecución cuyos reportes
+  # e imágenes (ver artefactos seguridad-<sha> e imagenes-<sha>) reutiliza la versión de la fase 5.
+  fusion:
+    name: fusion
+    if: github.event_name == 'push'
+    needs: [resultado]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Registrar el commit fusionado
+        run: |
+          mkdir -p reportes-fusion
+          pr="$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty' || true)"
+          printf '{"commit":"%s","rama":"%s","pr":"%s","ejecucion":"%s/%s/actions/runs/%s","artefactos":["seguridad-%s","imagenes-%s"]}\n' \
+            "$GITHUB_SHA" "$GITHUB_REF_NAME" "${pr:-desconocido}" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$GITHUB_SHA" "$GITHUB_SHA" \
+            | tee reportes-fusion/fusion.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fusion-${{ github.sha }}
+          path: reportes-fusion/
+          retention-days: 90

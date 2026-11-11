@@ -1,0 +1,8 @@
+# Caso RECHAZADO (P-01 y P-02): contenedor privilegiado, sin usuario y otro con root.
+services:
+  api:
+    image: node:22-alpine
+    privileged: true
+  worker:
+    image: node:22-alpine
+    user: "0:0"
