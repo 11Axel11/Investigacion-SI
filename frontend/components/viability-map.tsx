@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
+  AttributionControl,
   CircleMarker,
   GeoJSON,
   MapContainer,
@@ -11,32 +12,28 @@ import {
   useMap,
 } from 'react-leaflet';
 import L from 'leaflet';
-import type { Feature, FeatureCollection } from 'geojson';
+import type { Feature } from 'geojson';
 import type { Layer, Path, PathOptions } from 'leaflet';
 
-import { api, OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY, ViabilityIndexRow } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { api, OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY } from '@/lib/api';
+import type { CantonProperties, ViabilityIndexRow } from '@/lib/api';
 import { bandColor, normalizeCantonKey, NO_DATA_COLOR } from '@/lib/viability';
 
 const CR_CENTER: [number, number] = [9.7489, -83.7534];
-
-interface CantonProperties {
-  Provincia: string;
-  Canton: string;
-  Codigo: string;
-}
 
 function normalizeText(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toUpperCase();
 }
 
-function MapLifecycle({ geo }: { geo: FeatureCollection }) {
+function MapLifecycle({ layer, version }: { layer: { current: L.GeoJSON | null }; version: string }) {
   const map = useMap();
 
   useEffect(() => {
     const fit = () => {
       map.invalidateSize();
-      const bounds = L.geoJSON(geo).getBounds();
-      if (bounds.isValid()) map.fitBounds(bounds, { padding: [28, 28], maxZoom: 9 });
+      const bounds = layer.current?.getBounds();
+      if (bounds?.isValid()) map.fitBounds(bounds, { padding: [28, 28], maxZoom: 9 });
     };
 
     const raf = requestAnimationFrame(fit);
@@ -49,7 +46,7 @@ function MapLifecycle({ geo }: { geo: FeatureCollection }) {
       ro.disconnect();
       window.removeEventListener('resize', fit);
     };
-  }, [map, geo]);
+  }, [layer, map, version]);
 
   return null;
 }
@@ -75,10 +72,10 @@ export function ViabilityMap({
   );
 
   const geoQuery = useQuery({
-    queryKey: ['cantones-cr-geojson'],
-    queryFn: () =>
-      fetch('/cantones-cr.geojson').then((res) => res.json() as Promise<FeatureCollection>),
-    staleTime: Infinity,
+    queryKey: ['coverage-canton-boundaries'],
+    queryFn: api.coverage.cantonBoundaries,
+    staleTime: 60 * 60 * 1000,
+    retry: false,
   });
 
   const osmCategory = businessType ? OIJ_BUSINESS_TYPE_TO_OSM_CATEGORY[businessType] : undefined;
@@ -95,14 +92,17 @@ export function ViabilityMap({
 
   const rowByKey = useMemo(() => {
     const map = new Map<string, ViabilityIndexRow>();
-    for (const row of rows) map.set(normalizeCantonKey(row.province, row.canton), row);
+    for (const row of rows) {
+      const key = normalizeCantonKey(row.province, row.canton);
+      if (!map.has(key)) map.set(key, row);
+    }
     return map;
   }, [rows]);
 
   const keyOf = (feature?: Feature | { properties?: unknown } | null) => {
     const props = feature?.properties as CantonProperties | undefined;
     if (!props) return '';
-    return normalizeCantonKey(props.Provincia, props.Canton);
+    return normalizeCantonKey(props.province, props.canton);
   };
 
   const styleFor = useMemo(() => {
@@ -113,8 +113,8 @@ export function ViabilityMap({
       const props = feature?.properties as CantonProperties | undefined;
       const isDimmed =
         !!props &&
-        ((!!province && normalizeText(props.Provincia) !== normalizeText(province)) ||
-          (!!canton && normalizeText(props.Canton) !== normalizeText(canton)));
+        ((!!province && normalizeText(props.province) !== normalizeText(province)) ||
+          (!!canton && key !== normalizeCantonKey(province || props.province, canton)));
       return {
         fillColor: row ? bandColor(row.band) : NO_DATA_COLOR,
         fillOpacity: isDimmed ? 0.12 : isSelected ? 0.85 : 0.65,
@@ -136,10 +136,21 @@ export function ViabilityMap({
     });
   }, [styleFor]);
 
-  if (geoQuery.isLoading || !geoQuery.data) {
+  if (!geoQuery.data && geoQuery.isError) {
+    return (
+      <div role="alert" className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center text-sm text-muted-foreground">
+        <p>No se pudieron cargar los límites cantonales del SNIT.</p>
+        <Button variant="outline" size="sm" disabled={geoQuery.isFetching} onClick={() => void geoQuery.refetch()}>
+          {geoQuery.isFetching ? 'Reintentando…' : 'Reintentar'}
+        </Button>
+      </div>
+    );
+  }
+
+  if (!geoQuery.data) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-        Cargando mapa…
+        Cargando límites cantonales del SNIT…
       </div>
     );
   }
@@ -156,28 +167,29 @@ export function ViabilityMap({
       attributionControl={false}
       style={{ height: '100%', width: '100%' }}
     >
-      <MapLifecycle geo={geoQuery.data} />
+      <MapLifecycle layer={geoLayerRef} version={geoQuery.data.fetchedAt} />
+      <AttributionControl position="bottomright" prefix={false} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <GeoJSON
-        key={`${rows[0]?.year ?? 'empty'}-${province}-${canton}`}
+        key={`${geoQuery.data.fetchedAt}-${geoQuery.data.stale}-${rows[0]?.year ?? 'empty'}-${province}-${canton}`}
         ref={(instance) => {
           geoLayerRef.current = instance;
         }}
         data={geoQuery.data}
+        attribution={`<a href="https://www.snitcr.go.cr/">IGN / SNIT</a>${geoQuery.data.stale ? ' (última copia disponible)' : ''}`}
         style={(feature) => styleFor(feature)}
         onEachFeature={(feature, layer: Layer) => {
           const key = keyOf(feature);
           const row = rowByKey.get(key);
           const props = feature.properties as CantonProperties;
-          layer.bindTooltip(
-            row?.score != null
-              ? `${props.Canton}: ${row.score} (${row.band})`
-              : `${props.Canton}: sin datos`,
-            { sticky: true },
-          );
+          const tooltip = document.createElement('span');
+          tooltip.textContent = row?.score != null
+            ? `${props.canton}: ${row.score} (${row.band})`
+            : `${props.canton}: sin datos`;
+          layer.bindTooltip(tooltip, { sticky: true });
           layer.on({
             click: () => onSelect(key),
             mouseover: (event) => (event.target as Path).setStyle({ weight: 2.5 }),

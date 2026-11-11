@@ -1,9 +1,18 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { CoverageService } from './coverage.service';
+import { CantonBoundariesService } from './canton-boundaries.service';
 
 @Controller('coverage')
 export class CoverageController {
-  constructor(private readonly coverageService: CoverageService) {}
+  constructor(
+    private readonly coverageService: CoverageService,
+    private readonly cantonBoundariesService: CantonBoundariesService,
+  ) {}
+
+  @Get('canton-boundaries')
+  cantonBoundaries() {
+    return this.cantonBoundariesService.getBoundaries();
+  }
 
   @Get('health')
   health(@Query('province') province?: string, @Query('canton') canton?: string) {

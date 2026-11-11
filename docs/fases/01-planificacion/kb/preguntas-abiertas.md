@@ -117,8 +117,8 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
   - **SNIT** es la cuarta fuente: los límites cantonales se consumirán por WFS y se normalizarán a GeoJSON, reemplazando el archivo estático `frontend/public/cantones-cr.geojson`. Aporta una capacidad demostrable (la capa territorial del mapa) y el backend ya cruza datos por cantón. BCCR queda descartada porque exige token de suscripción, y SICOP por el volumen de datos para el plazo.
   - El módulo de cobertura cruza las tres fuentes originales y no cuenta como fuente.
 - **Responsable de resolverla:** el equipo. **Revisor:** Frander.
-- **Afecta:** README (tabla de fuentes), reparto de ítems.
-- **Estado:** resuelta. La integración de SNIT está pendiente.
+- **Afecta:** README (fuentes), reparto de ítems, [C-05](arquitectura.md#componentes) y [TP-09](terceros-secretos.md#servicios-externos).
+- **Estado:** resuelta. La capa del IGN/SNIT se sirve por `GET /coverage/canton-boundaries`.
 
 ## Q-09
 

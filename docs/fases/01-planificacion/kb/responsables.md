@@ -11,7 +11,7 @@
 | Frander | OpenStreetMap / Overpass | Integrada |
 | Axel | TSE (padrón electoral) | Integrada |
 | José | OIJ (estadísticas policiales) | Integrada |
-| Daniel | SNIT (límites cantonales por WFS) | Planificada ([Q-08](preguntas-abiertas.md#q-08)) |
+| Daniel | SNIT (límites cantonales por WFS) | Integrada en cobertura ([Q-08](preguntas-abiertas.md#q-08)) |
 
 ## Ítems de la fase 1
 
