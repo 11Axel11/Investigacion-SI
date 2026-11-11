@@ -9,10 +9,10 @@
 | Comprobación | Resultado |
 |---|---|
 | Enlaces relativos y anclas en todos los `.md` de `docs/`, `AGENTS.md` y `README.md` | 0 enlaces rotos |
-| [observatorio.json](threat-model/observatorio.json) contiene T-01 a T-13 | Sí, los 13 (T-07 aparece dos veces, como indica `amenazas.md`) |
-| IDs `T`, `TP`, `S`, `Q`, `IA`, `F`, `C`, `D` sin duplicados ni saltos | Correcto (T-01 a T-13, TP-01 a TP-09, S-01 a S-05, Q-01 a Q-10, IA-01 a IA-12, F-01 a F-03, C-01 a C-05, D-01 a D-06) |
+| [observatorio.json](threat-model/observatorio.json) contiene T-01 a T-13 (T-14 se incorporó después con el PR #7) | Sí, los 13 (T-07 aparece dos veces, como indica `amenazas.md`). Tras integrar el PR #7 son 14 y coinciden con `amenazas.md` |
+| IDs `T`, `TP`, `S`, `Q`, `IA`, `F`, `C`, `D` sin duplicados ni saltos | Correcto (T-01 a T-13 en el commit verificado, y T-14 tras el PR #7; TP-01 a TP-09, S-01 a S-05, Q-01 a Q-10, IA-01 a IA-12, F-01 a F-03, C-01 a C-05, D-01 a D-06) |
 | Valores secretos en `docs/`, `AGENTS.md` y `README.md` | Ninguno. Solo hay dos archivos `.env*` versionados y son los de ejemplo (`backend/.env.example`, `frontend/.env.local.example`) |
-| Cada amenaza T-01 a T-13 tiene medida, componente, comprobación prevista, responsable/revisor, tratamiento y estado | Sí ([amenazas.md](kb/amenazas.md)) |
+| Cada amenaza T-01 a T-13 (y T-14, propuesta) tiene medida, componente, comprobación prevista, responsable/revisor, tratamiento y estado | Sí ([amenazas.md](kb/amenazas.md)) |
 | Ninguna amenaza aplazada sin justificación | Correcto: las 13 están en "mitigar" |
 | Responsable y revisor distintos en cada ítem y amenaza ([responsables.md](kb/responsables.md)) | Correcto |
 | Los endpoints de escritura exigen `X-Admin-Key` en la matriz de acceso | Sí; el acceso sin sesión está descrito ([arquitectura.md](kb/arquitectura.md#matriz-de-acceso)) |
@@ -50,12 +50,20 @@ Es evidencia para los validadores. **El estado de cada sugerencia sigue en `pend
 | IA-11 | Confirmado | `coverage.service.ts:42-46`: solo dos alias | Falta el listado de cantones sin cruce entre fuentes |
 | IA-12 | Cubierta | Decisión de Q-02 | Implementación pendiente (vista de operador) |
 
-## 4. Lo que no se puede completar sin una persona
+## 4. Actualización del 2026-11-11 (después de esta verificación)
 
-Estos puntos **siguen abiertos** y la fase 1 no puede darse por cerrada hasta cumplirlos ([kb/README.md](kb/README.md#estado-de-cierre-de-la-fase-1)):
+Por indicación de Frander, que fue el único integrante disponible, se completó lo que no dependía de una firma ajena:
+
+- **Diagrama:** se rehízo el diseño de [observatorio.json](threat-model/observatorio.json) (flujos ortogonales, sin cruces, texto dentro de las figuras) y se exportó [observatorio.png](threat-model/observatorio.png). El contenido (21 elementos y las amenazas) no cambió.
+- **Q-10:** resuelta de forma provisional (se acepta el reparto propuesto).
+- **IA-01 a IA-12:** estado provisional decidido con la evidencia de la sección 3. Las aceptadas están como criterios en [flujos.md](kb/flujos.md#casos-límite-aceptados-de-las-sugerencias-de-ia) (F01-AC9, F02-AC7, F02-AC8, F03-AC9, COV-AC1, COV-AC2) o en las comprobaciones de T-05 y T-07. IA-08 quedó como falso positivo.
+
+## 5. Lo que no se puede completar sin una persona
+
+Estos puntos **siguen abiertos** y la fase 1 no puede darse por cerrada hasta cumplirlos ([kb/README.md](kb/README.md#estado-de-cierre-de-la-fase-1)). Se hacen en la revisión presencial del equipo:
 
 1. **Las cinco firmas** de [REVISION.md](REVISION.md), cada una por quien revisa y no por quien escribió el ítem.
-2. **Ratificación o cambio de Q-01 a Q-09** (decididas por delegación a la IA) y **resolución de Q-10** (reparto con Pablo).
-3. **Validación de IA-01 a IA-12** por los validadores de [responsables.md](kb/responsables.md#validadores-de-las-sugerencias-de-ia).
-4. **Captura o exportación del diagrama de Threat Dragon.** El `observatorio.json` es el modelo, pero no hay una imagen. Se obtiene abriendo el JSON en Threat Dragon (ver [threat-model/README.md](threat-model/README.md)).
+2. **Ratificación o cambio de Q-01 a Q-10** (decididas por delegación a la IA, con Q-10 provisional).
+3. **Ratificación o cambio del estado provisional de IA-01 a IA-12** por los validadores de [responsables.md](kb/responsables.md#validadores-de-las-sugerencias-de-ia). Si cambia alguno, se ajusta el criterio de `flujos.md` que incorporó.
+4. **Revisión visual del diagrama** por Pablo (ítem 1.3).
 5. **Pasos de cierre** de `REVISION.md`: columna "Revisión" de `responsables.md`, estado de `kb/README.md` y estado en [../README.md](../README.md). Los hace la última persona en firmar.

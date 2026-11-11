@@ -6,7 +6,7 @@ Estado de cada criterio:
 
 - **[A]** regla aprobada. El código puede no cumplirla todavía: la nota "Brecha actual" de cada criterio y el estado de la medida en [amenazas.md](amenazas.md) lo indican.
 - **[O]** comportamiento observado en el código al 2026-11-10 (commit `e5a1990`). No implica que sea el deseado.
-- **[P]** regla propuesta, pendiente de decisión humana. Al 2026-11-10 no queda ninguna: las nueve preguntas se resolvieron en [preguntas-abiertas.md](preguntas-abiertas.md).
+- **[P]** regla propuesta, pendiente de decisión humana. Al 2026-11-11 no queda ninguna: las diez preguntas se resolvieron en [preguntas-abiertas.md](preguntas-abiertas.md). Las decisiones son provisionales hasta que el equipo las ratifique en la revisión presencial.
 
 Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md).
 
@@ -79,6 +79,21 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 | F03-AC6 | [A] Consulta ([Q-02](preguntas-abiertas.md#q-02)) | cualquier visitante | consulta `GET /osm/places` o `GET /osm/by-category` | recibe los lugares guardados, sin autenticación |
 | F03-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /osm/sync` | responde 401 y no se llama a Overpass. **Brecha actual: hoy se acepta (M-01, [T-01](amenazas.md#t-01)).** |
 | F03-AC8 | [A] Límite ([Q-07](preguntas-abiertas.md#q-07)) | más de 250 objetos en la respuesta | se sincroniza | la respuesta incluye `truncated: true` y la interfaz avisa que el conteo puede ser menor al real. **Brecha actual: se trunca sin avisar.** |
+
+---
+
+## Casos límite aceptados de las sugerencias de IA
+
+Criterios que salen de las sugerencias [IA-03](ia-sugerencias.md#ia-03), [IA-04](ia-sugerencias.md#ia-04), [IA-05](ia-sugerencias.md#ia-05), [IA-06](ia-sugerencias.md#ia-06), [IA-09](ia-sugerencias.md#ia-09) e [IA-11](ia-sugerencias.md#ia-11). Se aceptaron el 2026-11-11 por delegación de Frander y son **provisionales**: el validador asignado los ratifica o los cambia en la revisión presencial. Son reglas **[A]**; el código aún no las cumple y la "Brecha actual" lo dice. Su implementación y sus pruebas corresponden a las fases 2 y 4.
+
+| ID | Estado | Dado | Cuando | Entonces |
+|---|---|---|---|---|
+| F01-AC9 | [A] Datos ([IA-03](ia-sugerencias.md#ia-03)) | un ZIP con códigos de distrito que no están en `DISTELEC.TXT` | se importa | la respuesta informa cuántos distritos quedaron sin nombre territorial (`unknownDistricts`) y esas filas no entran en los totales por provincia ni en el índice de viabilidad. **Brecha actual: se guardan como `DESCONOCIDA` y suman en los totales.** |
+| F02-AC7 | [A] Fuente ([IA-04](ia-sugerencias.md#ia-04)) | el catálogo publica más de un CSV cuyo nombre contiene el año | se ejecuta `POST /oij/sync` | se usa el de modificación más reciente y el registro guarda su `sourceUrl`; si no se puede determinar cuál es el más reciente, responde 503 y se conservan los datos previos. **Brecha actual: se toma el primero que coincide.** |
+| F02-AC8 | [A] Validación ([IA-05](ia-sugerencias.md#ia-05)) | un delito, cantón o tipo de objetivo que no existe en el dataset | se consulta `/oij/overview` o `/coverage/*` | responde 400 e indica que el valor no existe, y no un resultado de ceros. **Brecha actual: devuelve resultados vacíos o en cero.** |
+| F03-AC9 | [A] Concurrencia ([IA-06](ia-sugerencias.md#ia-06)) | dos `POST /osm/sync` simultáneos de la misma combinación | se ejecutan | comparten una sola consulta a Overpass, igual que el OIJ, y el resultado en la BD es el mismo que con una sola. **Brecha actual: se hacen dos consultas y compiten por borrar e insertar.** |
+| COV-AC1 | [A] Índice ([IA-09](ia-sugerencias.md#ia-09)) | todos los cantones con el mismo valor en un componente, o un solo cantón con datos | se consulta `/coverage/viability-index` | ese componente se marca como "sin diferenciación" y no suma 100 puntos al índice. **Brecha actual: `normalize` devuelve 100 cuando el rango es cero.** |
+| COV-AC2 | [A] Cruce de fuentes ([IA-11](ia-sugerencias.md#ia-11)) | los cantones del TSE, del OIJ, de OSM y del GeoJSON | se cruzan | una prueba lista los cantones que no cruzan entre fuentes y falla si hay uno sin alias. **Brecha actual: solo hay dos alias y no existe la prueba.** |
 
 ---
 

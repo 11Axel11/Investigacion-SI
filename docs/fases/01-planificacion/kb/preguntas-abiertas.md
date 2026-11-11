@@ -2,7 +2,7 @@
 
 Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión tomada. **El agente no debe asumir la respuesta a una pregunta abierta**: si un cambio depende de una, se detiene y lo reporta (ver [AGENTS.md](../../../../AGENTS.md)).
 
-**Cómo se tomaron las decisiones de este archivo.** El 2026-11-10 la persona usuaria del repositorio delegó en el asistente de IA (Claude) la resolución de las nueve preguntas para completar la fase 1. Son decisiones vigentes. Cada integrante del equipo las **ratifica o modifica al revisar el PR** de la fase 1; si alguna cambia, se actualiza este archivo y los afectados en el mismo PR. Los responsables de resolver cada pregunta figuran en [responsables.md](responsables.md).
+**Cómo se tomaron las decisiones de este archivo.** El 2026-11-10 la persona usuaria del repositorio delegó en el asistente de IA (Claude) la resolución de las nueve preguntas para completar la fase 1, y el 2026-11-11 hizo lo mismo con Q-10 porque, por ahora, solo ella pudo participar. Son decisiones vigentes pero **provisionales**: el equipo las ratifica o modifica en la revisión presencial. Cada integrante del equipo las **ratifica o modifica al revisar el PR** de la fase 1; si alguna cambia, se actualiza este archivo y los afectados en el mismo PR. Los responsables de resolver cada pregunta figuran en [responsables.md](responsables.md).
 
 **Estado:** `abierta` o `resuelta`. Una pregunta resuelta no se borra ni se renumera.
 
@@ -17,7 +17,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 | [Q-07](#q-07) | ¿Qué pasa con más de 250 objetos de OSM? | Se mantiene el límite y se informa el truncamiento | resuelta |
 | [Q-08](#q-08) | ¿Tamaño del equipo y responsable de cada fuente? | 4 integrantes; SNIT como cuarta fuente | resuelta |
 | [Q-09](#q-09) | ¿Plataforma de despliegue y proveedor de IA? | VPS con Docker Compose y Caddy; Claude | resuelta |
-| [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo propuesto; sin fuente propia | abierta |
+| [Q-10](#q-10) | ¿Cómo se reparte la fase 1 con Pablo como quinto integrante? | Reparto parejo; Pablo sin fuente propia | resuelta (provisional) |
 
 ---
 
@@ -139,13 +139,13 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 **¿Cómo se reparte la fase 1 con Pablo como quinto integrante?**
 
 - **Contexto:** [Q-08](#q-08) fijó un equipo de 4 con las fuentes OSM, TSE, OIJ y SNIT. Pablo también forma parte del equipo y no figura en el historial de git. El responsable del repositorio indicó el 2026-11-11 que el reparto debe ser parejo y que Pablo no tiene fuente OSINT propia.
-- **Propuesta (2026-11-11), pendiente de ratificar por el equipo:**
+- **Decisión (2026-11-11): se acepta la propuesta siguiente**, tomada por delegación de Frander (el único integrante que pudo participar). El equipo la ratifica o la modifica en la revisión presencial:
   - **Fuentes:** sin cambios (Frander OSM, Axel TSE, José OIJ, Daniel SNIT). Pablo no tiene fuente propia.
   - **Ítems (responsable / revisor):** 1.1 Axel / Pablo; 1.2 Frander / José; 1.3 José / Pablo; 1.4 Daniel / Axel; 1.5 Frander / Daniel; 1.6 Axel / José; 1.7 Pablo / Axel; 1.8 Pablo / Frander. Los ítems 1.7 y 1.8 ya estaban redactados; Pablo los asume como responsable.
   - **Amenazas:** Pablo asume T-02 y T-09 (antes Frander y Daniel) y revisa T-10 y T-12. Resto sin cambios.
   - **Secretos:** S-02 pasa a Axel y S-04 a Pablo.
   - **Validadores de IA:** IA-01 y IA-02 Daniel; IA-03 y IA-04 Frander; IA-05 a IA-07 José; IA-08 e IA-12 Pablo; IA-09 a IA-11 Axel.
-- **Alternativas:** dejar a Pablo sin ítems formales (solo contribuye) o repartir por afinidad técnica en vez de por conteo.
+- **Alternativas descartadas:** dejar a Pablo sin ítems formales (solo contribuye) o repartir por afinidad técnica en vez de por conteo. Se eligió el reparto parejo porque es lo que indicó el responsable del repositorio y evita que alguien cargue más ítems que el resto.
 - **Responsable de resolverla:** el equipo. **Revisor:** José.
 - **Afecta:** [responsables.md](responsables.md), [amenazas.md](amenazas.md) (responsable y revisor de T-02, T-09, T-10 y T-12), [terceros-secretos.md](terceros-secretos.md) (S-02 y S-04), [ia-sugerencias.md](ia-sugerencias.md), [observatorio.json](../threat-model/observatorio.json), [REVISION.md](../REVISION.md).
-- **Estado:** abierta. Si el equipo cambia algún punto, se corrige este archivo y los afectados en el mismo PR.
+- **Estado:** resuelta (provisional). La ratificación presencial del equipo está pendiente. Si cambia algún punto, se corrige este archivo y los afectados en el mismo PR.
