@@ -16,7 +16,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 | ID | STRIDE | Flujo | Componente | Prioridad | Estado de la medida |
 |---|---|---|---|---|---|
-| [T-01](#t-01) | Elevación de privilegios, Manipulación | F-01, F-02, F-03 | API (endpoints de escritura) | Alta | propuesta |
+| [T-01](#t-01) | Elevación de privilegios, Manipulación | F-01, F-02, F-03 | API (endpoints de escritura) | Alta | verificada en el backend; falta la vista de operador |
 | [T-02](#t-02) | Denegación de servicio | F-02, F-03 | API, Overpass, OIJ | Alta | propuesta |
 | [T-03](#t-03) | Denegación de servicio | F-01 | Importador del TSE | Media | propuesta |
 | [T-04](#t-04) | Divulgación de información | F-01 | Importador del TSE | Alta | implementada |
@@ -39,12 +39,12 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Recurso afectado:** agregados D-02, D-03 y D-04.
 - **Impacto:** un atacante reemplaza o falsea los datos que el sistema presenta como oficiales. El índice de viabilidad y los conteos pasan a ser incorrectos sin que nadie lo note.
 - **Prioridad:** Alta. Es la brecha de mayor alcance y la más simple de explotar; afecta los tres flujos críticos.
-- **Medida (propuesta):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
-- **Componente:** `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts`, `backend/src/oij/oij.controller.ts`.
+- **Medida (implementada en el backend):** exigir una credencial de administración en los tres endpoints de escritura, validada en el backend con un guard de NestJS. Comparación en tiempo constante. La credencial viene del entorno y no está en el repositorio. Decisión de [Q-01](preguntas-abiertas.md#q-01): cabecera `X-Admin-Key` contra la variable `ADMIN_API_KEY` (S-02), con falla cerrada si no está definida.
+- **Componente:** `backend/src/common/admin-key.guard.ts` (`AdminKeyGuard`), aplicado en `backend/src/osm/osm.controller.ts`, `backend/src/tse/tse.controller.ts` y `backend/src/oij/oij.controller.ts`.
 - **Comprobación prevista:** prueba de autorización por API. Sin credencial y con credencial incorrecta, los tres endpoints responden 401, conforme a Q-01, y las filas de la BD no cambian. Con credencial válida responden como hoy. La prueba usa peticiones directas, no la interfaz.
 - **Responsable / revisor:** Frander / José.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Estado:** verificada en el backend (rama `docs/fase-2-inicio`, ítem 2.7). **Evidencia:** `cd backend && npm run test:admin` (15 casos: valores límite de 31 y 32 caracteres, cabecera ausente, vacía, repetida, con espacios y con prefijo, variable ausente o vacía, mensaje idéntico sin filtrar claves, y los tres `POST` por HTTP con servicios simulados que responden 401 y no ejecutan nada). Una prueba falla si se agrega un `POST` sin guard o si una lectura lo exige. Se comprobó con cuatro defectos introducidos a propósito (guard quitado, sin falla cerrada, prefijo aceptado, mínimo de 16) que las pruebas los detectan. **Pendiente:** la vista de operador del frontend ([Q-02](preguntas-abiertas.md#q-02)); hasta entonces los botones de importar y sincronizar de la interfaz reciben 401. No cubre T-02 (límite de peticiones) ni T-08 (registro de accesos denegados).
 
 ## T-02
 

@@ -70,7 +70,10 @@ DATABASE_URL="postgresql://USUARIO:CONTRASENA@localhost:5432/osint?schema=public
 PORT=3001
 OVERPASS_URL=https://overpass-api.de/api/interpreter
 OVERPASS_USER_AGENT=observatorio-territorial-cr/0.1
+ADMIN_API_KEY=
 ```
+
+`ADMIN_API_KEY` es la clave del operador (mínimo 32 caracteres aleatorios; genera una propia y no la subas). Los endpoints de escritura (`POST /osm/sync`, `POST /oij/sync` y `POST /tse/import`) la exigen en la cabecera `X-Admin-Key` y responden 401 si falta, es incorrecta o la variable está vacía o tiene menos de 32 caracteres. Las lecturas (`GET`) siguen públicas.
 
 Antes de publicar, `OVERPASS_USER_AGENT` debe identificar el proyecto e incluir un medio de contacto. No se debe subir el `.env` con credenciales reales.
 
@@ -172,7 +175,7 @@ Abrir http://localhost:3000/oij. Backend: puerto 3001. No iniciar otra instancia
 
 ### Verificación y exposición
 
-Desde `backend`, `npm run test:oij` compila y prueba agrupación, primera fila, comillas, codificación, estructura, años y fechas inválidas. Con backend activo y 2026 sincronizado, `node scripts/oij.integration.cjs` verifica sumas, filtros, vacío, validación, caché y respuestas de las APIs existentes. Desde `frontend`, `npm run build` valida TypeScript y genera las páginas.
+Desde `backend`, `npm run test:admin` compila y prueba la clave de administración (valores límite, errores y los tres `POST` por HTTP con servicios simulados, sin BD). `npm run test:oij` compila y prueba agrupación, primera fila, comillas, codificación, estructura, años y fechas inválidas. Con backend activo y 2026 sincronizado, `node scripts/oij.integration.cjs` verifica sumas, filtros, vacío, validación, caché y respuestas de las APIs existentes. Desde `frontend`, `npm run build` valida TypeScript y genera las páginas.
 
 Guion de un minuto:
 

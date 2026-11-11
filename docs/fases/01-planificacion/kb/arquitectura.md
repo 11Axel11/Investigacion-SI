@@ -85,18 +85,18 @@ Cruces señalados en el diagrama:
 
 ## Inventario de endpoints
 
-Todos son públicos hoy (**[O]**). La columna "Aprobado" refleja las decisiones de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02) del 2026-11-10: el operador envía la cabecera `X-Admin-Key`.
+Los tres `POST` exigen `X-Admin-Key` en el backend (**[O]**, T-01); el resto son públicos. La columna "Aprobado" refleja las decisiones de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02) del 2026-11-10: el operador envía la cabecera `X-Admin-Key`.
 
 | Endpoint | Operación | Escribe | Hoy | Aprobado |
 |---|---|---|---|---|
-| `POST /osm/sync` | Consulta Overpass y reemplaza lugares | Sí | Público | Operador |
+| `POST /osm/sync` | Consulta Overpass y reemplaza lugares | Sí | Operador (`X-Admin-Key`) | Operador |
 | `GET /osm/places` | Lista lugares por territorio y categoría | No | Público | Público |
 | `GET /osm/by-category` | Lugares de una categoría | No | Público | Público |
 | `GET /osm/locations` | Provincias y cantones permitidos | No | Público | Público |
-| `POST /tse/import` | Importa el ZIP del padrón | Sí | Público | Operador |
+| `POST /tse/import` | Importa el ZIP del padrón | Sí | Operador (`X-Admin-Key`) | Operador |
 | `GET /tse/overview` | Totales por provincia | No | Público | Público |
 | `GET /tse/districts` | Agregados por distrito | No | Público | Público |
-| `POST /oij/sync` | Descarga y agrega el CSV de un año | Sí | Público | Operador |
+| `POST /oij/sync` | Descarga y agrega el CSV de un año | Sí | Operador (`X-Admin-Key`) | Operador |
 | `GET /oij/overview` | Indicadores y opciones de filtros | No | Público | Público |
 | `GET /coverage/health` | Cobertura de salud por cantón | No | Público | Público |
 | `GET /coverage/canton-boundaries` | GeoJSON de límites cantonales del IGN/SNIT | No | Público | Público |
@@ -114,18 +114,18 @@ Formato: actor o rol → recurso → acción → condición de acceso. "Hoy" es 
 | Visitante anónimo | Páginas del frontend (`/`, `/mapa`, `/electoral`, `/oij`, `/cobertura`) | Ver | Sin condición | Sin condición |
 | Visitante anónimo | Agregados D-02, D-03, D-04 (lecturas `GET`) | Leer | Sin condición | Sin condición |
 | Visitante anónimo | Límites cantonales del IGN/SNIT (C-05) | Leer | Sin condición | Sin condición |
-| Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | **Sin condición** | Denegado (401) |
-| Visitante anónimo | Sincronización OIJ (D-03) | Escribir | **Sin condición** | Denegado (401) |
-| Visitante anónimo | Sincronización OSM (D-04) | Escribir | **Sin condición** | Denegado (401) |
-| Operador | Importación TSE | Escribir | No existe el rol | Cabecera `X-Admin-Key` válida |
-| Operador | Sincronización OIJ y OSM | Escribir | No existe el rol | Cabecera `X-Admin-Key` válida |
+| Visitante anónimo | Importación TSE (D-01 → D-02) | Escribir | Denegado (401) | Denegado (401) |
+| Visitante anónimo | Sincronización OIJ (D-03) | Escribir | Denegado (401) | Denegado (401) |
+| Visitante anónimo | Sincronización OSM (D-04) | Escribir | Denegado (401) | Denegado (401) |
+| Operador | Importación TSE | Escribir | Cabecera `X-Admin-Key` válida | Cabecera `X-Admin-Key` válida |
+| Operador | Sincronización OIJ y OSM | Escribir | Cabecera `X-Admin-Key` válida | Cabecera `X-Admin-Key` válida |
 | Operador | Base de datos (D-02 a D-04) | Leer y escribir directo | Con `DATABASE_URL` | Solo desde la red interna del servidor; la BD no se publica ([Q-09](preguntas-abiertas.md#q-09)) |
 | API (C-02) | Overpass, OIJ | Consultar | Sin credenciales; `User-Agent` informativo | Igual |
 | Visitante o API | Datos personales del padrón (D-01) | Persistir o devolver | Se descartan; no se persisten ni se devuelven | Igual (regla [A], criterio [F01-AC2](flujos.md#f-01-importar-el-padrón-del-tse)) |
 
 **Propiedad del recurso:** no aplica. No hay cuentas de usuario ni recursos con dueño; todo dato es del conjunto compartido.
 
-**Acceso sin sesión:** hoy es el único modo de acceso, también para escribir. Esa es la brecha principal ([T-01](amenazas.md#t-01)). La regla aprobada permite el acceso sin sesión solo para lecturas.
+**Acceso sin sesión:** solo permite lecturas. La escritura exige `X-Admin-Key` en el backend ([T-01](amenazas.md#t-01), verificada). La brecha que queda es de la interfaz: todavía no hay vista de operador que envíe la clave ([Q-02](preguntas-abiertas.md#q-02)), así que los botones de importar y sincronizar reciben 401.
 
 ## Dónde deben comprobarse los permisos
 

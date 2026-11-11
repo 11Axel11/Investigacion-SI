@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { AdminKeyGuard } from '../common/admin-key.guard';
 import { OsmSearchParams, OsmService } from './osm.service';
 
 @Controller('osm')
@@ -6,6 +7,7 @@ export class OsmController {
   constructor(private readonly osmService: OsmService) {}
 
   @Post('sync')
+  @UseGuards(AdminKeyGuard)
   sync(@Body() body: OsmSearchParams) {
     return this.osmService.sync(body);
   }

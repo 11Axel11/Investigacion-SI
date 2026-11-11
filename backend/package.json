@@ -7,7 +7,8 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "db:local": "node scripts/local-db.mjs",
-    "test:oij": "npm run build && node --test scripts/oij.test.cjs"
+    "test:oij": "npm run build && node --test scripts/oij.test.cjs",
+    "test:admin": "npm run build && node --test scripts/admin-key.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",
