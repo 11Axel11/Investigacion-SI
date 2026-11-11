@@ -52,7 +52,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** autenticación (T-01) más límite de peticiones por IP (por ejemplo `@nestjs/throttler`) en los endpoints de escritura, con un tope de sincronizaciones por hora.
 - **Componente:** módulos `osm` y `oij`; configuración global de `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba de carga con Artillery en el ambiente de pruebas. Al superar el límite el servidor responde 429 y no se generan llamadas adicionales a los terceros (se verifican con un servidor simulado).
-- **Responsable / revisor:** Frander / Axel.
+- **Responsable / revisor:** Pablo / Axel.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -143,7 +143,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`.
 - **Componente:** `backend/src/main.ts`, `backend/src/app.module.ts`.
 - **Comprobación prevista:** prueba que verifica cabeceras y CORS con un origen no permitido, y que una falla simulada de Overpass no devuelve texto interno. El análisis DAST con ZAP (ítem 4.7) cubre el resto.
-- **Responsable / revisor:** Daniel / Frander.
+- **Responsable / revisor:** Pablo / Frander.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -156,7 +156,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** mostrar en `/cobertura` la metodología, el denominador usado y la advertencia de que es un puntaje relativo y no causal. Reconciliar el README, que dice que no se calculan tasas poblacionales. Contenido definido en [Q-04](preguntas-abiertas.md#q-04): fórmula, denominador (electores), carácter relativo, no causalidad y fuente y fecha de cada componente. El README ya se corrigió.
 - **Componente:** `frontend/app/cobertura/page.tsx`, `frontend/components/viability-panel.tsx`, `README.md`.
 - **Comprobación prevista:** prueba E2E que verifica que el aviso es visible en `/cobertura`, y revisión del README por otro integrante.
-- **Responsable / revisor:** Frander / Daniel.
+- **Responsable / revisor:** Frander / Pablo.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 
@@ -182,7 +182,7 @@ Evidencia revisada al 2026-11-10 en el commit `e5a1990`. Las referencias a códi
 - **Medida (propuesta):** usar `npm` y un único lockfile por proyecto (eliminar `pnpm-lock.yaml`), ejecutar OSV-Scanner en CI y configurar Renovate para actualizaciones.
 - **Componente:** `backend/package.json`, `frontend/package.json` y sus lockfiles.
 - **Comprobación prevista:** OSV-Scanner sin hallazgos críticos o altos sin tratamiento, y un PR real de Renovate sujeto a los mismos controles.
-- **Responsable / revisor:** Daniel / Axel.
+- **Responsable / revisor:** Daniel / Pablo.
 - **Tratamiento decidido:** mitigar.
 - **Estado:** propuesta.
 

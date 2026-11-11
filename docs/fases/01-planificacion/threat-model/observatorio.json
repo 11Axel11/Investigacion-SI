@@ -19,6 +19,9 @@
       },
       {
         "name": "José"
+      },
+      {
+        "name": "Pablo"
       }
     ],
     "diagrams": [
@@ -572,7 +575,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Tampering",
-                  "description": "Puntaje relativo min-max, electores no son habitantes y /cobertura no advierte las limitaciones. Responsable: Frander. Revisor: Daniel.",
+                  "description": "Puntaje relativo min-max, electores no son habitantes y /cobertura no advierte las limitaciones. Responsable: Frander. Revisor: Pablo.",
                   "mitigation": "M-10: mostrar metodología, denominador, fecha y fuente de cada componente y la advertencia de que no es causal (Q-04 resuelta). Comprobación: prueba E2E del aviso y revisión del README. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -718,7 +721,7 @@
                   "status": "Open",
                   "severity": "High",
                   "type": "Denial of service",
-                  "description": "Sin límite de peticiones, se recorren combinaciones distintas de provincia, cantón y categoría. Responsable: Frander. Revisor: Axel.",
+                  "description": "Sin límite de peticiones, se recorren combinaciones distintas de provincia, cantón y categoría. Responsable: Pablo. Revisor: Axel.",
                   "mitigation": "M-02: autenticación (T-01) más límite de peticiones por IP en endpoints de escritura. Comprobación: Artillery, respuesta 429 y cero llamadas extra a terceros. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -744,7 +747,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Tampering",
-                  "description": "multer 1.x por confirmar con OSV-Scanner; dos lockfiles por proyecto. Responsable: Daniel. Revisor: Axel.",
+                  "description": "multer 1.x por confirmar con OSV-Scanner; dos lockfiles por proyecto. Responsable: Daniel. Revisor: Pablo.",
                   "mitigation": "M-12: npm como gestor único (Q-05 resuelta), OSV-Scanner en CI y Renovate. Comprobación: sin hallazgos críticos o altos sin tratamiento y un PR real de Renovate. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,
@@ -1461,7 +1464,7 @@
                   "status": "Open",
                   "severity": "Medium",
                   "type": "Information disclosure",
-                  "description": "enableCors() sin restricción, detalle interno en mensajes y synchronize: true. Responsable: Daniel. Revisor: Frander.",
+                  "description": "enableCors() sin restricción, detalle interno en mensajes y synchronize: true. Responsable: Pablo. Revisor: Frander.",
                   "mitigation": "M-09: CORS con lista blanca, mensajes genéricos al cliente, helmet y migraciones en lugar de synchronize. Comprobación: pruebas de cabeceras y CORS, y DAST. Estado: propuesta.",
                   "modelType": "STRIDE",
                   "new": false,

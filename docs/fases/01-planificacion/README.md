@@ -29,12 +29,13 @@ Todo escrito y fusionado (PR #2). **Pendiente: revisión cruzada humana.**
 
 | Revisor | Revisa | Debe ratificar |
 |---|---|---|
-| Daniel | 1.1 y 1.5 | Decisiones Q-xx que le toquen |
+| Daniel | 1.5 | Decisiones Q-xx que le toquen |
 | José | 1.2 y 1.6 | Idem |
-| Frander | 1.3 y 1.8 | Idem |
+| Frander | 1.8 | Idem |
 | Axel | 1.4 y 1.7 | Idem |
+| Pablo | 1.1 y 1.3 | Idem |
 
-Además: ratificar las decisiones Q-01 a Q-09 (las tomó la IA por delegación) y validar IA-01 a IA-12.
+Además: ratificar las decisiones Q-01 a Q-09 (las tomó la IA por delegación) y validar IA-01 a IA-12; el reparto con Pablo está propuesto en [Q-10](kb/preguntas-abiertas.md#q-10).
 
 ## Evidencia a conservar
 

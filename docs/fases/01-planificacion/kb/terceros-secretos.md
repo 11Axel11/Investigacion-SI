@@ -38,9 +38,9 @@ Solo propósito, consumidores, permisos, responsable y ubicación prevista. Nunc
 | ID | Secreto | Propósito | Consumidores | Permisos | Ubicación prevista | Responsable |
 |---|---|---|---|---|---|---|
 | S-01 | `DATABASE_URL` | Conexión a PostgreSQL | Backend | Lectura y escritura sobre la BD de la aplicación | Local: `backend/.env` (fuera de Git). Despliegue: gestor de secretos | Frander |
-| S-02 | `ADMIN_API_KEY`, clave de administración *(decidida en [Q-01](preguntas-abiertas.md#q-01))* | Autorizar `POST /osm/sync`, `/oij/sync` y `/tse/import` mediante la cabecera `X-Admin-Key` | Backend y operador | Solo los endpoints de escritura. Mínimo 32 caracteres aleatorios | Variable de entorno en el servidor; en el frontend solo en memoria del navegador, nunca `NEXT_PUBLIC_*` | Frander |
+| S-02 | `ADMIN_API_KEY`, clave de administración *(decidida en [Q-01](preguntas-abiertas.md#q-01))* | Autorizar `POST /osm/sync`, `/oij/sync` y `/tse/import` mediante la cabecera `X-Admin-Key` | Backend y operador | Solo los endpoints de escritura. Mínimo 32 caracteres aleatorios | Variable de entorno en el servidor; en el frontend solo en memoria del navegador, nunca `NEXT_PUBLIC_*` | Axel |
 | S-03 | Token de Docker Hub *(previsto)* | Publicar imágenes | Pipeline de GitHub Actions | Solo escritura del repositorio de imágenes | Secreto protegido de GitHub Actions | Daniel |
-| S-04 | Credencial de despliegue *(previsto)* | Desplegar en el VPS o la nube | Pipeline | Solo el despliegue | Secreto protegido de GitHub Actions | Daniel |
+| S-04 | Credencial de despliegue *(previsto)* | Desplegar en el VPS o la nube | Pipeline | Solo el despliegue | Secreto protegido de GitHub Actions | Pablo |
 | S-05 | Clave del proveedor de IA *(previsto)* | Revisión asistida por IA | Pipeline o herramienta local | Solo la API del proveedor | Secreto protegido, nunca en prompts ni en el repositorio | José |
 
 **Configuración que no es secreta:** `PORT`, `OVERPASS_URL`, `OVERPASS_USER_AGENT` (debe incluir un medio de contacto antes de publicar) y `NEXT_PUBLIC_API_URL`. `NEXT_PUBLIC_*` se incluye en el código del navegador: ningún secreto puede llamarse así.

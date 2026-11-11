@@ -2,7 +2,7 @@
 
 Guía de ejecución por etapa del proyecto final (fuente: `docs/documento-proyecto.docx`). Cada carpeta resume **qué se espera**, qué evidencia se conserva y en qué estado va la etapa. Las carpetas de fase solo contienen documentación y evidencias; el código, los workflows y la configuración viven donde corresponde (`backend/`, `frontend/`, `.github/`, etc.).
 
-**Entrega:** viernes 13 de noviembre de 2026, 23:59:59 (hora de Costa Rica). **Equipo:** Frander, Axel, Daniel y José ([Q-08](01-planificacion/kb/preguntas-abiertas.md#q-08)).
+**Entrega:** viernes 13 de noviembre de 2026, 23:59:59 (hora de Costa Rica). **Equipo:** Frander, Axel, Daniel, José y Pablo ([Q-08](01-planificacion/kb/preguntas-abiertas.md#q-08), [Q-10](01-planificacion/kb/preguntas-abiertas.md#q-10)).
 
 | Fase | Carpeta | Ítems | Dónde se ejecuta | Estado |
 |---|---|---|---|---|

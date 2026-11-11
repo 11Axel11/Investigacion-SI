@@ -1,6 +1,6 @@
 # Responsables y reparto de la fase 1
 
-**Supuesto de partida.** El equipo se infiere del historial de git (cuatro autores: FranderCT, 11Axel11, Daniel y José Núñez Villalobos) y se confirma al ratificar el PR de la fase 1 ([Q-08](preguntas-abiertas.md#q-08)). Los nombres se escriben sin menciones de GitHub a propósito. Si alguien del equipo es distinto o la asignación no es equilibrada, se corrige este archivo y los que lo referencian en el mismo PR.
+**Supuesto de partida.** El equipo se infiere del historial de git (cuatro autores: FranderCT, 11Axel11, Daniel y José Núñez Villalobos) y se confirma al ratificar el PR de la fase 1 ([Q-08](preguntas-abiertas.md#q-08)). Pablo se suma como quinto integrante y todavía no aparece en el historial; el reparto con él es una propuesta pendiente de ratificar ([Q-10](preguntas-abiertas.md#q-10)). Los nombres se escriben sin menciones de GitHub a propósito. Si alguien del equipo es distinto o la asignación no es equilibrada, se corrige este archivo y los que lo referencian en el mismo PR.
 
 **Regla.** Cada ítem y cada amenaza tiene un responsable y un revisor distinto. Quien revisa no escribió lo que revisa. La columna "Revisión" se actualiza cuando la persona revisora deja constancia en el PR.
 
@@ -12,21 +12,22 @@
 | Axel | TSE (padrón electoral) | Integrada |
 | José | OIJ (estadísticas policiales) | Integrada |
 | Daniel | SNIT (límites cantonales por WFS) | Integrada en cobertura ([Q-08](preguntas-abiertas.md#q-08)) |
+| Pablo | Sin fuente propia | Propuesta pendiente de ratificar ([Q-10](preguntas-abiertas.md#q-10)) |
 
 ## Ítems de la fase 1
 
 | Ítem | Entregable | Responsable | Revisor | Revisión |
 |---|---|---|---|---|
-| 1.1 | [flujos.md](flujos.md) | Axel | Daniel | Pendiente |
+| 1.1 | [flujos.md](flujos.md) | Axel | Pablo | Pendiente |
 | 1.2 | [arquitectura.md](arquitectura.md) | Frander | José | Pendiente |
-| 1.3 | [amenazas.md](amenazas.md) y [observatorio.json](../threat-model/observatorio.json) | José | Frander | Pendiente |
+| 1.3 | [amenazas.md](amenazas.md) y [observatorio.json](../threat-model/observatorio.json) | José | Pablo | Pendiente |
 | 1.4 | Medidas dentro de [amenazas.md](amenazas.md) | Daniel | Axel | Pendiente |
 | 1.5 | [terceros-secretos.md](terceros-secretos.md) | Frander | Daniel | Pendiente |
 | 1.6 | [preguntas-abiertas.md](preguntas-abiertas.md) e [ia-sugerencias.md](ia-sugerencias.md) | Axel | José | Pendiente |
-| 1.7 | Esta carpeta versionada y [README.md](README.md) | José | Axel | Pendiente |
-| 1.8 | [AGENTS.md](../../../../AGENTS.md) | Daniel | Frander | Pendiente |
+| 1.7 | Esta carpeta versionada y [README.md](README.md) | Pablo | Axel | Pendiente |
+| 1.8 | [AGENTS.md](../../../../AGENTS.md) | Pablo | Frander | Pendiente |
 
-Cada integrante responde por dos ítems y revisa dos.
+Son 8 ítems entre 5 personas: Axel, Frander y Pablo responden por dos; José y Daniel, por uno. Revisan dos Pablo, José y Axel; uno, Daniel y Frander. Los ítems 1.7 y 1.8 ya estaban redactados por otras personas; Pablo los asume como responsable y los revisan Axel y Frander.
 
 ## Responsables de las amenazas
 
@@ -35,17 +36,17 @@ Resumen; el detalle de cada medida y su comprobación está en [amenazas.md](ame
 | Amenaza | Responsable | Revisor | Tratamiento |
 |---|---|---|---|
 | [T-01](amenazas.md#t-01) | Frander | José | Mitigar |
-| [T-02](amenazas.md#t-02) | Frander | Axel | Mitigar |
+| [T-02](amenazas.md#t-02) | Pablo | Axel | Mitigar |
 | [T-03](amenazas.md#t-03) | Axel | Daniel | Mitigar |
 | [T-04](amenazas.md#t-04) | Axel | José | Mitigar (ya implementada; falta verificar) |
 | [T-05](amenazas.md#t-05) | Axel | Daniel | Mitigar |
 | [T-06](amenazas.md#t-06) | Frander | Axel | Mitigar |
 | [T-07](amenazas.md#t-07) | José | Daniel | Mitigar (ya implementada; falta ampliar pruebas) |
 | [T-08](amenazas.md#t-08) | Daniel | José | Mitigar |
-| [T-09](amenazas.md#t-09) | Daniel | Frander | Mitigar |
-| [T-10](amenazas.md#t-10) | Frander | Daniel | Mitigar |
+| [T-09](amenazas.md#t-09) | Pablo | Frander | Mitigar |
+| [T-10](amenazas.md#t-10) | Frander | Pablo | Mitigar |
 | [T-11](amenazas.md#t-11) | José | Axel | Mitigar |
-| [T-12](amenazas.md#t-12) | Daniel | Axel | Mitigar |
+| [T-12](amenazas.md#t-12) | Daniel | Pablo | Mitigar |
 | [T-13](amenazas.md#t-13) | Daniel | Frander | Mitigar |
 
 No se aplaza ninguna amenaza ni se acepta ningún riesgo sin tratamiento.
@@ -55,18 +56,20 @@ No se aplaza ninguna amenaza ni se acepta ningún riesgo sin tratamiento.
 | Secreto | Responsable |
 |---|---|
 | S-01 `DATABASE_URL` | Frander |
-| S-02 Clave de administración | Frander |
+| S-02 Clave de administración | Axel |
 | S-03 Token de Docker Hub | Daniel |
-| S-04 Credencial de despliegue | Daniel |
+| S-04 Credencial de despliegue | Pablo |
 | S-05 Clave del proveedor de IA | José |
 
 ## Validadores de las sugerencias de IA
 
 | Sugerencias | Validador |
 |---|---|
-| IA-01 a IA-04 | Daniel |
-| IA-05 a IA-08 | José |
-| IA-09 a IA-12 | Axel |
+| IA-01 y IA-02 | Daniel |
+| IA-03 y IA-04 | Frander |
+| IA-05 a IA-07 | José |
+| IA-08 e IA-12 | Pablo |
+| IA-09 a IA-11 | Axel |
 
 ## Trabajo derivado de las decisiones (fuera de la fase 1)
 

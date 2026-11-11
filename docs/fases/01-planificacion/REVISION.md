@@ -6,7 +6,7 @@ Fecha límite sugerida: **miércoles 11 de noviembre de 2026**, para dejar marge
 
 ## Cómo hacer tu revisión
 
-1. Ve a tu sección (Daniel, José, Frander o Axel) más abajo.
+1. Ve a tu sección (Daniel, José, Frander, Axel o Pablo) más abajo.
 2. Lee cada archivo que te toca y marca lo que comprobaste en la lista de verificación.
 3. Si algo está mal o falta, **corrígelo en este mismo PR** y anótalo en "Observaciones". Si el cambio toca comportamiento, datos, arquitectura o permisos, actualiza también el archivo afectado de [kb/](kb/README.md) y menciona sus IDs en el PR.
 4. Completa tu tabla de firma: escribe tu **nombre**, la **fecha** y el **resultado** (`Aprobado`, `Aprobado con cambios` o `Rechazado`).
@@ -27,15 +27,9 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 ## Daniel
 
-**Ítems a revisar:** 1.1 y 1.5.
+**Ítems a revisar:** 1.5.
 
 ### Verificación
-
-**1.1 [flujos.md](kb/flujos.md)**
-- [ ] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
-- [ ] Cada flujo indica actor, objetivo y resultado esperado.
-- [ ] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
-- [ ] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
 
 **1.5 [terceros-secretos.md](kb/terceros-secretos.md)**
 - [ ] Cada tercero (TP-nn) indica su función, qué datos o permisos recibe y cómo se tratan sus riesgos.
@@ -47,7 +41,6 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 | Ítem | Nombre | Fecha | Resultado | Observaciones |
 |---|---|---|---|---|
-| 1.1 | | | | |
 | 1.5 | | | | |
 
 ### Decisiones a ratificar ([preguntas-abiertas.md](kb/preguntas-abiertas.md))
@@ -63,8 +56,6 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 |---|---|---|---|
 | IA-01 | `.txt` arbitrario del ZIP tratado como padrón | | |
 | IA-02 | ZIP por cantón con fechas de corte mezcladas | | |
-| IA-03 | Territorios desconocidos en los agregados | | |
-| IA-04 | Varios recursos del catálogo coinciden con el año | | |
 
 ---
 
@@ -107,20 +98,14 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 | IA-05 | Filtros del OIJ sin coincidencia devuelven cero en vez de error | | |
 | IA-06 | Sincronizaciones simultáneas de la misma combinación | | |
 | IA-07 | Cantones sin límite administrativo en OSM | | |
-| IA-08 | Colisión de nombres entre provincia y cantón | | |
 
 ---
 
 ## Frander
 
-**Ítems a revisar:** 1.3 y 1.8.
+**Ítems a revisar:** 1.8.
 
 ### Verificación
-
-**1.3 [amenazas.md](kb/amenazas.md) y [observatorio.json](threat-model/observatorio.json)**
-- [ ] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 13, el mínimo es 3).
-- [ ] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 13 IDs T-01 a T-13.
-- [ ] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
 
 **1.8 [AGENTS.md](../../../AGENTS.md)**
 - [ ] Indica qué leer antes de modificar un flujo crítico: flujos, permisos, amenazas, preguntas y terceros/secretos.
@@ -133,7 +118,6 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 | Ítem | Nombre | Fecha | Resultado | Observaciones |
 |---|---|---|---|---|
-| 1.3 | | | | |
 | 1.8 | | | | |
 
 ### Decisiones a ratificar
@@ -142,8 +126,14 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 |---|---|---|---|---|
 | Q-06 | OIJ guarda modalidad y tipo de objetivo | Sí, solo como agregados | | |
 | Q-08 | Equipo de 4 integrantes y SNIT como cuarta fuente | Frander OSM, Axel TSE, José OIJ, Daniel SNIT | | |
+| Q-10 | Reparto de la fase 1 con Pablo como quinto integrante | Reparto parejo propuesto; Pablo sin fuente propia | | |
 
-Frander no tiene sugerencias IA asignadas.
+### Sugerencias de IA a validar
+
+| IA | Tema | Decisión (aceptada / rechazada / falso positivo) | Justificación breve |
+|---|---|---|---|
+| IA-03 | Territorios desconocidos en los agregados | | |
+| IA-04 | Varios recursos del catálogo coinciden con el año | | |
 
 ---
 
@@ -186,13 +176,49 @@ Frander no tiene sugerencias IA asignadas.
 | IA-09 | Cantones con cero electores o todos con el mismo valor | | |
 | IA-10 | Fuentes con fechas distintas en un mismo índice | | |
 | IA-11 | Alias de cantones incompletos | | |
+
+---
+
+## Pablo
+
+**Ítems a revisar:** 1.1 y 1.3.
+
+### Verificación
+
+**1.1 [flujos.md](kb/flujos.md)**
+- [ ] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
+- [ ] Cada flujo indica actor, objetivo y resultado esperado.
+- [ ] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
+- [ ] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
+
+**1.3 [amenazas.md](kb/amenazas.md) y [observatorio.json](threat-model/observatorio.json)**
+- [ ] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 13, el mínimo es 3).
+- [ ] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 13 IDs T-01 a T-13.
+- [ ] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
+
+### Firma
+
+| Ítem | Nombre | Fecha | Resultado | Observaciones |
+|---|---|---|---|---|
+| 1.1 | | | | |
+| 1.3 | | | | |
+
+### Decisiones a ratificar
+
+Pablo no ratifica [Q-10](kb/preguntas-abiertas.md#q-10), que es su propia asignación; la ratifica Frander. Las demás decisiones las ratifica quien las revisa en su sección.
+
+### Sugerencias de IA a validar
+
+| IA | Tema | Decisión (aceptada / rechazada / falso positivo) | Justificación breve |
+|---|---|---|---|
+| IA-08 | Colisión de nombres entre provincia y cantón | | |
 | IA-12 | Visitantes inician importaciones desde la interfaz (cubierta por Q-02) | | |
 
 ---
 
 ## Cierre de la fase 1
 
-Cuando los cuatro hayan firmado con resultado `Aprobado` o `Aprobado con cambios`:
+Cuando los cinco hayan firmado con resultado `Aprobado` o `Aprobado con cambios`:
 
 1. La última persona en firmar actualiza la columna "Revisión" en [responsables.md](kb/responsables.md) a "Aprobada" con la fecha.
 2. Se marca el último punto de [Estado de cierre](kb/README.md#estado-de-cierre-de-la-fase-1) y se actualiza la línea "Estado" de ese archivo.
