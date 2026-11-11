@@ -37,6 +37,8 @@ Todo escrito y fusionado (PR #2). **Pendiente: revisión cruzada humana.**
 
 Además: ratificar las decisiones Q-01 a Q-09 (las tomó la IA por delegación) y validar IA-01 a IA-12; el reparto con Pablo está propuesto en [Q-10](kb/preguntas-abiertas.md#q-10).
 
+Comprobaciones objetivas ya ejecutadas el 2026-11-11 (no son una revisión cruzada): [VERIFICACION-PREVIA.md](VERIFICACION-PREVIA.md).
+
 ## Evidencia a conservar
 
 - Constancia de cada revisión (comentario de PR o issue) y actualización de la columna "Revisión" en [responsables.md](kb/responsables.md).

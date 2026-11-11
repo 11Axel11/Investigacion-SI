@@ -4,6 +4,8 @@ La fase 1 está escrita, pero **no se considera cerrada hasta que otro integrant
 
 Fecha límite sugerida: **miércoles 11 de noviembre de 2026**, para dejar margen antes de la entrega del viernes 13.
 
+Las comprobaciones mecánicas (enlaces, IDs, secretos, el JSON de Threat Dragon y las brechas contra el código) ya están ejecutadas en [VERIFICACION-PREVIA.md](VERIFICACION-PREVIA.md). Úsalo como evidencia de partida; no sustituye tu lectura ni tu firma.
+
 ## Cómo hacer tu revisión
 
 1. Ve a tu sección (Daniel, José, Frander, Axel o Pablo) más abajo.
