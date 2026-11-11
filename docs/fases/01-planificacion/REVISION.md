@@ -213,10 +213,8 @@ Pablo no ratifica [Q-10](kb/preguntas-abiertas.md#q-10), que es su propia asigna
 
 ### Sugerencias de IA a validar
 
-| IA | Tema | Decisión (aceptada / rechazada / falso positivo) | Justificación breve |
-|---|---|---|---|
-| IA-08 | Colisión de nombres entre provincia y cantón | | |
-| IA-12 | Visitantes inician importaciones desde la interfaz (cubierta por Q-02) | | |
+| IA-08 | Colisión de nombres entre provincia y cantón | Falso positivo | Las claves incluyen provincia y cantón; no se identificó una colisión de datos. |
+| IA-12 | Visitantes inician importaciones desde la interfaz (cubierta por Q-02) | Aceptada | El modo operador exige clave en memoria y evita habilitar las acciones de escritura para visitantes. |
 
 ---
 
