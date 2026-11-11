@@ -19,6 +19,15 @@ rules:
           @UseGuards(AdminKeyGuard)
           @Post(...)
           $METHOD(...) { ... }
+      # Guard a nivel de controlador (R-06): cubre todos sus métodos.
+      - pattern-not-inside: |
+          @UseGuards(AdminKeyGuard)
+          @Controller(...)
+          class $C { ... }
+      - pattern-not-inside: |
+          @Controller(...)
+          @UseGuards(AdminKeyGuard)
+          class $C { ... }
     paths:
       include: ["backend/src/**"]
 

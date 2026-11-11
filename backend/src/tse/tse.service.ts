@@ -181,7 +181,10 @@ export class TseService {
 
   private validateSourceDate(value?: string) {
     if (!value) return undefined;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(new Date(`${value}T00:00:00Z`).getTime())) {
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(`${value}T00:00:00Z`) : undefined;
+    // V8 "rueda" los días inexistentes (2026-02-30 pasa a 2026-03-02): se exige que la fecha
+    // vuelva idéntica al serializarla para rechazar 30 de febrero, 31 de abril y 29/02 no bisiesto.
+    if (!parsed || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
       throw new BadRequestException('La fecha de corte debe tener el formato AAAA-MM-DD.');
     }
     return value;

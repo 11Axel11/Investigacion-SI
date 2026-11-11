@@ -30,11 +30,11 @@ Las comprobaciones previstas de cada medida están en [amenazas.md](amenazas.md)
 | ID | Estado | Dado | Cuando | Entonces |
 |---|---|---|---|---|
 | F01-AC1 | [A] Éxito | un ZIP oficial con el TXT del padrón y `DISTELEC.TXT` | el operador lo envía a `POST /tse/import` | responde `importedDistricts` y `processedElectors` mayores que 0 y `discardedPersonalFields: true`, y la BD contiene solo conteos y nombres territoriales |
-| F01-AC2 | [A] Privacidad | cualquier ZIP procesado | termina la importación, con éxito o con error | cédula, nombre y vencimiento no están en la BD, en la respuesta, en los logs ni en los mensajes de error |
-| F01-AC3 | [A] Error | un archivo que no es ZIP, o sin `DISTELEC.TXT`, o sin TXT de padrón, o sin registros válidos | se envía a `POST /tse/import` | responde 400 y los datos anteriores no cambian |
-| F01-AC4 | [A] Límites | un padrón de más de 5 000 000 de filas, una línea de más de 2 000 caracteres o un archivo de más de 80 MB | se importa | se rechaza y los datos anteriores no cambian |
-| F01-AC5 | [A] Error | `sourceDate` que no cumple `AAAA-MM-DD` | se importa | responde 400 |
-| F01-AC6 | [A] Idempotencia | el mismo ZIP importado dos veces | se repite la importación | los conteos se actualizan por `electoralCode` sin duplicar filas |
+| F01-AC2 | [A] Privacidad | cualquier ZIP procesado | termina la importación, con éxito o con error | cédula, nombre y vencimiento no están en la BD, en la respuesta, en los logs ni en los mensajes de error. **Verificado en BD simulada, respuesta y mensajes de error** con `npm run test:tse` (datos inventados); los logs no se comprueban |
+| F01-AC3 | [A] Error | un archivo que no es ZIP, o sin `DISTELEC.TXT`, o sin TXT de padrón, o sin registros válidos | se envía a `POST /tse/import` | responde 400 y los datos anteriores no cambian. **Verificado** con `npm run test:tse` (también ZIP corrupto) |
+| F01-AC4 | [A] Límites | un padrón de más de 5 000 000 de filas, una línea de más de 2 000 caracteres o un archivo de más de 80 MB | se importa | se rechaza y los datos anteriores no cambian. **Verificado solo el límite de línea (2 000 válida, 2 001 rechazada)** con `npm run test:tse`; los límites de 5 000 000 de filas y 80 MB no se prueban (costo y multer) |
+| F01-AC5 | [A] Error | `sourceDate` que no cumple `AAAA-MM-DD` | se importa | responde 400. **Implementado y verificado** con `npm run test:tse` (incluye 30 de febrero, 31 de abril y 29/02 no bisiesto; antes se aceptaban) |
+| F01-AC6 | [A] Idempotencia | el mismo ZIP importado dos veces | se repite la importación | los conteos se actualizan por `electoralCode` sin duplicar filas. **Verificado** con `npm run test:tse` (repositorio simulado; no prueba la restricción única real de la BD) |
 | F01-AC7 | [A] Uso indebido | un visitante sin credencial o con una clave incorrecta | envía `POST /tse/import` | responde 401 y la BD no cambia. **Implementado** (`AdminKeyGuard`, verificado con `npm run test:admin`; [T-01](amenazas.md#t-01)). La interfaz envía la clave solo desde el modo operador ([Q-02](preguntas-abiertas.md#q-02)). |
 | F01-AC8 | [A] Uso indebido | un ZIP con archivos `.txt` adicionales o con descompresión desproporcionada | se importa | se rechaza sin alterar los conteos. **Brecha actual: no se valida (M-03, [T-03](amenazas.md#t-03), [IA-01](ia-sugerencias.md#ia-01)).** |
 

@@ -9,7 +9,8 @@
     "db:local": "node scripts/local-db.mjs",
     "lint": "eslint .",
     "test:oij": "npm run build && node --test scripts/oij.test.cjs",
-    "test:admin": "npm run build && node --test scripts/admin-key.test.cjs"
+    "test:admin": "npm run build && node --test scripts/admin-key.test.cjs",
+    "test:tse": "npm run build && node --test scripts/tse.test.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",

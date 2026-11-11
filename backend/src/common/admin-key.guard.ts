@@ -13,7 +13,8 @@ const digest = (value: string) => createHash('sha256').update(value, 'utf8').dig
  *
  * Reglas de Q-01 / T-01:
  * - La clave esperada viene de `ADMIN_API_KEY`.
- * - Falla cerrada: si la variable falta, está vacía o tiene menos de 32 caracteres, se rechaza todo.
+ * - Falla cerrada: si la variable falta, está vacía o tiene menos de 32 caracteres (sin contar espacios
+ *   al inicio o al final), se rechaza todo.
  * - Sin cabecera, o con una clave incorrecta, se responde 401 y no se ejecuta el controlador.
  * - La comparación es en tiempo constante: se comparan los SHA-256 de ambas claves, que tienen
  *   siempre la misma longitud, así `timingSafeEqual` no lanza ni revela la longitud de la clave.
@@ -24,7 +25,9 @@ const digest = (value: string) => createHash('sha256').update(value, 'utf8').dig
 @Injectable()
 export class AdminKeyGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const expected = process.env.ADMIN_API_KEY;
+    // Se recorta la clave configurada: un espacio o salto de línea accidental en `.env` no debe dejar
+    // al operador sin acceso (R-02). La clave recibida NO se recorta: debe coincidir exacta.
+    const expected = process.env.ADMIN_API_KEY?.trim();
     const header = context.switchToHttp().getRequest<{ headers: Record<string, string | string[] | undefined> }>()
       .headers[ADMIN_KEY_HEADER];
 

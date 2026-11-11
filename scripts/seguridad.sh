@@ -16,6 +16,16 @@ echo "▶ Semgrep CE (reglas: .semgrep/observatorio.yml)"
 ( cd "$OBJ" && semgrep --config "$RAIZ/.semgrep/observatorio.yml" --metrics=off --disable-version-check \
     --quiet --error --exclude node_modules --exclude .next --exclude dist . ) || estado=1
 
+echo "▶ Archivos .env versionados (los .env locales se excluyen del escaneo del árbol: deben estar ignorados)"
+if [ -d "$OBJ/.git" ]; then
+  versionados=$(git -C "$OBJ" ls-files | grep -E '(^|/)\.env(\.[A-Za-z]+)*$' | grep -Ev '\.(example|sample|template)$' || true)
+  if [ -n "$versionados" ]; then
+    echo "HAY UN .env VERSIONADO (debe estar en .gitignore y fuera del historial):"
+    echo "$versionados" | sed 's/^/  /'
+    estado=1
+  fi
+fi
+
 echo "▶ Gitleaks (árbol de trabajo y, si es un repositorio, el historial)"
 if [ -d "$OBJ/.git" ]; then
   gitleaks git --config "$RAIZ/.gitleaks.toml" --no-banner --redact "$OBJ" || estado=1

@@ -29,11 +29,15 @@ paso "backend: lint"            backend  npm run lint --silent
 paso "backend: build"           backend  npm run build --silent
 paso "backend: test:admin"      backend  npm run test:admin --silent
 paso "backend: test:oij"        backend  npm run test:oij --silent
+paso "backend: test:tse"        backend  npm run test:tse --silent
 paso "frontend: lint"           frontend npm run lint --silent
+paso "frontend: tipos (tsc)"    frontend npx --no-install tsc --noEmit   # rápido: el hook detecta errores de tipos sin compilar (R-07)
 paso "frontend: test:operator"  frontend npm run test:operator --silent
 if [ "$RAPIDO" -eq 0 ]; then
+  # `next build` regenera next-env.d.ts. Solo se restaura si no tenía cambios antes (R-05).
+  git diff --quiet -- frontend/next-env.d.ts 2>/dev/null && next_env_limpio=1 || next_env_limpio=0
   paso "frontend: build"        frontend npm run build --silent
-  git checkout -- frontend/next-env.d.ts 2>/dev/null   # next build lo regenera
+  [ "$next_env_limpio" -eq 1 ] && git checkout -- frontend/next-env.d.ts 2>/dev/null
 else
   omitidas+=("frontend: build (--rapido)")
 fi
