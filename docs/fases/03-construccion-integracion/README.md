@@ -19,18 +19,18 @@
 
 ## Estado (2026-11-11)
 
-**Construido y probado en local; sin ejecución real en GitHub todavía.** El pipeline, las políticas y los scripts existen y cada uno se ejecutó en la computadora; lo que falta es la evidencia que solo produce GitHub (ejecuciones, artefactos, PR bloqueado) y las acciones sobre el repositorio remoto que le tocan a una persona. Revisión humana de todo lo de esta fase: **diferida** ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
+**Construido, probado en local y ejecutado en GitHub (PR #11 en verde; PR #12 de demostración en rojo y luego en verde).** Falta lo que solo hace una persona sobre el repositorio remoto: aplicar la protección de ramas, fusionar #11 y ver la ejecución de la fusión. Revisión humana de todo lo de esta fase: **diferida** ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).
 
 | Ítem | Estado | Evidencia |
 |---|---|---|
-| 3.1 | Workflow `ci.yml` hecho; `actionlint` sin errores; sin ejecución real | [3.1](evidencias/3.1-workflow-ci.md) |
+| 3.1 | Workflow `ci.yml` hecho; `actionlint` sin errores; **ejecutado en GitHub: todos los jobs en éxito** | [3.1](evidencias/3.1-workflow-ci.md) |
 | 3.2 | Semgrep, Gitleaks y OSV-Scanner con compuerta y códigos de salida; ejecutado en local: limpio. 71 avisos de OSV reducidos a 4 con excepción **propuesta** ([Q-12](../01-planificacion/kb/preguntas-abiertas.md#q-12)) | [3.2](evidencias/3.2-seguridad-ci.md) |
 | 3.3 | Dockerfiles, imagen candidata, Trivy (imagen e IaC) y SBOM CycloneDX ejecutados en local; un hallazgo real corregido | [3.3 y 3.4](evidencias/3.3-3.4-imagenes-y-politicas.md) |
 | 3.4 | Dos políticas Conftest/OPA, 12 pruebas Rego, un caso permitido y tres rechazados | [3.3 y 3.4](evidencias/3.3-3.4-imagenes-y-politicas.md) |
 | 3.5 | Script `proteger-ramas.sh` (simulacro) y permisos mínimos y SHA ya aplicados en los workflows. **Protección de ramas NO aplicada**: `main` sigue sin protección y `development` no existe ([Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13)) | [3.5](evidencias/3.5-proteccion-ramas.md) |
-| 3.6 | Mecanismo (`resultado` falla si algo falló, se omitió o se canceló) hecho; **demostración pendiente** de la ejecución en GitHub | [3.6](evidencias/3.6-bloqueo-demostrado.md) |
-| 3.7 | Workflow y script informativos con DeepSeek o Anthropic; probados en seco; **sin clave configurada** | [3.7](evidencias/3.7-revision-ia.md) |
-| 3.8 | Job `fusion` y artefactos por commit definidos; **sin ejecución real** | [3.8](evidencias/3.8-commit-fusionado.md) |
+| 3.6 | `resultado` falla si algo falló, se omitió o se canceló; **demostrado en GitHub rojo → corrección → verde** (PR #12). **No se probó el bloqueo efectivo de la fusión**: sin protección de ramas el botón seguía habilitado | [3.6](evidencias/3.6-bloqueo-demostrado.md) |
+| 3.7 | Workflow y script informativos con DeepSeek o Anthropic; probados en seco y ejecutados en GitHub sin clave (informan "NO ejecutada"); **sin clave configurada** | [3.7](evidencias/3.7-revision-ia.md) |
+| 3.8 | Job `fusion` y artefactos por commit definidos; artefactos verificados en PR; **falta la ejecución tras fusionar** | [3.8](evidencias/3.8-commit-fusionado.md) |
 
 ## Acciones que solo puede hacer una persona
 
