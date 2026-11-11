@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { aggregateCsv } = require('../dist/oij/oij.parser');
+const { OijService } = require('../dist/oij/oij.service');
 const line = (crime, date, province, canton) => `${crime},MODALIDAD,${date},PERSONA,PEATON,Mayor de edad,,COSTA RICA,${province},${canton},DISTRITO`;
 test('agrupa sin perder la primera fila y respeta comillas CSV', () => {
   const csv = [line('ROBO', '2026-01-01', 'SAN JOSE', 'SAN JOSE'), line('ROBO', '2026-01-02', 'SAN JOSE', 'SAN JOSE'), line('"HURTO, OTRO"', '2026-02-03', 'HEREDIA', 'BELEN')].join('\r\n');
@@ -43,4 +44,31 @@ test('repara VATICANO,CIUDAD DEL conservando el cantón', () => {
   const result = aggregateCsv(Buffer.from(csv), 2025);
   assert.equal(result.groups[0].province, 'PUNTARENAS');
   assert.equal(result.groups[0].canton, 'OSA');
+});
+
+test('rechaza un CSV de otro host y conserva el agregado anterior (T-07)', async (t) => {
+  const year = 2025;
+  const previous = {
+    year,
+    fetchedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    sourceUrl: 'https://pjcrdatosabiertos.blob.core.windows.net/oij/2025.csv',
+    ...aggregateCsv(Buffer.from(line('ROBO', '2025-01-01', 'SAN JOSE', 'SAN JOSE')), year),
+  };
+  const findOneBy = t.mock.fn(async ({ year: requestedYear }) =>
+    requestedYear === year ? previous : null);
+  const save = t.mock.fn();
+  const service = new OijService({ findOneBy, find: async () => [{ year }], save });
+  const catalogUrl = 'https://datosabiertospj.poder-judicial.go.cr/api/3/action/package_show?id=estadisticas-policiales';
+  const fetchMock = t.mock.method(globalThis, 'fetch', async (url) => {
+    assert.equal(String(url), catalogUrl);
+    return Response.json({
+      result: { resources: [{ name: `Estadísticas ${year}`, format: 'CSV', url: 'https://example.invalid/oij.csv' }] },
+    });
+  });
+
+  const before = await service.overview({ year });
+  await assert.rejects(service.sync(year), (error) => error.getStatus() === 503);
+  assert.deepEqual(fetchMock.mock.calls.map(({ arguments: [url] }) => String(url)), [catalogUrl]);
+  assert.equal(save.mock.callCount(), 0);
+  assert.deepEqual(await service.overview({ year }), before);
 });
