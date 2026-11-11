@@ -24,7 +24,7 @@
 | 1.5 | [terceros-secretos.md](terceros-secretos.md) | Frander | Daniel | Pendiente |
 | 1.6 | [preguntas-abiertas.md](preguntas-abiertas.md) e [ia-sugerencias.md](ia-sugerencias.md) | Axel | José | Pendiente |
 | 1.7 | Esta carpeta versionada y [README.md](README.md) | José | Axel | Pendiente |
-| 1.8 | [AGENTS.md](../../AGENTS.md) | Daniel | Frander | Pendiente |
+| 1.8 | [AGENTS.md](../../../../AGENTS.md) | Daniel | Frander | Pendiente |
 
 Cada integrante responde por dos ítems y revisa dos.
 

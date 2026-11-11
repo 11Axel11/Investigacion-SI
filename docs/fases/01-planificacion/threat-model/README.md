@@ -9,7 +9,7 @@ El modelo de Threat Dragon es el mapa de arquitectura y el modelo de amenazas de
 ## Cómo abrirlo y editarlo
 
 1. Abrir [Threat Dragon](https://www.threatdragon.com/) o la aplicación de escritorio. En la web, elegir "Sesión local" (no requiere cuenta ni envía el modelo a ningún servidor).
-2. En "Abrir un modelo de amenazas existente", cargar `docs/threat-model/observatorio.json` o pegar su contenido.
+2. En "Abrir un modelo de amenazas existente", cargar `docs/fases/01-planificacion/threat-model/observatorio.json` o pegar su contenido.
 3. Para cambiarlo, editar el diagrama y exportar el modelo de nuevo a este mismo archivo, en un PR revisado por otro integrante.
 4. Si cambia el texto de una amenaza, actualizarlo también en [amenazas.md](../kb/amenazas.md) en el mismo PR. Cada `T-nn` del modelo debe existir en ese archivo y viceversa.
 

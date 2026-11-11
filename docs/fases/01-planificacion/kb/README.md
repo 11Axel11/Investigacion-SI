@@ -17,7 +17,7 @@ Estado: fase 1 completa a falta de la revisión cruzada humana. Contenido del 20
 | [responsables.md](responsables.md) | Integrantes, fuentes, responsable y revisor de cada ítem y amenaza | 1.4 |
 | [../threat-model/observatorio.json](../threat-model/observatorio.json) | Modelo de Threat Dragon (diagrama y amenazas) | 1.3 |
 | [../threat-model/README.md](../threat-model/README.md) | Cómo abrir y mantener el modelo de Threat Dragon | 1.3 |
-| [../../AGENTS.md](../../AGENTS.md) | Cómo debe consultar y mantener esta información el agente | 1.8 |
+| [../../../../AGENTS.md](../../../../AGENTS.md) | Cómo debe consultar y mantener esta información el agente | 1.8 |
 
 ## Identificadores
 

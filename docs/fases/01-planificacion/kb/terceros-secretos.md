@@ -13,7 +13,7 @@ Alcance: los flujos [F-01, F-02 y F-03](flujos.md). Este archivo **no contiene v
 | TP-05 | GitHub y GitHub Actions *(previsto)* | Repositorio, PR, CI y registro de hallazgos | Código, workflows, secretos del pipeline | Permisos de tokens y acciones de terceros ([T-12](amenazas.md#t-12)). Tratamiento: permisos mínimos, acciones fijadas por SHA, protección de ramas (fase 3) |
 | TP-06 | Docker Hub *(previsto)* | Publicación de imágenes | Imágenes y un token de publicación | Publicar una imagen no aprobada. Tratamiento: publicar solo la imagen aprobada por digest (fase 5) |
 | TP-07 | VPS único con Docker Compose y Caddy *(decidido en [Q-09](preguntas-abiertas.md#q-09))* | Ejecuta backend, frontend, BD y observabilidad | Imágenes, variables de entorno, secretos | Exposición de la BD y de secretos. Tratamiento: solo Caddy publica los puertos 80 y 443, HTTPS automático, BD en red interna (fase 6) |
-| TP-08 | Claude, API de Anthropic *(decidido en [Q-09](preguntas-abiertas.md#q-09))* | Revisión de código y apoyo al desarrollo | Código y contexto del proyecto | Fuga de código o secretos en prompts. Tratamiento: no enviar secretos ni datos personales; ver [AGENTS.md](../../AGENTS.md) |
+| TP-08 | Claude, API de Anthropic *(decidido en [Q-09](preguntas-abiertas.md#q-09))* | Revisión de código y apoyo al desarrollo | Código y contexto del proyecto | Fuga de código o secretos en prompts. Tratamiento: no enviar secretos ni datos personales; ver [AGENTS.md](../../../../AGENTS.md) |
 
 ## Dependencias críticas
 

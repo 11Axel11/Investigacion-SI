@@ -3,7 +3,7 @@
   "summary": {
     "title": "Observatorio Territorial CR",
     "owner": "Equipo del proyecto",
-    "description": "Modelo de amenazas STRIDE de los flujos F-01, F-02 y F-03. Fuente de verdad textual: docs/kb/amenazas.md y docs/kb/arquitectura.md.",
+    "description": "Modelo de amenazas STRIDE de los flujos F-01, F-02 y F-03. Fuente de verdad textual: docs/fases/01-planificacion/kb/amenazas.md y docs/fases/01-planificacion/kb/arquitectura.md.",
     "id": 0
   },
   "detail": {

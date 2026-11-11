@@ -1,0 +1,32 @@
+# Fase 3: Construcción e integración
+
+**Objetivo.** Pipeline de integración continua que ejecuta comprobaciones de calidad y seguridad, construye artefactos candidatos y **bloquea la integración** cuando no se cumplen las condiciones. Los resultados quedan asociados al commit evaluado.
+
+**Dónde se ejecuta:** GitHub Actions. **Herramientas:** linter, compilador, pruebas, Semgrep CE, Gitleaks, OSV-Scanner, Docker, Trivy, Conftest + OPA/Rego, revisor de IA.
+
+## Qué se espera (ítems)
+
+| Ítem | Qué se espera |
+|---|---|
+| 3.1 | Workflow de GitHub Actions para cada PR hacia `development` o `main`: instala con lockfiles, ejecuta lint, build y suites obligatorias; ambiente aislado con datos ficticios cuando haga falta |
+| 3.2 | Semgrep CE, Gitleaks y **OSV-Scanner** en CI; documentar qué hallazgos bloquean y los códigos de salida; un análisis que no pudo ejecutarse se considera incompleto, no aprobado |
+| 3.3 | Construir la imagen candidata; Trivy (imagen, Dockerfile, IaC); SBOM en CycloneDX o SPDX; reportes que identifican commit e imagen |
+| 3.4 | Dos políticas Conftest/OPA: sin contenedores privilegiados y usuario no root explícito; un caso permitido y uno rechazado |
+| 3.5 | `development` y `main` protegidas: PR, aprobación de otro integrante, checks obligatorios; permisos mínimos de tokens; acciones de terceros fijadas por SHA; el agente no puede saltarse las protecciones |
+| 3.6 | Demostrar que un check fallido, omitido o incompleto impide fusionar; reportes como artefactos asociados al commit; CI detecta el fallo aunque se omitan las verificaciones locales |
+| 3.7 | Revisión asistida por IA automatizada sobre el PR (reutiliza instrucciones de la fase 2); informativa, no aprueba; otro integrante valida las observaciones |
+| 3.8 | Verificar el commit resultante de la fusión y construir sus artefactos; la versión reutiliza esos resultados y conserva la identidad de las imágenes aprobadas |
+
+## Criterio de cierre
+
+Se demuestra un PR bloqueado por un fallo, su corrección y su integración posterior, y se identifican los resultados y artefactos del commit fusionado.
+
+## Pendientes derivados de la fase 1
+
+- Eliminar `pnpm-lock.yaml` y `frontend/pnpm-workspace.yaml`; comprobar `npm ci` ([Q-05](../01-planificacion/kb/preguntas-abiertas.md#q-05), [T-12](../01-planificacion/kb/amenazas.md#t-12)).
+- Dockerfiles de backend y frontend (hoy no existen). Los necesitan 3.3, 3.4 y la fase 5.
+- Gitleaks, OSV-Scanner y Renovate ([M-12, M-13](../01-planificacion/kb/amenazas.md#t-12)).
+
+## Evidencia a conservar
+
+Enlaces a ejecuciones de Actions, artefactos de reportes por commit, SBOM, captura de la regla de protección de rama, PR bloqueado y PR corregido.

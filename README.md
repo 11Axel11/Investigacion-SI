@@ -121,7 +121,7 @@ Abre la URL indicada por Next.js, normalmente `http://localhost:3000`. Si el pue
 
 ## Documentación de seguridad y planificación
 
-La base de conocimiento del proyecto (flujos críticos, arquitectura y permisos, amenazas, terceros y secretos, preguntas abiertas) está en [docs/kb/](docs/kb/README.md). Las instrucciones para agentes de IA están en [AGENTS.md](AGENTS.md).
+La base de conocimiento del proyecto (flujos críticos, arquitectura y permisos, amenazas, terceros y secretos, preguntas abiertas) está en [docs/fases/01-planificacion/kb/](docs/fases/01-planificacion/kb/README.md). Las instrucciones para agentes de IA están en [AGENTS.md](AGENTS.md).
 
 ## Módulo OIJ
 
@@ -136,7 +136,7 @@ Flujo: catálogo CKAN → CSV oficial → validación y normalización en NestJS
 - `OijDataset` guarda un registro por año, con agregados JSONB y procedencia. Reimportar reemplaza ese año sin duplicar los conteos.
 - Caché de una hora y reutilización de descargas simultáneas por año. Límites de 40 MB y 60 segundos para el CSV. Si falla la fuente o cambia el esquema se conservan los datos anteriores.
 - Se muestra el intervalo de fechas del archivo. Los meses sin registros no se convierten artificialmente en ceros. Los territorios desconocidos permanecen en los totales y la tabla, pero no cuentan como cantones identificados en la tarjeta.
-- Solo se almacenan conteos por delito, modalidad, categoría y tipo de objetivo, territorio y mes. No se almacenan registros individuales, edad, sexo, nacionalidad ni fechas exactas. El módulo OIJ no calcula tasas poblacionales; la tasa por 1 000 electores y el índice de viabilidad de `/coverage` son indicadores relativos que no demuestran causalidad ni riesgo individual (ver `docs/kb/preguntas-abiertas.md`, Q-04).
+- Solo se almacenan conteos por delito, modalidad, categoría y tipo de objetivo, territorio y mes. No se almacenan registros individuales, edad, sexo, nacionalidad ni fechas exactas. El módulo OIJ no calcula tasas poblacionales; la tasa por 1 000 electores y el índice de viabilidad de `/coverage` son indicadores relativos que no demuestran causalidad ni riesgo individual (ver `docs/fases/01-planificacion/kb/preguntas-abiertas.md`, Q-04).
 - El catálogo declara Creative Commons Attribution; el panel atribuye los datos al Poder Judicial/OIJ y enlaza el catálogo y el CSV utilizado.
 
 ### Ejecución local sin instalar PostgreSQL como servicio

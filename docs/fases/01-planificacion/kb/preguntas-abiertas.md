@@ -1,6 +1,6 @@
 # Preguntas y decisiones (ítem 1.6)
 
-Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión tomada. **El agente no debe asumir la respuesta a una pregunta abierta**: si un cambio depende de una, se detiene y lo reporta (ver [AGENTS.md](../../AGENTS.md)).
+Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión tomada. **El agente no debe asumir la respuesta a una pregunta abierta**: si un cambio depende de una, se detiene y lo reporta (ver [AGENTS.md](../../../../AGENTS.md)).
 
 **Cómo se tomaron las decisiones de este archivo.** El 2026-11-10 la persona usuaria del repositorio delegó en el asistente de IA (Claude) la resolución de las nueve preguntas para completar la fase 1. Son decisiones vigentes. Cada integrante del equipo las **ratifica o modifica al revisar el PR** de la fase 1; si alguna cambia, se actualiza este archivo y los afectados en el mismo PR. Los responsables de resolver cada pregunta figuran en [responsables.md](responsables.md).
 
