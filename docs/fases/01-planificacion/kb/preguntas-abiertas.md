@@ -133,6 +133,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
   - **Despliegue:** un único VPS con Docker Compose y Caddy como proxy inverso con HTTPS automático. La BD y los servicios internos no se publican; solo Caddy expone 80 y 443. El stack de observabilidad corre en el mismo Compose.
   - **Imágenes:** Docker Hub, referenciadas por digest.
   - **IA:** Claude (API de Anthropic) para la revisión asistida de PR, con la clave como secreto protegido de GitHub Actions. No se envían secretos ni datos personales en los prompts.
+- **Nota (2026-11-11):** Frander indicó que **no se usarán servicios de Anthropic** y que la IA de la revisión de PR en CI es **DeepSeek** (TP-12). Esto difiere de la decisión de arriba; queda **pendiente de ratificar por el equipo** (Daniel y José). Hasta entonces la revisión de IA corre solo con DeepSeek.
 - **Responsable de resolverla:** Daniel. **Revisor:** José.
 - **Afecta:** TP-05 a TP-08, S-03 a S-05 y las fases 5 a 7.
 - **Estado:** resuelta.

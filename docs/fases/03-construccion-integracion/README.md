@@ -29,12 +29,12 @@
 | 3.4 | Dos políticas Conftest/OPA, 12 pruebas Rego, un caso permitido y tres rechazados | [3.3 y 3.4](evidencias/3.3-3.4-imagenes-y-politicas.md) |
 | 3.5 | Script `proteger-ramas.sh` (simulacro) y permisos mínimos y SHA ya aplicados en los workflows. **Protección de ramas NO aplicada**: `main` sigue sin protección y `development` no existe ([Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13)) | [3.5](evidencias/3.5-proteccion-ramas.md) |
 | 3.6 | `resultado` falla si algo falló, se omitió o se canceló; **demostrado en GitHub rojo → corrección → verde** (PR #12). **No se probó el bloqueo efectivo de la fusión**: sin protección de ramas el botón seguía habilitado | [3.6](evidencias/3.6-bloqueo-demostrado.md) |
-| 3.7 | Workflow y script informativos con DeepSeek o Anthropic; **llamada real a DeepSeek probada y comentario publicado en el PR #11** con una clave temporal que se rota el 2026-11-12; sin la clave informa "NO ejecutada" | [3.7](evidencias/3.7-revision-ia.md) |
+| 3.7 | Workflow y script informativos con DeepSeek (único proveedor); **llamada real a DeepSeek probada y comentario publicado en el PR #11** con una clave temporal que se rota el 2026-11-12; sin la clave informa "NO ejecutada" | [3.7](evidencias/3.7-revision-ia.md) |
 | 3.8 | Job `fusion` y artefactos por commit definidos; artefactos verificados en PR; **falta la ejecución tras fusionar** | [3.8](evidencias/3.8-commit-fusionado.md) |
 
 ## Acciones que solo puede hacer una persona
 
-1. Crear el secreto `DEEPSEEK_API_KEY` (o `ANTHROPIC_API_KEY`) en *Settings → Secrets and variables → Actions*, tras revisar la política de datos del proveedor (TP-12).
+1. Crear el secreto `DEEPSEEK_API_KEY` en *Settings → Secrets and variables → Actions*, tras revisar la política de datos del proveedor (TP-12).
 2. Instalar la aplicación Renovate en el repositorio.
 3. Decidir [Q-12](../01-planificacion/kb/preguntas-abiertas.md#q-12). [Q-13](../01-planificacion/kb/preguntas-abiertas.md#q-13) está **decidida** (0 aprobaciones, administradores exentos) pero la debe **aplicar el dueño del repositorio o un administrador** (la cuenta que usó el agente solo tiene WRITE): `APROBACIONES=0 ENFORCE_ADMINS=false scripts/ci/proteger-ramas.sh --aplicar`.
 4. Validar las observaciones de la revisión de IA y revisar los cambios a scripts, reglas y políticas ([Q-11](../01-planificacion/kb/preguntas-abiertas.md#q-11)).

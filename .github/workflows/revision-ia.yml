@@ -1,6 +1,6 @@
 # Revisión de código asistida por IA sobre cada PR (ítem 3.7). INFORMATIVA: publica un comentario; no aprueba,
 # no es un check obligatorio y no bloquea. Reutiliza las instrucciones de la fase 2 (.github/revision-ia.md).
-# Requiere el secreto DEEPSEEK_API_KEY o ANTHROPIC_API_KEY (S-05; si están las dos, se usa DeepSeek). Sin ninguno, o en
+# Requiere el secreto DEEPSEEK_API_KEY (S-05; único proveedor, no se usa Anthropic). Sin él, o en
 # PR desde forks, se informa que NO se ejecutó.
 # Riesgo conocido (T-12): un PR de la misma rama puede cambiar este workflow y leer el secreto; se acepta mientras
 # el equipo sea de confianza y la protección de ramas exija revisión de otro integrante (ítem 3.5).
@@ -37,7 +37,6 @@ jobs:
         run: node scripts/ci/revision-ia.mjs
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
