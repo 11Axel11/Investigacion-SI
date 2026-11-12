@@ -4,14 +4,15 @@ import { OijService } from './oij.service';
 import { SkipThrottle, ThrottlerGuard } from '@nestjs/throttler';
 
 
-@Controller('oij')
-export class OijController {
-  constructor(private readonly service: OijService) {}
-@Post('sync')
 @SkipThrottle({
   osmMinute: true,
   osmHour: true,
 })
+
+@Controller('oij')
+export class OijController {
+  constructor(private readonly service: OijService) {}
+@Post('sync')
 @UseGuards(AdminKeyGuard, ThrottlerGuard)
 sync(@Body() body: { year?: number }) {
   return this.service.sync(body?.year);

@@ -3,6 +3,10 @@ import { AdminKeyGuard } from '../common/admin-key.guard';
 import { OsmSearchParams, OsmService } from './osm.service';
 import { SkipThrottle, ThrottlerGuard } from '@nestjs/throttler';
 
+@SkipThrottle({
+  oijFiveMinutes: true,
+  oijHour: true,
+})
 
 
 @Controller('osm')
@@ -10,10 +14,6 @@ export class OsmController {
   constructor(private readonly osmService: OsmService) {}
 
  @Post('sync')
-@SkipThrottle({
-  oijFiveMinutes: true,
-  oijHour: true,
-})
 @UseGuards(AdminKeyGuard, ThrottlerGuard)
 sync(@Body() body: OsmSearchParams) {
   return this.osmService.sync(body);
