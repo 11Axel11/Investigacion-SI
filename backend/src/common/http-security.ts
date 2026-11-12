@@ -1,7 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import helmet from 'helmet';
 
-const DEFAULT_CORS_ORIGIN = 'http://localhost:3000';
+const DEFAULT_CORS_ORIGIN =
+  'http://localhost:3000,http://127.0.0.1:3000';
 
 export function corsOrigins(
   configuredOrigins = process.env.CORS_ORIGINS,
