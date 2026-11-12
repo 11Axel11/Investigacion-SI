@@ -11,7 +11,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminKeyGuard } from '../common/admin-key.guard';
 import { MulterErrorFilter } from '../common/multer-error.filter';
+import { OptionalQueryText, queryFiltersPipe, TerritoryQueryDto } from '../common/query-filters';
 import { TseService } from './tse.service';
+
+class DistrictQueryDto extends TerritoryQueryDto {
+  @OptionalQueryText() q?: string;
+}
 
 @Controller('tse')
 export class TseController {
@@ -29,12 +34,8 @@ export class TseController {
   }
 
   @Get('districts')
-  districts(
-    @Query('province') province?: string,
-    @Query('canton') canton?: string,
-    @Query('q') q?: string,
-  ) {
-    return this.tseService.findAll({ province, canton, q });
+  districts(@Query(queryFiltersPipe) query: DistrictQueryDto) {
+    return this.tseService.findAll(query);
   }
 
   @Get('overview')

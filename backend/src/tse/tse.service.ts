@@ -7,6 +7,10 @@ import { Repository } from 'typeorm';
 import * as unzipper from 'unzipper';
 import { TseElectoralSummary } from './tse-electoral-summary.entity';
 
+function escapeLike(value: string) {
+  return value.replace(/[!%_]/g, '!$&');
+}
+
 interface DistrictName {
   province: string;
   canton: string;
@@ -123,14 +127,14 @@ export class TseService {
   async findAll(filters: { province?: string; canton?: string; q?: string }) {
     const qb = this.summaries.createQueryBuilder('summary');
     if (filters.province?.trim()) {
-      qb.andWhere('summary.province ILIKE :province', { province: filters.province.trim() });
+      qb.andWhere("summary.province ILIKE :province ESCAPE '!'", { province: escapeLike(filters.province.trim()) });
     }
     if (filters.canton?.trim()) {
-      qb.andWhere('summary.canton ILIKE :canton', { canton: filters.canton.trim() });
+      qb.andWhere("summary.canton ILIKE :canton ESCAPE '!'", { canton: escapeLike(filters.canton.trim()) });
     }
     if (filters.q?.trim()) {
-      qb.andWhere('(summary.district ILIKE :q OR summary.electoralCode ILIKE :q)', {
-        q: `%${filters.q.trim()}%`,
+      qb.andWhere("(summary.district ILIKE :q ESCAPE '!' OR summary.electoralCode ILIKE :q ESCAPE '!')", {
+        q: `%${escapeLike(filters.q.trim())}%`,
       });
     }
     const data = await qb.orderBy('summary.electors', 'DESC').take(250).getMany();

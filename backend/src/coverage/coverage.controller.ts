@@ -1,6 +1,16 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { OptionalQueryText, OptionalQueryYear, queryFiltersPipe, TerritoryQueryDto, YearQueryDto } from '../common/query-filters';
 import { CoverageService } from './coverage.service';
 import { CantonBoundariesService } from './canton-boundaries.service';
+
+class ViabilityQueryDto extends YearQueryDto {
+  @OptionalQueryText() businessType?: string;
+}
+
+class CrimeRateQueryDto extends TerritoryQueryDto {
+  @OptionalQueryYear() year?: string;
+  @OptionalQueryText() businessType?: string;
+}
 
 @Controller('coverage')
 export class CoverageController {
@@ -15,32 +25,27 @@ export class CoverageController {
   }
 
   @Get('health')
-  health(@Query('province') province?: string, @Query('canton') canton?: string) {
+  health(@Query(queryFiltersPipe) { province, canton }: TerritoryQueryDto) {
     return this.coverageService.healthCoverage(province, canton);
   }
 
   @Get('electoral-security')
-  electoralSecurity(@Query('province') province?: string, @Query('canton') canton?: string) {
+  electoralSecurity(@Query(queryFiltersPipe) { province, canton }: TerritoryQueryDto) {
     return this.coverageService.electoralSecurity(province, canton);
   }
 
   @Get('crime-rate')
-  crimeRate(
-    @Query('province') province?: string,
-    @Query('canton') canton?: string,
-    @Query('year') year?: string,
-    @Query('businessType') businessType?: string,
-  ) {
+  crimeRate(@Query(queryFiltersPipe) { province, canton, year, businessType }: CrimeRateQueryDto) {
     return this.coverageService.crimeRate(province, canton, year, businessType);
   }
 
   @Get('viability-index')
-  viabilityIndex(@Query('year') year?: string, @Query('businessType') businessType?: string) {
+  viabilityIndex(@Query(queryFiltersPipe) { year, businessType }: ViabilityQueryDto) {
     return this.coverageService.viabilityIndex(year, businessType);
   }
 
   @Get('business-types')
-  businessTypes(@Query('year') year?: string) {
+  businessTypes(@Query(queryFiltersPipe) { year }: YearQueryDto) {
     return this.coverageService.businessTypes(year);
   }
 }

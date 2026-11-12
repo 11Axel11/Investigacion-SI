@@ -26,7 +26,7 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 | [T-08](#t-08) | Repudio | F-01, F-02, F-03 | API | Media | propuesta |
 | [T-09](#t-09) | Divulgación de información | Todos | API y configuración | Media | propuesta |
 | [T-10](#t-10) | Uso indebido (integridad de la inferencia) | Lecturas de `/coverage` | Índice de viabilidad | Media | propuesta |
-| [T-11](#t-11) | Manipulación, Divulgación | Todos | Validación de entradas | Baja | propuesta |
+| [T-11](#t-11) | Manipulación, Divulgación | Todos | Validación de filtros de lectura | Baja | implementada |
 | [T-12](#t-12) | Manipulación (cadena de suministro) | Todos | Dependencias y CI | Media | propuesta |
 | [T-13](#t-13) | Divulgación de información | Todos | Secretos | Media | propuesta |
 | [T-14](#t-14) | Manipulación | F-01 | Persistencia de agregados TSE | Media (propuesta) | propuesta; pendiente de validación humana |
@@ -165,16 +165,16 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 
 ## T-11
 
-- **Amenaza:** validación de entradas desigual. No hay `ValidationPipe` global; los parámetros de consulta de `/tse/districts`, `/oij/overview` y `/coverage/*` llegan como texto sin límites, y `ILIKE` en `/tse/districts` acepta comodines (`%`, `_`) escritos por el usuario. Las consultas están parametrizadas, así que no hay inyección SQL.
+- **Amenaza:** los filtros de lectura sin límites o con estructuras inesperadas pueden causar errores o ampliar una búsqueda. En `/tse/districts`, los caracteres `%` y `_` introducidos por el visitante podían actuar como comodines aunque la consulta estuviera parametrizada.
 - **Recurso afectado:** controladores y servicios de `tse`, `oij` y `coverage`.
 - **Impacto:** consultas más costosas de lo previsto y resultados inesperados.
 - **Prioridad:** Baja.
-- **Medida (propuesta):** DTOs con `class-validator`, longitud máxima y escape de comodines.
+- **Medida:** DTOs con `class-validator` en `/tse/districts`, `/oij/overview` y los endpoints de `/coverage` que reciben filtros. Los filtros de texto aceptan un valor de hasta 200 caracteres sin caracteres nulos. El año usa cuatro dígitos y conserva el rango de negocio de cada módulo. El TSE busca `%`, `_` y el carácter de escape como texto literal.
 - **Componente:** controladores de `tse`, `oij` y `coverage`.
-- **Comprobación prevista:** prueba de integración con parámetros largos y con comodines; deben rechazarse o tratarse como texto literal.
+- **Comprobación:** `npm run test:integracion` incluye peticiones HTTP con filtros largos, repetidos, objetos o años mal formados (400), y búsquedas de comodines literales con PostgreSQL y datos ficticios.
 - **Responsable / revisor:** José / Axel.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Estado:** implementada. Revisión de Axel pendiente.
 
 ## T-12
 

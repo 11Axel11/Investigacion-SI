@@ -93,7 +93,7 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 |---|---|---|---|---|
 | Q-01 | Quién ejecuta los endpoints de escritura | Solo el operador, con `X-Admin-Key` | | |
 | Q-03 | Retención y acceso a logs de seguridad | 90 días; operador y responsable de operación | | |
-| Q-09 | Plataforma de despliegue y proveedor de IA | VPS con Docker Compose y Caddy; Claude | | |
+| Q-09 | Plataforma de despliegue y proveedor de IA | VPS con Docker Compose y Caddy. La revisión de PR en CI usa DeepSeek (cambio pendiente de ratificación). | | |
 
 ### Sugerencias de IA a validar
 
