@@ -16,7 +16,7 @@ rules:
           @UseGuards(AdminKeyGuard)
           $METHOD(...) { ... }
       - pattern-not: |
-          @UseGuards(AdminKeyGuard)
+          @UseGuards(AdminKeyGuard, ThrottlerGuard)
           @Post(...)
           $METHOD(...) { ... }
       # Guard a nivel de controlador (R-06): cubre todos sus métodos.
