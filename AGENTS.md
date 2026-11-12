@@ -74,6 +74,8 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | DAST con ZAP contra las imágenes candidatas (4.7; Docker) | raíz | `scripts/pruebas/zap.sh` |
 | Resiliencia con Toxiproxy (4.10; Docker) | raíz | `scripts/pruebas/resiliencia.sh` |
 | Defecto controlado: las pruebas deben detectarlo (4.9) | raíz | `scripts/pruebas/defecto-controlado.sh funcional\|seguridad` |
+| Pruebas del validador de hallazgos (7.5; sin dependencias) | raíz | `node --test scripts/hallazgos/validar.test.mjs` |
+| Estructura de un hallazgo Markdown (7.5; no aprueba riesgos) | raíz | `node scripts/hallazgos/validar.mjs <archivo.md>`; uso y límites en [registro-hallazgos.md](docs/fases/07-operacion/registro-hallazgos.md) |
 | Semgrep CE y Gitleaks (requiere `brew install semgrep gitleaks`) | raíz | `scripts/seguridad.sh` |
 | Todas las verificaciones (las ejecuta el hook `Stop`) | raíz | `scripts/verificar.sh` (`--rapido` omite la compilación del frontend) |
 | Linting del frontend | `frontend/` | `npm run lint` |
@@ -89,4 +91,4 @@ La integración continua vive en `.github/workflows/` (`ci.yml` y `revision-ia.y
 
 ## Alcance de esta versión
 
-Este archivo cubre Planificación (fase 1), Desarrollo (fase 2), Construcción e integración (fase 3) y Pruebas (fase 4). La preparación de la versión, el despliegue y la operación se agregarán en las fases 5 a 7.
+Este archivo cubre Planificación (fase 1), Desarrollo (fase 2), Construcción e integración (fase 3), Pruebas (fase 4) y las herramientas locales de registro de hallazgos (7.5). Las instrucciones de preparación de versión, despliegue y demás controles de operación se incorporarán cuando se implementen; la presencia del validador no implica completar la fase 7.
