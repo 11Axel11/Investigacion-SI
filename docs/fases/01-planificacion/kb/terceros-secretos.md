@@ -21,7 +21,7 @@ Alcance: los flujos [F-01, F-02 y F-03](flujos.md). Este archivo **no contiene v
 
 ## Dependencias críticas
 
-Se justifica por qué cada dependencia importa; el inventario completo y las versiones se consultan en los archivos `package.json` y `package-lock.json` de `backend/`, `frontend/` y `e2e/`. Se utiliza npm conforme a [Q-05]([preguntas-abiertas.md](http://preguntas-abiertas.md)#q-05).
+Se justifica por qué cada dependencia importa; el inventario completo y las versiones se consultan en los archivos `package.json` y `package-lock.json` de `backend/`, `frontend/` y `e2e/`. Se utiliza npm conforme a [Q-05](preguntas-abiertas.md#q-05).
 
 | Dependencia | Dónde | Por qué es crítica | Riesgo y tratamiento |
 |---|---|---|---|
