@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { createServer } = require('node:http');
 const { aggregateCsv } = require('../dist/oij/oij.parser');
 const { OijService } = require('../dist/oij/oij.service');
 const line = (crime, date, province, canton) => `${crime},MODALIDAD,${date},PERSONA,PEATON,Mayor de edad,,COSTA RICA,${province},${canton},DISTRITO`;
@@ -46,7 +47,7 @@ test('repara VATICANO,CIUDAD DEL conservando el cantón', () => {
   assert.equal(result.groups[0].canton, 'OSA');
 });
 
-test('rechaza un CSV de otro host y conserva el agregado anterior (T-07)', async (t) => {
+async function verifyRejectedDownload(t, resourceUrl, download) {
   const year = 2025;
   const previous = {
     year,
@@ -59,16 +60,88 @@ test('rechaza un CSV de otro host y conserva el agregado anterior (T-07)', async
   const save = t.mock.fn();
   const service = new OijService({ findOneBy, find: async () => [{ year }], save });
   const catalogUrl = 'https://datosabiertospj.poder-judicial.go.cr/api/3/action/package_show?id=estadisticas-policiales';
-  const fetchMock = t.mock.method(globalThis, 'fetch', async (url) => {
-    assert.equal(String(url), catalogUrl);
-    return Response.json({
-      result: { resources: [{ name: `Estadísticas ${year}`, format: 'CSV', url: 'https://example.invalid/oij.csv' }] },
-    });
+  const fetchMock = t.mock.method(globalThis, 'fetch', async (url, options) => {
+    if (String(url) === catalogUrl) {
+      return Response.json({
+        result: { resources: [{ name: `Estadísticas ${year}`, format: 'CSV', url: resourceUrl }] },
+      });
+    }
+    assert.equal(String(url), resourceUrl);
+    return download?.(options);
   });
 
   const before = await service.overview({ year });
   await assert.rejects(service.sync(year), (error) => error.getStatus() === 503);
-  assert.deepEqual(fetchMock.mock.calls.map(({ arguments: [url] }) => String(url)), [catalogUrl]);
+  const expectedCalls = download ? [catalogUrl, resourceUrl] : [catalogUrl];
+  assert.deepEqual(fetchMock.mock.calls.map(({ arguments: [url] }) => String(url)), expectedCalls);
   assert.equal(save.mock.callCount(), 0);
   assert.deepEqual(await service.overview({ year }), before);
+}
+
+const allowedCsv = 'https://pjcrdatosabiertos.blob.core.windows.net/oij/2025.csv';
+
+test('rechaza un CSV de otro host y conserva el agregado anterior (T-07)', async (t) => {
+  await verifyRejectedDownload(t, 'https://example.invalid/oij.csv');
+});
+
+test('rechaza una redirección de un CSV del host permitido (T-07)', async (t) => {
+  const validCsv = line('HURTO', '2025-01-02', 'HEREDIA', 'BELEN');
+  const paths = [];
+  const server = createServer((request, response) => {
+    paths.push(request.url);
+    if (request.url === '/original') response.writeHead(302, { Location: '/destino' }).end();
+    else response.end(validCsv);
+  });
+  await new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', resolve);
+  });
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const realFetch = globalThis.fetch;
+  await verifyRejectedDownload(t, allowedCsv, (options) =>
+    realFetch(`http://127.0.0.1:${server.address().port}/original`, options));
+  assert.deepEqual(paths, ['/original']);
+});
+
+test('interrumpe un CSV al superar 40 MiB sin leer el resto (T-07)', async (t) => {
+  const chunk = Buffer.alloc(1024 * 1024);
+  let read = 0;
+  let closed = false;
+  await verifyRejectedDownload(t, allowedCsv, () => ({
+    ok: true,
+    body: (async function* () {
+      try {
+        for (let i = 0; i < 42; i++) {
+          read++;
+          yield chunk;
+        }
+      } finally {
+        closed = true;
+      }
+    })(),
+  }));
+  assert.equal(read, 41);
+  assert.equal(closed, true);
+});
+
+test('interrumpe la lectura del CSV al agotarse su plazo de 60 s (T-07)', async (t) => {
+  const timeout = AbortSignal.timeout.bind(AbortSignal);
+  const timeoutMock = t.mock.method(AbortSignal, 'timeout', (ms) => timeout(ms === 60_000 ? 10 : ms));
+  let aborted = false;
+  await verifyRejectedDownload(t, allowedCsv, ({ signal }) => ({
+    ok: true,
+    body: new ReadableStream({
+      start(controller) {
+        const keepAlive = setTimeout(() => controller.close(), 1000);
+        signal.addEventListener('abort', () => {
+          clearTimeout(keepAlive);
+          aborted = true;
+          controller.error(signal.reason);
+        }, { once: true });
+      },
+    }),
+  }));
+  assert.deepEqual(timeoutMock.mock.calls.map(({ arguments: [ms] }) => ms), [20_000, 60_000]);
+  assert.equal(aborted, true);
 });

@@ -119,10 +119,10 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Prioridad:** Media.
 - **Medida (implementada):** en el OIJ se restringe el recurso CSV a `https` y al host `pjcrdatosabiertos.blob.core.windows.net`, se prohíben redirecciones de esa descarga, se limita a 40 MB y 60 s, se valida la estructura y se conservan los datos previos si falla. **Alcance real:** la consulta al catálogo CKAN tiene timeout de 20 s, pero no configura `redirect: 'error'` ni límite de bytes; no se le deben atribuir los controles del CSV. En OSM se validan provincia, cantón y categoría contra listas fijas antes de armar la consulta. Existe `backend/scripts/oij.test.cjs` (`npm run test:oij`).
 - **Componente:** `backend/src/oij/oij.service.ts`, `backend/src/oij/oij.parser.ts`, `backend/src/osm/osm.service.ts`.
-- **Comprobación:** `npm run test:oij` verifica el parser y que un CSV de un host distinto se rechaza antes de la descarga con 503, sin modificar el agregado anterior (F02-AC4). Queda ejecutar el comando en CI, comprobar las redirecciones del CSV y el comportamiento del catálogo por separado, comprobar una respuesta inesperada de OSM y recorrer los cantones de `LOCATIONS` registrando los que OSM responde con 404 ([IA-07](ia-sugerencias.md#ia-07)). Las pruebas del parser por sí solas no verifican los controles de red; la prueba de host usa un servicio y una descarga simulados, no una BD real.
+- **Comprobación:** `npm run test:oij` verifica el parser y que un host distinto, una redirección, un cuerpo mayor de 40 MiB o un plazo de descarga agotado producen 503 y conservan el agregado anterior (F02-AC4). Se usa un catálogo simulado, un servidor HTTP local para la redirección y un repositorio simulado. El plazo se acelera en la prueba, que también comprueba que se solicitaron 60 s. CI ejecuta esta misma suite en el job `backend`. Queda comprobar el comportamiento del catálogo por separado, una respuesta inesperada de OSM y los límites de cantón de [IA-07](ia-sugerencias.md#ia-07).
 - **Responsable / revisor:** José / Daniel.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** implementada; verificados el parser y el rechazo de un host distinto en el OIJ. Falta completar las comprobaciones de OSM.
+- **Estado:** implementada. Verificados el parser y los cuatro controles del CSV del OIJ con pruebas locales. Quedan las comprobaciones del catálogo y OSM.
 
 ## T-08
 
