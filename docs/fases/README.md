@@ -10,7 +10,7 @@ Guía de ejecución por etapa del proyecto final (fuente: `docs/documento-proyec
 | 2. Desarrollo | [02-desarrollo](02-desarrollo/README.md) | 2.1 a 2.7 | Computadora del estudiante | Cerrada en lo técnico; revisión humana diferida ([Q-11](01-planificacion/kb/preguntas-abiertas.md#q-11)) |
 | 3. Construcción e integración | [03-construccion-integracion](03-construccion-integracion/README.md) | 3.1 a 3.8 | GitHub Actions | Pipeline ejecutado en GitHub (PR en verde y demostración rojo→verde); falta fusionar #11 y la protección de ramas, no aplicada ([Q-13](01-planificacion/kb/preguntas-abiertas.md#q-13)) |
 | 4. Pruebas | [04-pruebas](04-pruebas/README.md) | 4.1 a 4.10 | Local y GitHub Actions | Construida y ejecutada en local; jobs de CI definidos pero **sin ejecutar en GitHub**; revisión humana pendiente (4.8) |
-| 5. Preparación de la versión | [05-preparacion-version](05-preparacion-version/README.md) | 5.1 a 5.6 | GitHub Actions y Docker Hub | No iniciada |
+| 5. Preparación de la versión | [05-preparacion-version](05-preparacion-version/README.md) | 5.1 a 5.6 | GitHub Actions y Docker Hub | 5.3: resumen del candidato redactado y contrastado con GitHub; revisión humana pendiente. No implica aprobación ni publicación de versión |
 | 6. Despliegue | [06-despliegue](06-despliegue/README.md) | 6.1 a 6.6 | GitHub Actions y VPS | No iniciada |
 | 7. Operación y mejora continua | [07-operacion](07-operacion/README.md) | 7.1 a 7.8 | VPS y GitHub | No iniciada |
 
