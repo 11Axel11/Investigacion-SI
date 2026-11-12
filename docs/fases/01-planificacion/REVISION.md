@@ -40,13 +40,13 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 - [x] Cada tercero (TP-nn) indica su función, qué datos o permisos recibe y cómo se tratan sus riesgos.
 - [x] Cada secreto (S-nn) indica propósito, consumidores, permisos, responsable y dónde se almacenará.
 - [x] **No hay ningún valor secreto** en el archivo.
-- [ ] Los paquetes se referencian por manifiestos y lockfiles, sin copiar el inventario.
+- [x] Los paquetes se referencian por manifiestos y lockfiles, sin copiar el inventario.
 
 ### Firma
 
-| Ítem | Nombre | Fecha | Resultado | Observaciones |
-|---|---|---|---|---|
-| 1.5 | | | | Observaciones preliminares de revisión documental asistida por IA: TP-01 a TP-12 incluyen función, datos o permisos, riesgos y tratamiento. En TP-03, TP-10 y TP-11 conviene precisar que las descargas transmiten solicitudes y datos de conexión, aunque no envíen datos del proyecto. TP-12 mantiene pendiente la revisión de la política de datos de DeepSeek. Falta completar la revisión y el contraste con el código; no constituye aprobación. |
+| Ítem | Nombre          | Fecha      | Resultado            | Observaciones                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---- | --------------- | ---------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.5  | Daniel Elizondo | 12/11/2026 | Aprobado con cambios | Revisión documental asistida por IA. Se comprobaron los campos de terceros y secretos, la ausencia aparente de valores secretos y las referencias a manifiestos y lockfiles. Se corrigió la descripción desactualizada de los lockfiles. Quedan recomendadas las precisiones sobre datos de conexión en TP-03, TP-10 y TP-11; la política de DeepSeek sigue pendiente. No se verificó el funcionamiento de todos los controles. Las correcciones de mi autoría requieren revisión independiente. |
 
 ### Decisiones a ratificar ([preguntas-abiertas.md](kb/preguntas-abiertas.md))
 
