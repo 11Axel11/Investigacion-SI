@@ -143,12 +143,12 @@ Revisión adicional del 2026-11-11 sobre `cdc70e6`: precisiones en T-01, T-02, T
 - **Recurso afectado:** API y base de datos (`backend/src/main.ts`, `backend/src/app.module.ts`).
 - **Impacto:** filtración de detalles internos, uso de la API desde sitios ajenos y cambios de esquema no controlados en producción.
 - **Prioridad:** Media.
-- **Medida (propuesta):** CORS con lista blanca de orígenes por entorno, mensajes genéricos al cliente con el detalle solo en el log, cabeceras de seguridad (helmet) y migraciones en lugar de `synchronize`. **Límite:** CORS es una política del navegador para acceso entre orígenes; no autentica al cliente ni impide peticiones directas a la API. La autorización de escritura se comprueba por separado en T-01.
-- **Componente:** `backend/src/main.ts`, `backend/src/app.module.ts`.
-- **Comprobación prevista:** prueba que verifica las cabeceras de seguridad y que CORS no autoriza un origen no permitido mediante `Access-Control-Allow-Origin`; comprobar también un origen permitido. No asumir que la ausencia de esa cabecera equivale a un 401 o impide una escritura. Simular una falla de Overpass y comprobar que la respuesta no devuelve texto interno. ZAP (ítem 4.7), si se selecciona y ejecuta, complementa estas pruebas; no demuestra por sí solo el uso de migraciones, que requiere revisar la configuración y ejecutar el procedimiento en una BD de pruebas.
+- **Medida (implementada):** CORS con lista blanca mediante `CORS_ORIGINS` (por defecto `http://localhost:3000`, `http://127.0.0.1:3000` y http://127.0.0.1:3100 ), cabeceras de seguridad con `helmet`, y mensajes genéricos al cliente ante fallas de Overpass o ZIP; el detalle queda solo en el log del servidor. TypeORM ya no usa `synchronize`; se agregó la migración inicial y se ejecuta al iniciar mediante `migrationsRun: true`. **Límite:** CORS es una política del navegador para acceso entre orígenes; no autentica al cliente ni impide peticiones directas a la API. La autorización de escritura se comprueba por separado en T-01.
+- **Componente:** `backend/src/main.ts`, `backend/src/common/http-security.ts`, `backend/src/app.module.ts`, `backend/src/migrations/initial-schema.migration.ts`.
+- **Comprobación realizada:** `npm run test:t09` verifica cabeceras de Helmet, un origen permitido y que un origen ajeno no recibe `Access-Control-Allow-Origin`. También se ejecutaron `npm run lint`, `npm run build`, `npm run test:admin`, `npm run test:oij` y `npm run test:tse`. La ejecución de la migración en una BD de pruebas queda cubierta por la CI con Docker.
 - **Responsable / revisor:** Pablo / Frander.
 - **Tratamiento decidido:** mitigar.
-- **Estado:** propuesta.
+- **Estado:** implementada; pendiente de revisión de Frander.
 
 ## T-10
 

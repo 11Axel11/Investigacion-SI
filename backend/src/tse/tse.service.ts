@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import iconv from 'iconv-lite';
 import { createInterface } from 'readline';
@@ -19,7 +19,7 @@ interface DistrictCount {
 }
 
 @Injectable()
-export class TseService {
+export class TseService { private readonly logger = new Logger(TseService.name);
   constructor(
     @InjectRepository(TseElectoralSummary)
     private readonly summaries: Repository<TseElectoralSummary>,
@@ -76,8 +76,11 @@ export class TseService {
       }
     } catch (error) {
       if (error instanceof BadRequestException) throw error;
-      const detail = error instanceof Error ? error.message : 'estructura desconocida';
-      throw new BadRequestException(`No se pudo procesar el ZIP del TSE: ${detail}`);
+    const detail = error instanceof Error ? error.message : 'estructura desconocida';
+this.logger.warn(`No se pudo procesar el ZIP del TSE: ${detail}`);
+throw new BadRequestException(
+  'No se pudo procesar el ZIP del TSE. Verifique que sea un archivo válido.',
+);
     }
 
     if (!padronFound || !districtFileFound) {

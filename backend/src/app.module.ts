@@ -1,9 +1,10 @@
-import { OijModule } from './oij/oij.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthController } from './common/health.controller';
 import { CoverageModule } from './coverage/coverage.module';
+import { InitialSchema1794355200000 } from './migrations/initial-schema.migration';
+import { OijModule } from './oij/oij.module';
 import { OsmModule } from './osm/osm.module';
 import { TseModule } from './tse/tse.module';
 
@@ -16,7 +17,9 @@ import { TseModule } from './tse/tse.module';
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, // laboratorio academico: evita manejar migraciones aparte
+        synchronize: false,
+        migrationsRun: true,
+        migrations: [InitialSchema1794355200000],
       }),
     }),
     OsmModule,
@@ -27,4 +30,3 @@ import { TseModule } from './tse/tse.module';
   controllers: [HealthController],
 })
 export class AppModule {}
-

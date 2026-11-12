@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -90,7 +91,7 @@ interface OverpassResponse {
 }
 
 @Injectable()
-export class OsmService {
+export class OsmService { private readonly logger = new Logger(OsmService.name);
   constructor(
     @InjectRepository(OsmPlace)
     private readonly places: Repository<OsmPlace>,
@@ -283,7 +284,10 @@ out center tags 251;`;
       return await response.json() as OverpassResponse;
     } catch (error) {
       const detail = error instanceof Error ? error.message : 'error desconocido';
-      throw new ServiceUnavailableException(`Overpass no está disponible en este momento: ${detail}`);
+this.logger.warn(`Overpass no disponible: ${detail}`);
+throw new ServiceUnavailableException(
+  'Overpass no está disponible en este momento. Reintente más tarde.',
+);
     } finally {
       clearTimeout(timeout);
     }
