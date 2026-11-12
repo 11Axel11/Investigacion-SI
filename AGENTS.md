@@ -65,6 +65,7 @@ Se usa `npm` ([Q-05](docs/fases/01-planificacion/kb/preguntas-abiertas.md#q-05))
 | Pruebas del importador del padrón (F-01, ZIP ficticios; incluye multipart HTTP) | `backend/` | `npm run test:tse` |
 | Pruebas de `GET /health` (healthcheck del contenedor) | `backend/` | `npm run test:health` |
 | Políticas de contenedores (Conftest/OPA, ítem 3.4) | raíz | `scripts/politicas.sh` |
+| Pruebas de cabeceras y CORS (T-09) | `backend/` | `npm run test:t09` |
 | Seguridad como en CI (Semgrep, Gitleaks y OSV-Scanner con compuerta) | raíz | `scripts/ci/seguridad-ci.sh` |
 | Imágenes candidatas, Trivy y SBOM (requiere Docker y `brew install trivy`) | raíz | `scripts/ci/imagenes-ci.sh` |
 | Pruebas del modo operador (Q-02) | `frontend/` | `npm run test:operator` |

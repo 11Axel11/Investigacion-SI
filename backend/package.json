@@ -13,6 +13,7 @@
     "test:tse": "npm run build && node --test scripts/tse.test.cjs",
     "test:health": "npm run build && node --test scripts/health.test.cjs",
     "test:coverage": "npm run build && node --test scripts/coverage.test.cjs",
+    "test:t09": "npm run build && node --test scripts/http-security.test.cjs",
     "test:integracion": "npm run build && node --test --test-concurrency=1 scripts/pruebas/integracion.test.cjs scripts/pruebas/autorizacion.test.cjs"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "@nestjs/platform-express": "^10.4.0",
     "@nestjs/typeorm": "^10.0.2",
     "csv-parse": "^7.0.2",
+    "helmet": "^7.2.0",
     "iconv-lite": "^0.7.0",
     "multer": "^2.5.0",
     "pg": "^8.13.0",
