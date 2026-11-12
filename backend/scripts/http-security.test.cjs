@@ -34,20 +34,20 @@ async function startApp() {
 
 test('T-09: Helmet agrega cabeceras y CORS acepta solo el origen permitido', async () => {
   const originalOrigins = process.env.CORS_ORIGINS;
-  process.env.CORS_ORIGINS =
-  'http://localhost:3000,http://127.0.0.1:3000';
+ process.env.CORS_ORIGINS =
+  'http://localhost:3000,http://127.0.0.1:3100';
 
   const { app, base } = await startApp();
 
   try {
     const allowed = await fetch(`${base}/health`, {
-      headers: { Origin: 'http://127.0.0.1:3000' },
+      headers: { Origin: 'http://127.0.0.1:3100'},
     });
 
     assert.equal(allowed.status, 200);
     assert.equal(
       allowed.headers.get('access-control-allow-origin'),
-      'http://127.0.0.1:3000',
+      'http://127.0.0.1:3100',
     );
     assert.equal(allowed.headers.get('x-content-type-options'), 'nosniff');
     assert.equal(allowed.headers.get('x-frame-options'), 'SAMEORIGIN');
