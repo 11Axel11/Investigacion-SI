@@ -2,6 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { CoverageService } from './coverage.service';
 import { CantonBoundariesService } from './canton-boundaries.service';
 
+
 @Controller('coverage')
 export class CoverageController {
   constructor(

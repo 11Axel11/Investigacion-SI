@@ -13,6 +13,7 @@ const { OijController } = require('../dist/oij/oij.controller');
 const { OijService } = require('../dist/oij/oij.service');
 const { TseController } = require('../dist/tse/tse.controller');
 const { TseService } = require('../dist/tse/tse.service');
+const { ThrottlerModule } = require('@nestjs/throttler');
 
 const KEY = 'clave-ficticia-de-prueba-0123456789'; // 35 caracteres, no es un secreto real
 const ORIGINAL = process.env.ADMIN_API_KEY;
@@ -128,7 +129,15 @@ test('el mensaje de rechazo es idéntico en todos los casos y no revela ninguna 
 const calls = { osm: 0, oij: 0, tse: 0 };
 async function startApp() {
   class TestModule {}
-  Module({
+   Module({
+    imports: [
+      ThrottlerModule.forRoot([
+        { name: 'osmMinute', ttl: 60 * 1000, limit: 20 },
+        { name: 'osmHour', ttl: 60 * 60 * 1000, limit: 20 },
+        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 20 },
+        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 20 },
+      ]),
+    ],
     controllers: [OsmController, OijController, TseController],
     providers: [
       { provide: OsmService, useValue: { sync: () => { calls.osm += 1; return { ok: true }; }, locations: () => [] } },

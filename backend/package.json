@@ -12,6 +12,7 @@
     "test:admin": "npm run build && node --test scripts/admin-key.test.cjs",
     "test:tse": "npm run build && node --test scripts/tse.test.cjs",
     "test:health": "npm run build && node --test scripts/health.test.cjs",
+    "test:rate-limit": "npm run build && node --test scripts/rate-limit.test.cjs",
     "test:coverage": "npm run build && node --test scripts/coverage.test.cjs",
     "test:integracion": "npm run build && node --test --test-concurrency=1 scripts/pruebas/integracion.test.cjs scripts/pruebas/autorizacion.test.cjs"
   },
@@ -20,6 +21,7 @@
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.4.0",
     "@nestjs/platform-express": "^10.4.0",
+    "@nestjs/throttler": "^5.2.0",
     "@nestjs/typeorm": "^10.0.2",
     "csv-parse": "^7.0.2",
     "iconv-lite": "^0.7.0",
