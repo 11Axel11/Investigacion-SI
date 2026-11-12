@@ -67,6 +67,15 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 **Ítems a revisar:** 1.2 y 1.6.
 
+### Evidencia para la revisión presencial
+
+- **1.2:** [arquitectura.md](kb/arquitectura.md) identifica componentes, terceros, datos sensibles y cruces de confianza. Los tres controladores de escritura aplican `AdminKeyGuard`. Las [pruebas de autorización](../04-pruebas/evidencias/4.2-4.6-pruebas.md) cubren lectura pública y rechazo con clave ausente o incorrecta.
+- **1.6:** [preguntas-abiertas.md](kb/preguntas-abiertas.md) e [ia-sugerencias.md](kb/ia-sugerencias.md) documentan decisiones, responsables y brechas. La nota de Q-09 registra que CI usa DeepSeek y que el cambio de proveedor sigue pendiente de ratificación. Antes de ratificarlo, consulta [TP-12](kb/terceros-secretos.md#servicios-externos), que detalla qué se comparte con el proveedor.
+- **IA-05:** un filtro válido sin coincidencias devuelve 200 y total cero. [F02-AC8](kb/flujos.md#casos-límite-aceptados-de-las-sugerencias-de-ia) pide 400 para valores inexistentes. La validación de formato de T-11 deja esa brecha abierta.
+- **IA-06:** la [prueba de resiliencia](../04-pruebas/evidencias/4.10-resiliencia.md) registró seis consultas a Overpass para diez sincronizaciones simultáneas. Sigue abierta la brecha F03-AC9.
+- **IA-07:** el código devuelve 404 si no encuentra una relación con el nombre y nivel administrativo esperados. El intento de contrastar los 84 nombres con Overpass agotó su plazo y queda pendiente determinar cuáles fallan.
+- **Q-03 / T-08:** la fase 7.2 sigue en propuesta. Al revisar la implementación, comprobar eventos para escrituras permitidas y denegadas, acceso restringido, retención de 90 días y ausencia de claves o datos personales en los registros.
+
 ### Verificación
 
 **1.2 [arquitectura.md](kb/arquitectura.md)**
