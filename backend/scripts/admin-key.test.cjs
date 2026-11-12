@@ -134,8 +134,8 @@ async function startApp() {
       ThrottlerModule.forRoot([
         { name: 'osmMinute', ttl: 60 * 1000, limit: 20 },
         { name: 'osmHour', ttl: 60 * 60 * 1000, limit: 20 },
-        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 5 },
-        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 5 },
+        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 20 },
+        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 20 },
       ]),
     ],
     controllers: [OsmController, OijController, TseController],

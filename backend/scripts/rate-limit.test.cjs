@@ -29,8 +29,8 @@ async function startApp() {
       ThrottlerModule.forRoot([
         { name: 'osmMinute', ttl: 60 * 1000, limit: 20 },
         { name: 'osmHour', ttl: 60 * 60 * 1000, limit: 20 },
-        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 5 },
-        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 5 },
+        { name: 'oijFiveMinutes', ttl: 5 * 60 * 1000, limit: 20 },
+        { name: 'oijHour', ttl: 60 * 60 * 1000, limit: 20 },
       ]),
     ],
     controllers: [OsmController, OijController],
@@ -96,7 +96,7 @@ test('T-02: limita sincronizaciones y conserva públicas las lecturas', async ()
     assert.equal(osmBlocked.status, 429);
     assert.equal(calls.osm, 20);
 
-    for (let attempt = 0; attempt < 5; attempt += 1) {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
       const response = await fetch(`${base}/oij/sync`, {
         method: 'POST',
         headers,
@@ -112,7 +112,7 @@ test('T-02: limita sincronizaciones y conserva públicas las lecturas', async ()
     });
 
     assert.equal(oijBlocked.status, 429);
-    assert.equal(calls.oij, 5);
+    assert.equal(calls.oij, 20);
 
     assert.equal((await fetch(`${base}/osm/locations`)).status, 200);
     assert.equal((await fetch(`${base}/oij/overview`)).status, 200);
