@@ -45,7 +45,7 @@ Resumen; el detalle de cada medida y su comprobación está en [amenazas.md](ame
 | [T-08](amenazas.md#t-08) | Daniel | José | Mitigar |
 | [T-09](amenazas.md#t-09) | Pablo | Frander | Mitigar |
 | [T-10](amenazas.md#t-10) | Frander | Pablo | Mitigar |
-| [T-11](amenazas.md#t-11) | José | Axel | Mitigar |
+| [T-11](amenazas.md#t-11) | José | Axel | Mitigación implementada. Revisión pendiente. |
 | [T-12](amenazas.md#t-12) | Daniel | Pablo | Mitigar |
 | [T-13](amenazas.md#t-13) | Daniel | Frander | Mitigar |
 | [T-14](amenazas.md#t-14) | Daniel (propuesto) | Axel (propuesto) | Mitigación propuesta; pendiente de validación humana |

@@ -157,11 +157,10 @@ test('4.6: el padrón importado no sale por ninguna ruta de lectura ni por la b�
 });
 
 test('4.6: los filtros de las consultas tratan el texto como dato (inyección) y no devuelven más ni fallan', async () => {
-  const total = (await (await pedir('/tse/districts', { metodo: 'GET' })).json()).total;
   for (const q of ["' OR '1'='1", "%'; DROP TABLE tse_electoral_summary; --", '%', '_']) {
     const respuesta = await pedir(`/tse/districts?q=${encodeURIComponent(q)}`, { metodo: 'GET' });
     assert.equal(respuesta.status, 200, q);
-    assert.ok((await respuesta.json()).total <= total, `${q} no debe devolver más filas que la lista completa`);
+    assert.equal((await respuesta.json()).total, 0, `${q} no coincide con ningún distrito de la prueba`);
   }
   for (const provincia of ["x' OR '1'='1", '<script>1</script>']) {
     const respuesta = await pedir(`/coverage/health?province=${encodeURIComponent(provincia)}`, { metodo: 'GET' });
@@ -169,6 +168,47 @@ test('4.6: los filtros de las consultas tratan el texto como dato (inyección) y
     assert.deepEqual(await respuesta.json(), []);
   }
   assert.equal((await ctx.dataSource.query('SELECT COUNT(*)::int AS n FROM tse_electoral_summary'))[0].n, 4, 'la tabla sigue intacta');
+});
+
+test('T-11: los filtros TSE buscan comodines y el carácter de escape como texto literal', async () => {
+  await ctx.dataSource.query(
+    'UPDATE tse_electoral_summary SET district = $1, canton = $2, province = $3 WHERE "electoralCode" = $4',
+    ['SECTOR 100%_A!', 'CANTÓN_1', 'PROVINCIA%1', '101001'],
+  );
+  for (const filtros of [{ q: '%' }, { q: '_' }, { q: '!' }, { canton: 'cantón_1' }, { province: 'provincia%1' }]) {
+    const respuesta = await pedir(`/tse/districts?${new URLSearchParams(filtros)}`, { metodo: 'GET' });
+    assert.equal(respuesta.status, 200);
+    assert.deepEqual((await respuesta.json()).data.map(({ electoralCode }) => electoralCode), ['101001']);
+  }
+
+  const coincidencia = await pedir('/tse/districts?q=10100', { metodo: 'GET' });
+  assert.equal(coincidencia.status, 200);
+  assert.equal((await coincidencia.json()).total, 2);
+});
+
+test('T-11: devuelve 400 para filtros largos, repetidos, estructurados o años mal formados', async () => {
+  const largo = 'x'.repeat(201);
+  const rutas = [
+    `/tse/districts?q=${largo}`,
+    '/tse/districts?province=A&province=B',
+    '/tse/districts?q%5Bvalor%5D=x',
+    '/tse/districts?q=abc%00def',
+    `/oij/overview?targetType=${largo}`,
+    '/oij/overview?year=2e3',
+    '/coverage/health?canton=A&canton=B',
+    `/coverage/electoral-security?province=${largo}`,
+    `/coverage/crime-rate?businessType=${largo}`,
+    '/coverage/viability-index?year=2026&year=2026',
+    '/coverage/business-types?year=2026.5',
+  ];
+  for (const ruta of rutas) {
+    const respuesta = await pedir(ruta, { metodo: 'GET' });
+    assert.equal(respuesta.status, 400, ruta);
+  }
+
+  const valido = await pedir(`/oij/overview?crime=${'x'.repeat(200)}`, { metodo: 'GET' });
+  assert.equal(valido.status, 200);
+  assert.equal((await valido.json()).total, 0);
 });
 
 test('4.6: no existe exportación, descarga ni operación masiva sin la clave (inventario de rutas)', async () => {

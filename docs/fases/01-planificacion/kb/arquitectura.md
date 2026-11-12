@@ -87,6 +87,8 @@ Cruces señalados en el diagrama:
 
 Los tres `POST` exigen `X-Admin-Key` en el backend (**[O]**, T-01); el resto son públicos. La columna "Aprobado" refleja las decisiones de [Q-01](preguntas-abiertas.md#q-01) y [Q-02](preguntas-abiertas.md#q-02) del 2026-11-10: el operador envía la cabecera `X-Admin-Key`.
 
+Los filtros de `/tse/districts`, `/oij/overview` y `/coverage` se validan en el backend. Una consulta con un filtro reconocido inválido responde 400. Las lecturas con filtros válidos conservan el acceso público ([T-11](amenazas.md#t-11)).
+
 | Endpoint | Operación | Escribe | Hoy | Aprobado |
 |---|---|---|---|---|
 | `POST /osm/sync` | Consulta Overpass y reemplaza lugares | Sí | Operador (`X-Admin-Key`) | Operador |

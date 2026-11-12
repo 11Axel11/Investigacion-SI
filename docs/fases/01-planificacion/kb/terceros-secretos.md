@@ -30,6 +30,7 @@ Se justifica por qué cada una importa; la lista completa está en `backend/pack
 | `csv-parse`, `iconv-lite` | Backend | Procesan el CSV del OIJ y los TXT del TSE | Entrada de terceros; validación de estructura |
 | `typeorm`, `pg` | Backend | Acceso a la BD | Consultas parametrizadas; `synchronize` activo ([T-09](amenazas.md#t-09)) |
 | `@nestjs/*` | Backend | Framework de la API | Actualizaciones periódicas |
+| `class-validator`, `class-transformer` | Backend | Validación de los filtros HTTP con `ValidationPipe` de NestJS ([T-11](amenazas.md#t-11)) | Los filtros se validan sin coerción implícita y antes de consultar la BD |
 | `next`, `react`, `react-dom` | Frontend | Renderizado de la interfaz | Actualizaciones periódicas |
 | `leaflet`, `react-leaflet` | Frontend | Mapas con teselas de TP-04 | Carga recursos de un tercero |
 | `embedded-postgres` | Backend (desarrollo) | PostgreSQL portátil local | Solo desarrollo; no debe llegar a producción |
