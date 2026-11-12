@@ -4,6 +4,10 @@
 
 **Dónde se ejecuta:** GitHub Actions y Docker Hub.
 
+## Avance del ítem 5.3
+
+Daniel preparó el [resumen de cambios y limitaciones](resumen-version.md) del candidato `05c1545aef6b6a0e8277fe014f4906e2d28d352e`, con PR integrados, ejecución de CI, artefactos, cambios excluidos y limitaciones. Las [comprobaciones de GitHub](evidencias/5.3-verificacion.md) están registradas; **la revisión de otro integrante sigue pendiente**. El documento no aprueba la versión ni demuestra por sí solo los ítems 5.1, 5.2, 5.4, 5.5 o 5.6.
+
 ## Qué se espera (ítems)
 
 | Ítem | Qué se espera |
