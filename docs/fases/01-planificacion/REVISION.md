@@ -52,15 +52,15 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 | Q | Tema | Decisión vigente | Ratifico (sí/no) | Si no, qué cambia |
 |---|---|---|---|---|
-| Q-02 | Roles y lecturas públicas | Visitante y operador; lecturas públicas | | |
-| Q-04 | Advertencias del índice de viabilidad | Fórmula, denominador, fechas, no causalidad | | |
+| Q-02 | Roles y lecturas públicas | Visitante y operador; lecturas públicas | Sí | Sin cambios. Daniel confirma la regla el 2026-11-13, tras revisión asistida por IA; no constituye una nueva prueba de su funcionamiento. |
+| Q-04 | Advertencias del índice de viabilidad | Fórmula, denominador, fechas, no causalidad | Sí | Sin cambios. Daniel confirma la regla el 2026-11-13; el aviso debe explicar metodología, electores como denominador, carácter relativo, fuentes, fechas y no causalidad. No se declara implementado ni verificado el aviso. |
 
 ### Sugerencias de IA a validar ([ia-sugerencias.md](kb/ia-sugerencias.md))
 
 | IA | Tema | Decisión (aceptada / rechazada / falso positivo) | Justificación breve |
 |---|---|---|---|
-| IA-01 | `.txt` arbitrario del ZIP tratado como padrón | | |
-| IA-02 | ZIP por cantón con fechas de corte mezcladas | | |
+| IA-01 | `.txt` arbitrario del ZIP tratado como padrón | Aceptada | Daniel confirma el 2026-11-13, con asistencia de IA: `backend/src/tse/tse.service.ts` acepta como padrón todo TXT salvo `distelec.txt` y `leame.txt`; suma sus registros válidos. Sustentada en lectura del código, relacionada con T-03 y F01-AC8; no se ejecutó una nueva importación ni se declara corregida. |
+| IA-02 | ZIP por cantón con fechas de corte mezcladas | Aceptada | Daniel confirma el 2026-11-13, con asistencia de IA: el `upsert` por `electoralCode` conserva distritos ajenos al archivo y el resumen devuelve `MAX(sourceDate)`, por lo que puede ocultar fechas mezcladas. Relacionada con T-05; no se ejecutó una nueva importación ni se declara corregida. |
 
 ---
 

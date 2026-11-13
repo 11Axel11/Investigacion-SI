@@ -22,8 +22,8 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 
 | ID | Flujo | Sugerencia | Estado |
 |---|---|---|---|
-| [IA-01](#ia-01) | F-01 | Cualquier `.txt` del ZIP se trata como padrón | aceptada (provisional); cubierta por F01-AC8 y T-03 |
-| [IA-02](#ia-02) | F-01 | Un ZIP por cantón deja fechas de corte mezcladas | aceptada (provisional); cubierta por T-05 |
+| [IA-01](#ia-01) | F-01 | Cualquier `.txt` del ZIP se trata como padrón | aceptada; confirmada por Daniel el 2026-11-13 mediante revisión asistida por IA; cubierta por F01-AC8 y T-03 |
+| [IA-02](#ia-02) | F-01 | Un ZIP por cantón deja fechas de corte mezcladas | aceptada; confirmada por Daniel el 2026-11-13 mediante revisión asistida por IA; cubierta por T-05 |
 | [IA-03](#ia-03) | F-01 | Territorios desconocidos en los agregados | aceptada (provisional); incorporada como F01-AC9 |
 | [IA-04](#ia-04) | F-02 | Más de un recurso del catálogo coincide con el año | aceptada (provisional); incorporada como F02-AC7 |
 | [IA-05](#ia-05) | F-02 | Filtros que no coinciden devuelven cero en lugar de error | aceptada (provisional); incorporada como F02-AC8 |
@@ -46,6 +46,7 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 - **Comprobación sugerida:** ZIP ficticio con dos TXT de padrón; debería rechazarse o aceptar solo el nombre esperado.
 - **Relacionada con:** [T-03](amenazas.md#t-03), [F01-AC8](flujos.md#f-01-importar-el-padrón-del-tse).
 - **Decisión provisional (2026-11-11):** **aceptada.** El código confirma que todo `.txt` salvo `leame.txt` y `distelec.txt` suma como padrón (`tse.service.ts:57`). Ya está cubierta por [F01-AC8](flujos.md#f-01-importar-el-padrón-del-tse) y la medida de [T-03](amenazas.md#t-03) (aceptar solo los nombres esperados); no requiere un criterio nuevo.
+- **Confirmación humana (2026-11-13):** Daniel aceptó expresamente la observación después de recibir la explicación de la revisión estática asistida por IA. Registrada en [su sección de revisión](../REVISION.md#daniel). No se ejecutó una nueva importación ni se verificó una mitigación.
 
 ## IA-02
 
@@ -53,6 +54,7 @@ Todas las sugerencias partieron como **pendiente**. Validadores asignados el 202
 - **Comprobación sugerida:** importar dos ZIP ficticios de fechas distintas y revisar qué muestra `/tse/overview` en `sourceDate`.
 - **Relacionada con:** [T-05](amenazas.md#t-05).
 - **Decisión provisional (2026-11-11):** **aceptada.** El `upsert` por `electoralCode` deja fechas mezcladas y el resumen muestra solo `MAX(sourceDate)`. Cubierta por la medida de [T-05](amenazas.md#t-05) (fecha de corte por distrito); la prueba de T-05 debe incluir dos ZIP ficticios de fechas distintas.
+- **Confirmación humana (2026-11-13):** Daniel aceptó expresamente la observación después de recibir la explicación de la revisión estática asistida por IA. Registrada en [su sección de revisión](../REVISION.md#daniel). No se ejecutó una nueva importación ni se verificó una mitigación.
 
 ## IA-03
 
