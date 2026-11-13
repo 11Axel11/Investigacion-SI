@@ -23,4 +23,8 @@ Se investiga una solicitud mediante su telemetría, se demuestran las dos alerta
 
 ## Nota
 
-El registro único (7.5) se necesita desde la fase 1: es donde viven las tareas derivadas listadas en [responsables.md](../01-planificacion/kb/responsables.md#trabajo-derivado-de-las-decisiones-fuera-de-la-fase-1). Conviene crearlo ya.
+El registro único (7.5) se necesita desde la fase 1: es donde viven las tareas derivadas listadas en [responsables.md](../01-planificacion/kb/responsables.md#trabajo-derivado-de-las-decisiones-fuera-de-la-fase-1).
+
+## Avance del ítem 7.5
+
+Daniel preparó la [guía del registro único](registro-hallazgos.md), plantilla de issues, validador local con pruebas y borradores para completar los registros existentes. La fuente canónica sigue siendo GitHub Issues. Publicó [T-14 en el issue #27](https://github.com/11Axel11/Investigacion-SI/issues/27); el cuerpo publicado pasó la validación estructural el 2026-11-13. [Evidencia técnica y de publicación](evidencias/7.5-registro-hallazgos.md). **Pendientes:** coordinar mejoras de los registros existentes y revisión humana; no se declaran hallazgos cerrados ni el ítem terminado. El resto de esta etapa no se considera implementado por este aporte.

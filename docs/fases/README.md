@@ -12,14 +12,14 @@ Guía de ejecución por etapa del proyecto final (fuente: `docs/documento-proyec
 | 4. Pruebas | [04-pruebas](04-pruebas/README.md) | 4.1 a 4.10 | Local y GitHub Actions | Construida y ejecutada en local; jobs de CI definidos pero **sin ejecutar en GitHub**; revisión humana pendiente (4.8) |
 | 5. Preparación de la versión | [05-preparacion-version](05-preparacion-version/README.md) | 5.1 a 5.6 | GitHub Actions y Docker Hub | No iniciada |
 | 6. Despliegue | [06-despliegue](06-despliegue/README.md) | 6.1 a 6.6 | GitHub Actions y VPS | No iniciada |
-| 7. Operación y mejora continua | [07-operacion](07-operacion/README.md) | 7.1 a 7.8 | VPS y GitHub | No iniciada |
+| 7. Operación y mejora continua | [07-operacion](07-operacion/README.md) | 7.1 a 7.8 | VPS y GitHub | 7.5: plantilla, validador probado y propuestas de actualización; uso completo del registro en GitHub y revisión humana pendientes |
 
 Estado verificado contra el repositorio el 2026-11-11: existen `.github/workflows/`, Dockerfiles, linting, Semgrep, Gitleaks, OSV-Scanner, Trivy y Conftest; no hay despliegue ni publicación de imágenes.
 
 ## Reglas transversales del documento
 
 - Cada actividad tiene un **responsable**, y **otro integrante** la revisa. Nadie aprueba su propio trabajo.
-- Un único **registro de hallazgos y excepciones** (GitHub Issues). Hoy no hay issues creados.
+- Un único **registro de hallazgos y excepciones** (GitHub Issues). Hay issues existentes; su estructura y campos completos se están preparando en el [ítem 7.5](07-operacion/registro-hallazgos.md), sin duplicar registros.
 - Una comprobación **omitida, incompleta o que no pudo ejecutarse** se reporta como incompleta, nunca como aprobada.
 - Cada etapa reutiliza scripts, pruebas y configuración de las anteriores; no se duplican implementaciones.
 - Herramientas open source para las comprobaciones. GitHub, Actions y Docker Hub como servicios.
