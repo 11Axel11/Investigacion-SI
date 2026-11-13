@@ -10,7 +10,8 @@ El registro oficial es [GitHub Issues](https://github.com/11Axel11/Investigacion
 - Preparados textos completos para actualizar los issues #16 y #19 **sin crear duplicados**.
 - Preparado borrador de T-14; antes de abrir un issue debe buscarse de nuevo si ya existe.
 - Implementado [validador local](../../../scripts/hallazgos/validar.mjs) con [pruebas](../../../scripts/hallazgos/validar.test.mjs), sin dependencias adicionales.
-- **Pendiente:** revisar y publicar las actualizaciones en GitHub, registrar la URL de T-14 si procede y conseguir revisión independiente. El 7.5 **no está completo** mientras solo existan plantillas y borradores.
+- **Publicado por Daniel:** [issue #27 — T-14](https://github.com/11Axel11/Investigacion-SI/issues/27), abierto como pendiente de investigación. El 2026-11-13 se consultó su cuerpo mediante la API y pasó el validador local. Esto demuestra uso real del registro, no corrección de la amenaza ni aprobación humana.
+- **Pendiente:** coordinar las propuestas de mejora de los issues existentes y conseguir revisión independiente. El 7.5 no se declara completo por la sola publicación de un registro.
 - No se implementan aquí observabilidad, alertas, escáneres nuevos ni el cierre de un hallazgo del 7.7.
 
 ## Campos que debe contener cada hallazgo
@@ -48,7 +49,7 @@ Consulta de lectura a la API pública de GitHub el 2026-11-12. Volver a comproba
 | [#19 — T-11](https://github.com/11Axel11/Investigacion-SI/issues/19) | Abierto; descripción breve de filtros, sin todos los campos. Cuenta asignada: Dani-develop. El [PR #18](https://github.com/11Axel11/Investigacion-SI/pull/18) propone tratamiento. | Revisar y publicar [el borrador del mismo issue](borradores/issue-19-t11.md), conservando la asignación existente hasta que el equipo confirme la identidad. |
 | [#3 — Prueba OIJ](https://github.com/11Axel11/Investigacion-SI/issues/3) | Tarea de verificación relacionada con T-07; sigue abierta. El [PR #5](https://github.com/11Axel11/Investigacion-SI/pull/5) ya se integró. | Que el responsable enlace la ejecución y versión comprobadas y decida el estado. No afirmar que el host permitido esté roto ni cerrar automáticamente una tarea por el título de un PR. |
 | [#4 — SNIT](https://github.com/11Axel11/Investigacion-SI/issues/4) | Tarea de integración, no necesariamente hallazgo de seguridad. Sigue abierta pese al [PR #6](https://github.com/11Axel11/Investigacion-SI/pull/6) integrado. | Mantenerla como tarea; pedir evidencia de verificación al responsable antes de cerrarla. No convertir cada tarea en vulnerabilidad. |
-| T-14, sin issue localizado en la consulta | Propuesta documentada y reproducción aislada; pendiente de ratificación y prueba con PostgreSQL. | Buscar duplicados y, si no existen, publicar [el borrador T-14](borradores/nuevo-t14.md) como pendiente de investigación. Agregar aquí su enlace real, nunca un número inventado. |
+| [#27 — T-14](https://github.com/11Axel11/Investigacion-SI/issues/27), publicado después del inventario inicial | Publicado por Daniel; el 2026-11-13 se verificó abierto, con los diez campos y estado pendiente de investigación. | Solicitar revisión de la propuesta y ratificar responsable, prioridad y tratamiento. No declararlo corregido ni repetir el alta usando [el borrador original](borradores/nuevo-t14.md). |
 
 Este es un punto de partida, no un inventario exhaustivo de todas las amenazas. Los siguientes hallazgos deben agregarse al mismo registro de Issues, enlazando las excepciones o amenazas ya existentes en lugar de mantener estados divergentes en archivos nuevos.
 
@@ -83,8 +84,8 @@ Se espera código 1. No se incluye ningún defecto en producción ni un secreto 
 ## Publicación manual, sin push del agente
 
 1. Subir esta rama y abrir un PR. Revisar los borradores con el responsable de cada hallazgo.
-2. En GitHub abrir el issue #16, editar su descripción y usar el borrador correspondiente; preservar comentarios y asignaciones. Repetir con #19. No usar `New issue` para los que ya existen.
-3. Buscar T-14 en los issues abiertos y cerrados; si no existe y se acuerda registrarlo, crear uno con el borrador como **Pendiente de investigación**. Si existe, actualizarlo en vez de duplicarlo.
+2. Coordinar con los responsables de #16 y #19 antes de editar sus descripciones. Se puede publicar el borrador como comentario de propuesta para que lo revisen; eso no cuenta como actualización definitiva de la descripción. Preservar información reciente, comentarios y asignaciones. No usar `New issue` para los que ya existen.
+3. T-14 ya está registrada en #27. No crear otro issue. Para futuros hallazgos, buscar duplicados abiertos y cerrados antes de publicar y mantener como pendientes de investigación los que aún no estén confirmados.
 4. Conservar en GitHub el historial de las ediciones y agregar enlaces a la evidencia de este PR. Registrar en la sección siguiente los enlaces reales una vez publicado, sin afirmar que ocurrió antes.
 5. Solicitar revisión a otro integrante. Corregir las observaciones. Los PR correctivos deben enlazar el issue, pero su cierre depende de la nueva comprobación; un push de estos archivos no edita issues automáticamente.
 
@@ -94,10 +95,10 @@ La plantilla será visible en el formulario de nuevos issues al integrarse en la
 
 | Acción | Estado | Evidencia |
 |---|---|---|
-| Publicar actualización del issue #16 | Pendiente | — |
-| Publicar actualización del issue #19 | Pendiente | — |
-| Registrar o enlazar T-14, sin duplicado | Pendiente | — |
-| Verificar contenido publicado contra la plantilla | Pendiente | — |
+| Coordinar y publicar propuesta de actualización del issue #16 | Pendiente; no editar sin coordinar con Pablo | — |
+| Coordinar y publicar propuesta de actualización del issue #19 | Pendiente; no editar sin coordinar con su responsable | — |
+| Registrar o enlazar T-14, sin duplicado | Publicado por Daniel; abierto y pendiente de investigación | [Issue #27](https://github.com/11Axel11/Investigacion-SI/issues/27) |
+| Verificar contenido publicado contra la plantilla | Cuerpo del #27 consultado el 2026-11-13: validación estructural sin errores; no aprobación humana | [API del issue #27](https://api.github.com/repos/11Axel11/Investigacion-SI/issues/27), [evidencia](evidencias/7.5-registro-hallazgos.md#publicación-real-de-t-14) |
 | Revisión independiente del aporte 7.5 | Pendiente; revisor por asignar | — |
 
 No completar estas filas por anticipado. El registro debe utilizarse realmente: plantilla, validador y borradores solos no satisfacen todo el 7.5.
