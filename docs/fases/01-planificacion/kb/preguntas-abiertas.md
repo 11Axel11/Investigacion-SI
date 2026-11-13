@@ -51,6 +51,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Responsable de resolverla:** Axel. **Revisor:** Daniel.
 - **Afecta:** matriz de acceso de [arquitectura.md](arquitectura.md#matriz-de-acceso), F03-AC6, [IA-12](ia-sugerencias.md#ia-12).
 - **Estado:** resuelta e implementada (modo operador en el frontend, rama `docs/fase-2-inicio`).
+- **Ratificación (2026-11-13):** Daniel confirmó expresamente Q-02 por escrito durante la revisión asistida por IA, sin cambios a la regla. Constancia en [REVISION.md](../REVISION.md#daniel); no se afirma reunión presencial ni nueva ejecución de pruebas.
 
 ## Q-03
 
@@ -81,6 +82,7 @@ Dudas que afectan permisos, comportamiento esperado o alcance, con la decisión 
 - **Responsable de resolverla:** Frander. **Revisor:** Daniel.
 - **Afecta:** [T-10](amenazas.md#t-10), [IA-09](ia-sugerencias.md#ia-09), [IA-10](ia-sugerencias.md#ia-10).
 - **Estado:** resuelta. Implementación del aviso pendiente (medida M-10).
+- **Ratificación (2026-11-13):** Daniel confirmó expresamente Q-04 por escrito durante la revisión asistida por IA, sin cambios a la regla. Constancia en [REVISION.md](../REVISION.md#daniel); no implica que el aviso esté implementado o verificado ni afirma reunión presencial.
 
 ## Q-05
 

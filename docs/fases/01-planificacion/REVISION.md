@@ -36,30 +36,31 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 ### Verificación
 
 **1.5 [terceros-secretos.md](kb/terceros-secretos.md)**
-- [ ] Cada tercero (TP-nn) indica su función, qué datos o permisos recibe y cómo se tratan sus riesgos.
-- [ ] Cada secreto (S-nn) indica propósito, consumidores, permisos, responsable y dónde se almacenará.
-- [ ] **No hay ningún valor secreto** en el archivo.
-- [ ] Los paquetes se referencian por manifiestos y lockfiles, sin copiar el inventario.
+
+- [x] Cada tercero (TP-nn) indica su función, qué datos o permisos recibe y cómo se tratan sus riesgos.
+- [x] Cada secreto (S-nn) indica propósito, consumidores, permisos, responsable y dónde se almacenará.
+- [x] **No hay ningún valor secreto** en el archivo.
+- [x] Los paquetes se referencian por manifiestos y lockfiles, sin copiar el inventario.
 
 ### Firma
 
-| Ítem | Nombre | Fecha | Resultado | Observaciones |
-|---|---|---|---|---|
-| 1.5 | | | | |
+| Ítem | Nombre          | Fecha      | Resultado            | Observaciones                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---- | --------------- | ---------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.5  | Daniel Elizondo | 12/11/2026 | Aprobado con cambios | Revisión documental asistida por IA. Se comprobaron los campos de terceros y secretos, la ausencia aparente de valores secretos y las referencias a manifiestos y lockfiles. Se corrigió la descripción desactualizada de los lockfiles. Quedan recomendadas las precisiones sobre datos de conexión en TP-03, TP-10 y TP-11; la política de DeepSeek sigue pendiente. No se verificó el funcionamiento de todos los controles. Las correcciones de mi autoría requieren revisión independiente. |
 
 ### Decisiones a ratificar ([preguntas-abiertas.md](kb/preguntas-abiertas.md))
 
 | Q | Tema | Decisión vigente | Ratifico (sí/no) | Si no, qué cambia |
 |---|---|---|---|---|
-| Q-02 | Roles y lecturas públicas | Visitante y operador; lecturas públicas | | |
-| Q-04 | Advertencias del índice de viabilidad | Fórmula, denominador, fechas, no causalidad | | |
+| Q-02 | Roles y lecturas públicas | Visitante y operador; lecturas públicas | Sí | Sin cambios. Daniel confirma la regla el 2026-11-13, tras revisión asistida por IA; no constituye una nueva prueba de su funcionamiento. |
+| Q-04 | Advertencias del índice de viabilidad | Fórmula, denominador, fechas, no causalidad | Sí | Sin cambios. Daniel confirma la regla el 2026-11-13; el aviso debe explicar metodología, electores como denominador, carácter relativo, fuentes, fechas y no causalidad. No se declara implementado ni verificado el aviso. |
 
 ### Sugerencias de IA a validar ([ia-sugerencias.md](kb/ia-sugerencias.md))
 
 | IA | Tema | Decisión (aceptada / rechazada / falso positivo) | Justificación breve |
 |---|---|---|---|
-| IA-01 | `.txt` arbitrario del ZIP tratado como padrón | | |
-| IA-02 | ZIP por cantón con fechas de corte mezcladas | | |
+| IA-01 | `.txt` arbitrario del ZIP tratado como padrón | Aceptada | Daniel confirma el 2026-11-13, con asistencia de IA: `backend/src/tse/tse.service.ts` acepta como padrón todo TXT salvo `distelec.txt` y `leame.txt`; suma sus registros válidos. Sustentada en lectura del código, relacionada con T-03 y F01-AC8; no se ejecutó una nueva importación ni se declara corregida. |
+| IA-02 | ZIP por cantón con fechas de corte mezcladas | Aceptada | Daniel confirma el 2026-11-13, con asistencia de IA: el `upsert` por `electoralCode` conserva distritos ajenos al archivo y el resumen devuelve `MAX(sourceDate)`, por lo que puede ocultar fechas mezcladas. Relacionada con T-05; no se ejecutó una nueva importación ni se declara corregida. |
 
 ---
 
@@ -70,12 +71,14 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 ### Verificación
 
 **1.2 [arquitectura.md](kb/arquitectura.md)**
+
 - [ ] Están los componentes, servicios externos, datos protegidos y los flujos que cruzan límites de confianza.
 - [ ] Se identifica qué datos son sensibles y qué pasaría si se exponen, modifican o pierden.
 - [ ] La [matriz de acceso](kb/arquitectura.md#matriz-de-acceso) tiene actor/rol → recurso → acción → condición, incluido el acceso **sin sesión**.
 - [ ] Los endpoints de escritura (`POST /osm/sync`, `POST /oij/sync`, `POST /tse/import`) exigen `X-Admin-Key` en la matriz.
 
-**1.6 [preguntas-abiertas.md](kb/preguntas-abiertas.md) e [ia-sugerencias.md](kb/ia-sugerencias.md)**
+**1.6 [preguntas-abiertas.md](kb/preguntas-abiertas.md) e [ia-sugerencias.md**](kb/ia-sugerencias.md)
+
 - [ ] Cada `Q-nn` tiene decisión, responsable y revisor, y qué IDs afecta.
 - [ ] Las sugerencias de IA están separadas de las reglas aprobadas y marcadas con su estado.
 - [ ] Nada que dependa de una duda abierta se presenta como regla.
@@ -112,6 +115,7 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 ### Verificación
 
 **1.8 [AGENTS.md](../../../AGENTS.md)**
+
 - [ ] Indica qué leer antes de modificar un flujo crítico: flujos, permisos, amenazas, preguntas y terceros/secretos.
 - [ ] Explica la diferencia entre criterios **[A]**, **[O]** y **[P]**.
 - [ ] Dice que ante una duda nueva el agente **no asume la respuesta** y la registra como `Q-nn`.
@@ -147,13 +151,15 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 
 ### Verificación
 
-**1.4 Medidas en [amenazas.md](kb/amenazas.md) y [responsables.md](kb/responsables.md)**
+**1.4 Medidas en [amenazas.md](kb/amenazas.md) y [responsables.md**](kb/responsables.md)
+
 - [ ] Cada amenaza T-01 a T-13 tiene medida, componente, comprobación prevista y responsable. T-14 (propuesta de la revisión del 2026-11-11) también la tiene, pero su prioridad, tratamiento y asignación (Daniel / Axel) hay que ratificarlos.
 - [ ] Cada medida tiene estado (`propuesta`, `implementada` o `verificada`) y es coherente con el código.
 - [ ] Ninguna amenaza se pospone sin justificación, responsable que acepta el riesgo y fecha de revisión.
 - [ ] Las comprobaciones previstas son concretas (qué se hace y qué debe ocurrir), no genéricas.
 
 **1.7 [kb/](kb/README.md)**
+
 - [ ] Los IDs (F, C, D, T, TP, S, Q, IA, M) se usan sin repetirse ni reutilizarse.
 - [ ] Hay reglas de mantenimiento: cambio de comportamiento, datos, arquitectura o permisos actualiza la base en el mismo PR.
 - [ ] Los enlaces entre archivos funcionan.
@@ -190,15 +196,17 @@ Reglas: escribe solo tu sección. Los nombres van en texto plano, sin menciones 
 ### Verificación
 
 **1.1 [flujos.md](kb/flujos.md)**
-- [X] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
-- [X] Cada flujo indica actor, objetivo y resultado esperado.
-- [X] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
-- [X] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
 
-**1.3 [amenazas.md](kb/amenazas.md) y [observatorio.json](threat-model/observatorio.json)**
-- [X] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 14, el mínimo es 3).
-- [X] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 14 IDs T-01 a T-14.
-- [X] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
+- [x] Hay tres flujos críticos (F-01, F-02, F-03) y se justifica por qué son críticos (datos o impacto de un fallo).
+- [x] Cada flujo indica actor, objetivo y resultado esperado.
+- [x] Los criterios Dado/Cuando/Entonces cubren éxito, errores y uso indebido.
+- [x] Cada criterio está marcado **[A]** (aprobado), **[O]** (observado en el código) o **[P]** (propuesto), y los **[A]** indican su "Brecha actual".
+
+**1.3 [amenazas.md](kb/amenazas.md) y [observatorio.json**](threat-model/observatorio.json)
+
+- [x] Las amenazas usan STRIDE e indican recurso o flujo afectado, impacto y prioridad justificada (hay 14, el mínimo es 3).
+- [x] El JSON abre en OWASP Threat Dragon (instrucciones en [threat-model/README.md](threat-model/README.md)) y contiene los 14 IDs T-01 a T-14.
+- [x] El diagrama se reutiliza como mapa de arquitectura (no hay un diagrama duplicado).
 
 ### Firma
 
